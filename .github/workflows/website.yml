@@ -1,0 +1,88 @@
+name: Build & Deploy Website
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'website/**'
+      - 'src/wikilangs/**'
+      - '.github/workflows/website.yml'
+  workflow_dispatch:
+  schedule:
+    # Rebuild weekly to pick up new languages/updates
+    - cron: '0 0 * * 0'
+
+# Allow only one concurrent deployment
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+          cache-dependency-path: website/package-lock.json
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install Python dependencies
+        run: |
+          pip install -e .
+          pip install pycountry aiohttp pyyaml
+
+      - name: Cache HuggingFace data
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cache/huggingface
+            website/.build-cache
+          key: hf-data-${{ hashFiles('website/scripts/fetch_languages.py') }}
+          restore-keys: |
+            hf-data-
+
+      - name: Install website dependencies
+        working-directory: website
+        run: npm ci
+
+      - name: Fetch language data
+        working-directory: website
+        run: python scripts/fetch_languages.py
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+
+      - name: Build website
+        working-directory: website
+        run: npm run build
+        env:
+          NODE_OPTIONS: --max-old-space-size=4096
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: website/dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

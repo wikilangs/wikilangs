@@ -1,0 +1,310 @@
+---
+import BaseLayout from '@layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="Research"
+  description="Research methodology, metrics glossary, and evaluation approach for Wikilangs NLP models."
+>
+  <section class="hero-compact">
+    <div class="container">
+      <h1>Research & Methodology</h1>
+      <p class="hero-subtitle">
+        Understanding the metrics, evaluation methods, and research behind Wikilangs.
+      </p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="research-intro prose">
+        <p>
+          Every language in Wikilangs includes a comprehensive research report with ablation studies,
+          evaluation metrics, and visualizations. This page explains the methodology behind our
+          evaluations and provides guidance for interpreting the metrics.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Metrics Glossary -->
+  <section class="section section-alt" id="metrics">
+    <div class="container">
+      <h2>Metrics Glossary</h2>
+
+      <div class="metrics-section">
+        <h3>Tokenizer Metrics</h3>
+
+        <div class="metric-card">
+          <h4>Compression Ratio</h4>
+          <p class="metric-def">The ratio of characters to tokens (chars/token). Measures how efficiently the tokenizer represents text.</p>
+          <p class="metric-intuition"><strong>Intuition:</strong> Higher compression means fewer tokens needed to represent the same text, reducing sequence lengths for downstream models. A 3x compression means ~3 characters per token on average.</p>
+          <p class="metric-seek"><strong>What to seek:</strong> Higher is generally better for efficiency, but extremely high compression may indicate overly aggressive merging that loses morphological information.</p>
+        </div>
+
+        <div class="metric-card">
+          <h4>Average Token Length (Fertility)</h4>
+          <p class="metric-def">Mean number of characters per token produced by the tokenizer.</p>
+          <p class="metric-intuition"><strong>Intuition:</strong> Longer tokens capture more context but may struggle with rare words; shorter tokens are more flexible but increase sequence length.</p>
+          <p class="metric-seek"><strong>What to seek:</strong> Balance between 2-5 characters for most languages. Arabic and morphologically-rich languages may benefit from slightly longer tokens.</p>
+        </div>
+
+        <div class="metric-card">
+          <h4>Unknown Token Rate (OOV Rate)</h4>
+          <p class="metric-def">Percentage of tokens that map to the unknown/UNK token.</p>
+          <p class="metric-intuition"><strong>Intuition:</strong> Lower OOV means better vocabulary coverage. High OOV indicates the tokenizer encounters many unseen character sequences.</p>
+          <p class="metric-seek"><strong>What to seek:</strong> Below 1% is excellent; below 5% is acceptable. BPE tokenizers typically achieve very low OOV due to subword fallback.</p>
+        </div>
+      </div>
+
+      <div class="metrics-section">
+        <h3>N-gram Model Metrics</h3>
+
+        <div class="metric-card">
+          <h4>Perplexity</h4>
+          <p class="metric-def">Measures how "surprised" the model is by test data. Mathematically: 2^(cross-entropy). Lower values indicate better prediction.</p>
+          <p class="metric-intuition"><strong>Intuition:</strong> If perplexity is 100, the model is as uncertain as if choosing uniformly among 100 options at each step. A perplexity of 10 means effectively choosing among 10 equally likely options.</p>
+          <p class="metric-seek"><strong>What to seek:</strong> Lower is better. Perplexity decreases with larger n-grams. Values vary widely by language and corpus size.</p>
+        </div>
+
+        <div class="metric-card">
+          <h4>Entropy</h4>
+          <p class="metric-def">Average information content (in bits) needed to encode the next token given the context. Related to perplexity: perplexity = 2^entropy.</p>
+          <p class="metric-intuition"><strong>Intuition:</strong> High entropy means high uncertainty/randomness; low entropy means predictable patterns. Natural language typically has entropy between 1-4 bits per character.</p>
+          <p class="metric-seek"><strong>What to seek:</strong> Lower entropy indicates more predictable text patterns. Entropy should decrease as n-gram size increases.</p>
+        </div>
+
+        <div class="metric-card">
+          <h4>Coverage (Top-K)</h4>
+          <p class="metric-def">Percentage of corpus occurrences explained by the top K most frequent n-grams.</p>
+          <p class="metric-intuition"><strong>Intuition:</strong> High coverage with few patterns indicates repetitive/formulaic text; low coverage suggests diverse vocabulary usage.</p>
+          <p class="metric-seek"><strong>What to seek:</strong> For language modeling, moderate coverage (40-60% with top-1000) is typical for natural text.</p>
+        </div>
+      </div>
+
+      <div class="metrics-section">
+        <h3>Markov Chain Metrics</h3>
+
+        <div class="metric-card">
+          <h4>Average Entropy</h4>
+          <p class="metric-def">Mean entropy across all contexts, measuring average uncertainty in next-word prediction.</p>
+          <p class="metric-intuition"><strong>Intuition:</strong> Lower entropy means the model is more confident about what comes next. Context-1 has high entropy; Context-4 has low entropy.</p>
+          <p class="metric-seek"><strong>What to seek:</strong> Decreasing entropy with larger context sizes. Very low entropy (&lt;0.1) indicates highly deterministic transitions.</p>
+        </div>
+
+        <div class="metric-card">
+          <h4>Branching Factor</h4>
+          <p class="metric-def">Average number of unique next tokens observed for each context.</p>
+          <p class="metric-intuition"><strong>Intuition:</strong> High branching = many possible continuations (flexible but uncertain); low branching = few options (predictable but potentially repetitive).</p>
+          <p class="metric-seek"><strong>What to seek:</strong> Branching factor should decrease with context size. Values near 1.0 indicate nearly deterministic chains.</p>
+        </div>
+
+        <div class="metric-card">
+          <h4>Predictability</h4>
+          <p class="metric-def">Derived metric: (1 - normalized_entropy) x 100%. Indicates how deterministic the model's predictions are.</p>
+          <p class="metric-intuition"><strong>Intuition:</strong> 100% means the next word is always certain; 0% means completely random.</p>
+          <p class="metric-seek"><strong>What to seek:</strong> Higher predictability for text generation quality, but too high (&gt;98%) may produce repetitive output.</p>
+        </div>
+      </div>
+
+      <div class="metrics-section">
+        <h3>Vocabulary & Zipf's Law Metrics</h3>
+
+        <div class="metric-card">
+          <h4>Zipf's Coefficient</h4>
+          <p class="metric-def">The slope of the log-log plot of word frequency vs. rank. Zipf's law predicts this should be approximately -1.</p>
+          <p class="metric-intuition"><strong>Intuition:</strong> A coefficient near -1 indicates natural language patterns where a few words are very common and most words are rare.</p>
+          <p class="metric-seek"><strong>What to seek:</strong> Values between -0.8 and -1.2 indicate healthy natural language distribution.</p>
+        </div>
+
+        <div class="metric-card">
+          <h4>R² (Coefficient of Determination)</h4>
+          <p class="metric-def">Measures how well the linear fit explains the frequency-rank relationship. Ranges from 0 to 1.</p>
+          <p class="metric-intuition"><strong>Intuition:</strong> R² near 1.0 means the data closely follows Zipf's law.</p>
+          <p class="metric-seek"><strong>What to seek:</strong> R² &gt; 0.95 is excellent; &gt; 0.99 indicates near-perfect Zipf adherence.</p>
+        </div>
+      </div>
+
+      <div class="metrics-section">
+        <h3>Word Embedding Metrics</h3>
+
+        <div class="metric-card">
+          <h4>Isotropy</h4>
+          <p class="metric-def">Measures how uniformly distributed vectors are in the embedding space. Computed as the ratio of minimum to maximum singular values.</p>
+          <p class="metric-intuition"><strong>Intuition:</strong> High isotropy (near 1.0) means vectors spread evenly in all directions; low isotropy means vectors cluster in certain directions.</p>
+          <p class="metric-seek"><strong>What to seek:</strong> Higher isotropy generally indicates better-quality embeddings. Values &gt; 0.1 are reasonable; &gt; 0.3 is good.</p>
+        </div>
+
+        <div class="metric-card">
+          <h4>Cosine Similarity</h4>
+          <p class="metric-def">Measures angular similarity between vectors, ranging from -1 (opposite) to 1 (identical direction).</p>
+          <p class="metric-intuition"><strong>Intuition:</strong> Words with similar meanings should have high cosine similarity.</p>
+          <p class="metric-seek"><strong>What to seek:</strong> Semantically related words should score &gt; 0.5; synonyms often score &gt; 0.7.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Evaluation Methodology -->
+  <section class="section" id="methodology">
+    <div class="container">
+      <h2>Evaluation Methodology</h2>
+
+      <div class="method-grid">
+        <div class="method-card">
+          <h3>Data Source</h3>
+          <p>
+            All models are trained on <a href="https://huggingface.co/datasets/omarkamali/wikipedia-monthly" target="_blank" rel="noopener">wikipedia-monthly</a>,
+            a regularly updated dataset containing Wikipedia articles across 300+ languages.
+            We use monthly snapshots to ensure reproducibility.
+          </p>
+        </div>
+
+        <div class="method-card">
+          <h3>Train/Test Split</h3>
+          <p>
+            Each language's data is split into training and evaluation sets.
+            Models are trained on the training set, and all metrics are computed on held-out test data.
+          </p>
+        </div>
+
+        <div class="method-card">
+          <h3>Ablation Studies</h3>
+          <p>
+            We systematically vary model hyperparameters (vocabulary size, n-gram size, context depth, embedding dimension)
+            to provide comprehensive comparisons and recommendations for each language.
+          </p>
+        </div>
+
+        <div class="method-card">
+          <h3>Reproducibility</h3>
+          <p>
+            All training scripts, evaluation code, and raw results are available in our repositories.
+            Each model card includes the exact date and configuration used for training.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Interpretation Guide -->
+  <section class="section section-alt" id="interpretation">
+    <div class="container">
+      <h2>Interpretation Guidelines</h2>
+
+      <div class="guidelines prose">
+        <ol>
+          <li><strong>Compare within model families:</strong> Metrics are most meaningful when comparing models of the same type (e.g., 8k vs 64k tokenizer).</li>
+          <li><strong>Consider trade-offs:</strong> Better performance on one metric often comes at the cost of another (e.g., compression vs. OOV rate).</li>
+          <li><strong>Context matters:</strong> Optimal values depend on downstream tasks. Text generation may prioritize different metrics than classification.</li>
+          <li><strong>Corpus influence:</strong> All metrics are influenced by corpus characteristics. Wikipedia text differs from social media or literature.</li>
+          <li><strong>Language-specific patterns:</strong> Morphologically rich languages (like Arabic) may show different optimal ranges than analytic languages.</li>
+        </ol>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .hero-compact {
+    padding: var(--space-12) 0;
+    background: var(--color-surface);
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .hero-compact h1 {
+    font-size: var(--font-size-4xl);
+    margin-bottom: var(--space-4);
+  }
+
+  .hero-subtitle {
+    font-size: var(--font-size-xl);
+    color: var(--color-text-secondary);
+  }
+
+  .research-intro {
+    max-width: 800px;
+    font-size: var(--font-size-lg);
+    color: var(--color-text-secondary);
+  }
+
+  h2 {
+    font-size: var(--font-size-3xl);
+    margin-bottom: var(--space-8);
+  }
+
+  .metrics-section {
+    margin-bottom: var(--space-10);
+  }
+
+  .metrics-section h3 {
+    font-size: var(--font-size-xl);
+    color: var(--color-accent);
+    margin-bottom: var(--space-4);
+    padding-bottom: var(--space-2);
+    border-bottom: 2px solid var(--color-accent);
+  }
+
+  .metric-card {
+    background: var(--color-bg);
+    border-radius: var(--radius-md);
+    padding: var(--space-5);
+    margin-bottom: var(--space-4);
+  }
+
+  .metric-card h4 {
+    font-size: var(--font-size-lg);
+    margin-bottom: var(--space-3);
+  }
+
+  .metric-def {
+    color: var(--color-text);
+    margin-bottom: var(--space-3);
+  }
+
+  .metric-intuition,
+  .metric-seek {
+    font-size: var(--font-size-sm);
+    color: var(--color-text-secondary);
+    margin-bottom: var(--space-2);
+  }
+
+  .method-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-6);
+  }
+
+  .method-card {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-6);
+  }
+
+  .method-card h3 {
+    font-size: var(--font-size-lg);
+    margin-bottom: var(--space-3);
+  }
+
+  .method-card p {
+    color: var(--color-text-secondary);
+    margin: 0;
+  }
+
+  .guidelines ol {
+    padding-left: var(--space-6);
+  }
+
+  .guidelines li {
+    margin-bottom: var(--space-4);
+    color: var(--color-text-secondary);
+    line-height: var(--line-height-relaxed);
+  }
+
+  @media (max-width: 768px) {
+    .method-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

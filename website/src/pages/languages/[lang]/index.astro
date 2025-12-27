@@ -1,0 +1,623 @@
+---
+import BaseLayout from '@layouts/BaseLayout.astro';
+import CodeBlock from '@components/CodeBlock.astro';
+import { getAllLanguages, getLanguage, getVisualizationUrl, formatNumber, formatCompression } from '@lib/languages';
+import type { LanguageData } from '@lib/languages';
+
+export async function getStaticPaths() {
+  const languages = getAllLanguages();
+  return languages.map(lang => ({
+    params: { lang: lang.code },
+    props: { lang }
+  }));
+}
+
+interface Props {
+  lang: LanguageData;
+}
+
+const { lang } = Astro.props;
+const displayName = lang.common_name || lang.name;
+
+// Visualization URLs
+const dashboardUrl = getVisualizationUrl(lang.code, 'performance_dashboard');
+const tokenizerUrl = getVisualizationUrl(lang.code, 'tokenizer_compression');
+const ngramUrl = getVisualizationUrl(lang.code, 'ngram_perplexity');
+const markovUrl = getVisualizationUrl(lang.code, 'markov_entropy');
+const zipfUrl = getVisualizationUrl(lang.code, 'zipf_law');
+const isotropyUrl = getVisualizationUrl(lang.code, 'embedding_isotropy');
+const topWordsUrl = getVisualizationUrl(lang.code, 'top20_words');
+---
+
+<BaseLayout
+  title={displayName}
+  description={`Pre-trained NLP models for ${displayName} (${lang.code}). Tokenizers, n-gram models, Markov chains, vocabulary, and embeddings trained on Wikipedia data.`}
+>
+  <!-- Header -->
+  <section class="lang-header">
+    <div class="container">
+      <nav class="breadcrumb">
+        <a href="/languages/">Languages</a>
+        <span>/</span>
+        <span>{lang.code}</span>
+      </nav>
+
+      <div class="header-content">
+        <div class="header-info">
+          <div class="lang-code-badge">{lang.code}</div>
+          <h1>{displayName}</h1>
+          {lang.name !== displayName && (
+            <p class="alt-name">{lang.name}</p>
+          )}
+
+          <div class="lang-meta">
+            {lang.alpha_2 && <span class="meta-item">ISO 639-1: {lang.alpha_2}</span>}
+            {lang.alpha_3 && <span class="meta-item">ISO 639-3: {lang.alpha_3}</span>}
+            {lang.scope && <span class="meta-item">{lang.scope}</span>}
+            {lang.language_type && <span class="meta-item">{lang.language_type}</span>}
+          </div>
+        </div>
+
+        <div class="header-actions">
+          <a href={lang.hf_url} class="btn btn-primary" target="_blank" rel="noopener">
+            View on HuggingFace
+          </a>
+          <a href={`${lang.hf_url}/tree/main`} class="btn btn-secondary" target="_blank" rel="noopener">
+            Browse Files
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {lang.has_models ? (
+    <>
+      <!-- Quick Stats -->
+      <section class="stats-bar">
+        <div class="container">
+          <div class="stats-row">
+            <div class="stat-item">
+              <span class="stat-value">{formatNumber(lang.vocabulary_size)}</span>
+              <span class="stat-label">Vocabulary</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-value">{formatCompression(lang.best_compression_ratio)}</span>
+              <span class="stat-label">Best Compression</span>
+            </div>
+            {lang.best_isotropy && (
+              <div class="stat-item">
+                <span class="stat-value">{lang.best_isotropy.toFixed(4)}</span>
+                <span class="stat-label">Best Isotropy</span>
+              </div>
+            )}
+          </div>
+        </div>
+      </section>
+
+      <!-- Performance Dashboard -->
+      <section class="section">
+        <div class="container">
+          <h2>Performance Dashboard</h2>
+          <div class="dashboard-image">
+            <img
+              src={dashboardUrl}
+              alt={`Performance dashboard for ${displayName}`}
+              loading="lazy"
+            />
+          </div>
+        </div>
+      </section>
+
+      <!-- Quick Start -->
+      <section class="section section-alt">
+        <div class="container">
+          <h2>Quick Start</h2>
+          <div class="code-examples">
+            <div class="code-block">
+              <h3>Tokenizer</h3>
+              <CodeBlock code={`from wikilangs import tokenizer
+
+tok = tokenizer(date='latest', lang='${lang.code}', vocab_size=32000)
+tokens = tok.tokenize("Your text here")
+print(tokens)`} />
+            </div>
+
+            <div class="code-block">
+              <h3>N-gram Model</h3>
+              <CodeBlock code={`from wikilangs import ngram
+
+ng = ngram(date='latest', lang='${lang.code}', gram_size=3)
+score = ng.score("Your text here")
+predictions = ng.predict_next("Start of", top_k=5)`} />
+            </div>
+
+            <div class="code-block">
+              <h3>Markov Chain</h3>
+              <CodeBlock code={`from wikilangs import markov
+
+mc = markov(date='latest', lang='${lang.code}', depth=3)
+text = mc.generate(length=50)
+print(text)`} />
+            </div>
+
+            <div class="code-block">
+              <h3>Vocabulary</h3>
+              <CodeBlock code={`from wikilangs import vocabulary
+
+vocab = vocabulary(date='latest', lang='${lang.code}')
+info = vocab.lookup("word")
+print(info)  # frequency, IDF, rank`} />
+            </div>
+
+            <div class="code-block">
+              <h3>Embeddings</h3>
+              <CodeBlock code={`from wikilangs import embeddings
+
+emb = embeddings(date='latest', lang='${lang.code}', dimension=64)
+vec = emb.embed_word("word")
+sent_vec = emb.embed_sentence("A sentence", method='rope')`} />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Available Models -->
+      <section class="section">
+        <div class="container">
+          <h2>Available Models</h2>
+          <div class="models-table-container">
+            <table class="models-table">
+              <thead>
+                <tr>
+                  <th>Model Type</th>
+                  <th>Variants</th>
+                  <th>Description</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Tokenizers</strong></td>
+                  <td>8k, 16k, 32k, 64k</td>
+                  <td>BPE tokenizers with different vocabulary sizes</td>
+                </tr>
+                <tr>
+                  <td><strong>N-gram (Word)</strong></td>
+                  <td>2, 3, 4, 5-gram</td>
+                  <td>Word-level language models</td>
+                </tr>
+                <tr>
+                  <td><strong>N-gram (Subword)</strong></td>
+                  <td>2, 3, 4, 5-gram</td>
+                  <td>Subword-level language models</td>
+                </tr>
+                <tr>
+                  <td><strong>Markov (Word)</strong></td>
+                  <td>Depth 1-5</td>
+                  <td>Word-level text generation</td>
+                </tr>
+                <tr>
+                  <td><strong>Markov (Subword)</strong></td>
+                  <td>Depth 1-5</td>
+                  <td>Subword-level text generation</td>
+                </tr>
+                <tr>
+                  <td><strong>Vocabulary</strong></td>
+                  <td>—</td>
+                  <td>Word dictionary with frequency and IDF</td>
+                </tr>
+                <tr>
+                  <td><strong>Embeddings</strong></td>
+                  <td>32d, 64d, 128d</td>
+                  <td>Position-aware word embeddings</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- Evaluation Sections with Tabs -->
+      <section class="section section-alt">
+        <div class="container">
+          <h2>Model Evaluation</h2>
+
+          <div class="eval-tabs">
+            <button class="tab-btn active" data-tab="tokenizer">Tokenizer</button>
+            <button class="tab-btn" data-tab="ngram">N-gram</button>
+            <button class="tab-btn" data-tab="markov">Markov</button>
+            <button class="tab-btn" data-tab="vocab">Vocabulary</button>
+            <button class="tab-btn" data-tab="embeddings">Embeddings</button>
+          </div>
+
+          <div class="tab-content active" id="tab-tokenizer">
+            <div class="eval-section">
+              <h3>Tokenizer Performance</h3>
+              <p>
+                Compression ratios and token statistics across vocabulary sizes.
+                Higher compression means fewer tokens for the same text.
+              </p>
+              <div class="viz-container">
+                <img src={tokenizerUrl} alt="Tokenizer compression ratios" loading="lazy" />
+              </div>
+            </div>
+          </div>
+
+          <div class="tab-content" id="tab-ngram">
+            <div class="eval-section">
+              <h3>N-gram Model Evaluation</h3>
+              <p>
+                Perplexity and entropy metrics across n-gram sizes.
+                Lower perplexity indicates better predictive performance.
+              </p>
+              <div class="viz-container">
+                <img src={ngramUrl} alt="N-gram perplexity" loading="lazy" />
+              </div>
+            </div>
+          </div>
+
+          <div class="tab-content" id="tab-markov">
+            <div class="eval-section">
+              <h3>Markov Chain Evaluation</h3>
+              <p>
+                Entropy and branching factor by context depth.
+                Lower entropy means more predictable text generation.
+              </p>
+              <div class="viz-container">
+                <img src={markovUrl} alt="Markov chain entropy" loading="lazy" />
+              </div>
+            </div>
+          </div>
+
+          <div class="tab-content" id="tab-vocab">
+            <div class="eval-section">
+              <h3>Vocabulary Analysis</h3>
+              <p>
+                Word frequency distribution and Zipf's law analysis.
+              </p>
+              <div class="viz-grid">
+                <div class="viz-container">
+                  <img src={zipfUrl} alt="Zipf's law distribution" loading="lazy" />
+                </div>
+                <div class="viz-container">
+                  <img src={topWordsUrl} alt="Top 20 words" loading="lazy" />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="tab-content" id="tab-embeddings">
+            <div class="eval-section">
+              <h3>Embeddings Evaluation</h3>
+              <p>
+                Isotropy and vector space quality metrics.
+                Higher isotropy indicates more uniformly distributed embeddings.
+              </p>
+              <div class="viz-container">
+                <img src={isotropyUrl} alt="Embedding isotropy" loading="lazy" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Full Report Link -->
+      <section class="section">
+        <div class="container text-center">
+          <h2>Full Research Report</h2>
+          <p class="section-desc">
+            Access the complete ablation study with all metrics, visualizations,
+            and generated text samples on HuggingFace.
+          </p>
+          <a href={lang.hf_url} class="btn btn-primary" target="_blank" rel="noopener">
+            View Full Report on HuggingFace
+          </a>
+        </div>
+      </section>
+
+      <!-- Tab switching script -->
+      <script>
+        const tabBtns = document.querySelectorAll('.tab-btn');
+        const tabContents = document.querySelectorAll('.tab-content');
+
+        tabBtns.forEach(btn => {
+          btn.addEventListener('click', () => {
+            const tabId = btn.getAttribute('data-tab');
+
+            // Update buttons
+            tabBtns.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+
+            // Update content
+            tabContents.forEach(content => {
+              content.classList.remove('active');
+              if (content.id === `tab-${tabId}`) {
+                content.classList.add('active');
+              }
+            });
+          });
+        });
+      </script>
+    </>
+  ) : (
+    <section class="section">
+      <div class="container text-center">
+        <div class="no-models-msg">
+          <h2>Models Coming Soon</h2>
+          <p>
+            Pre-trained models for {displayName} are not yet available.
+            Check back soon or explore other languages.
+          </p>
+          <a href="/languages/" class="btn btn-secondary">Browse Languages</a>
+        </div>
+      </div>
+    </section>
+  )}
+</BaseLayout>
+
+<style>
+  /* Header */
+  .lang-header {
+    padding: var(--space-8) 0;
+    background: var(--color-surface);
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .breadcrumb {
+    display: flex;
+    gap: var(--space-2);
+    font-size: var(--font-size-sm);
+    color: var(--color-text-muted);
+    margin-bottom: var(--space-4);
+  }
+
+  .breadcrumb a {
+    color: var(--color-text-secondary);
+  }
+
+  .header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: var(--space-8);
+  }
+
+  .lang-code-badge {
+    display: inline-block;
+    font-family: var(--font-mono);
+    font-size: var(--font-size-lg);
+    font-weight: 600;
+    color: var(--color-accent-dark);
+    background: var(--color-accent-light);
+    padding: var(--space-2) var(--space-4);
+    border-radius: var(--radius-md);
+    margin-bottom: var(--space-3);
+  }
+
+  .header-info h1 {
+    font-size: var(--font-size-4xl);
+    margin: 0;
+  }
+
+  .alt-name {
+    font-size: var(--font-size-lg);
+    color: var(--color-text-secondary);
+    margin: var(--space-1) 0 0;
+  }
+
+  .lang-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+    margin-top: var(--space-4);
+  }
+
+  .meta-item {
+    font-size: var(--font-size-sm);
+    color: var(--color-text-muted);
+    background: var(--color-surface-alt);
+    padding: var(--space-1) var(--space-3);
+    border-radius: var(--radius-sm);
+  }
+
+  .header-actions {
+    display: flex;
+    gap: var(--space-3);
+    flex-shrink: 0;
+  }
+
+  /* Stats bar */
+  .stats-bar {
+    background: var(--color-bg);
+    padding: var(--space-6) 0;
+    border-bottom: 1px solid var(--color-border-light);
+  }
+
+  .stats-row {
+    display: flex;
+    justify-content: center;
+    gap: var(--space-12);
+  }
+
+  .stat-item {
+    text-align: center;
+  }
+
+  .stat-item .stat-value {
+    font-size: var(--font-size-2xl);
+    font-weight: 700;
+    color: var(--color-accent);
+  }
+
+  .stat-item .stat-label {
+    display: block;
+    font-size: var(--font-size-sm);
+    color: var(--color-text-muted);
+    margin-top: var(--space-1);
+  }
+
+  /* Dashboard */
+  .dashboard-image {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+  }
+
+  .dashboard-image img {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  /* Code examples */
+  .code-examples {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-6);
+  }
+
+  .code-block {
+    min-width: 0;
+  }
+
+  .code-block h3 {
+    font-size: var(--font-size-base);
+    margin-bottom: var(--space-3);
+  }
+
+  /* Models table */
+  .models-table-container {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+  }
+
+  .models-table {
+    margin: 0;
+  }
+
+  /* Tabs */
+  .eval-tabs {
+    margin-top: 1em;
+    display: flex;
+    gap: var(--space-2);
+    margin-bottom: var(--space-6);
+    border-bottom: 1px solid var(--color-border);
+    padding-bottom: var(--space-2);
+  }
+
+  .tab-btn {
+    padding: var(--space-2) var(--space-4);
+    font-size: var(--font-size-sm);
+    font-weight: 500;
+    color: var(--color-text-secondary);
+    background: none;
+    border: none;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+  }
+
+  .tab-btn:hover {
+    color: var(--color-text);
+    background: var(--color-surface);
+  }
+
+  .tab-btn.active {
+    color: var(--color-accent-dark);
+    background: var(--color-accent-light);
+  }
+
+  .tab-content {
+    display: none;
+  }
+
+  .tab-content.active {
+    display: block;
+  }
+
+  .eval-section h3 {
+    margin-bottom: var(--space-2);
+  }
+
+  .eval-section > p {
+    color: var(--color-text-secondary);
+    margin-bottom: var(--space-6);
+  }
+
+  .viz-container {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+  }
+
+  .viz-container img {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  .viz-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-4);
+  }
+
+  /* Section description */
+  .section-desc {
+    font-size: var(--font-size-lg);
+    color: var(--color-text-secondary);
+    margin-bottom: var(--space-6);
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  /* No models */
+  .no-models-msg {
+    padding: var(--space-16) 0;
+  }
+
+  .no-models-msg h2 {
+    margin-bottom: var(--space-4);
+  }
+
+  .no-models-msg p {
+    color: var(--color-text-secondary);
+    margin-bottom: var(--space-6);
+  }
+
+  @media (max-width: 768px) {
+    .header-content {
+      flex-direction: column;
+    }
+
+    .header-actions {
+      width: 100%;
+    }
+
+    .header-actions .btn {
+      flex: 1;
+      justify-content: center;
+    }
+
+    .stats-row {
+      flex-wrap: wrap;
+      gap: var(--space-6);
+    }
+
+    .code-examples {
+      grid-template-columns: 1fr;
+    }
+
+    .eval-tabs {
+      overflow-x: auto;
+    }
+
+    .viz-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

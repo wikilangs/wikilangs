@@ -1,0 +1,326 @@
+---
+import BaseLayout from '@layouts/BaseLayout.astro';
+import LanguageCard from '@components/LanguageCard.astro';
+import { getAllLanguages, getLanguagesByLetter, getGlobalStats } from '@lib/languages';
+
+const allLanguages = getAllLanguages();
+const languagesByLetter = getLanguagesByLetter();
+const stats = getGlobalStats();
+
+// Sort letters alphabetically
+const sortedLetters = Array.from(languagesByLetter.keys()).sort();
+---
+
+<BaseLayout
+  title="Languages"
+  description={`Browse all ${stats.totalLanguages}+ languages with pre-trained NLP models. Tokenizers, n-grams, Markov chains, vocabularies, and embeddings for every Wikipedia language.`}
+>
+  <section class="hero-compact">
+    <div class="container">
+      <h1>Languages</h1>
+      <p class="hero-subtitle">
+        Pre-trained NLP models for {stats.totalLanguages}+ Wikipedia languages.
+        Each language includes tokenizers, n-gram models, Markov chains, vocabularies, and embeddings.
+      </p>
+
+      <!-- Quick stats -->
+      <div class="quick-stats">
+        <div class="quick-stat">
+          <strong>{stats.languagesWithModels}</strong> with models
+        </div>
+        <div class="quick-stat">
+          <strong>{stats.averageCompressionRatio.toFixed(2)}x</strong> avg compression
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Search and Filter -->
+  <section class="filter-section">
+    <div class="container">
+      <div class="filter-bar">
+        <div class="search-box">
+          <input
+            type="search"
+            id="language-search"
+            placeholder="Search languages..."
+            autocomplete="off"
+          />
+        </div>
+        <div class="filter-options">
+          <label class="filter-checkbox">
+            <input type="checkbox" id="filter-models" checked />
+            <span>With models only</span>
+          </label>
+        </div>
+      </div>
+
+      <!-- Alphabet navigation -->
+      <nav class="alphabet-nav" aria-label="Jump to letter">
+        {sortedLetters.map(letter => (
+          <a href={`#letter-${letter}`} class="letter-link">{letter}</a>
+        ))}
+      </nav>
+    </div>
+  </section>
+
+  <!-- Languages Grid by Letter -->
+  <section class="languages-section">
+    <div class="container">
+      <div id="languages-container">
+        {sortedLetters.map(letter => {
+          const langs = languagesByLetter.get(letter) || [];
+          return (
+            <div class="letter-group" id={`letter-${letter}`}>
+              <h2 class="letter-heading">{letter}</h2>
+              <div class="languages-grid">
+                {langs.map(lang => (
+                  <div class="language-item" data-code={lang.code} data-name={lang.name.toLowerCase()} data-has-models={lang.has_models}>
+                    <LanguageCard lang={lang} />
+                  </div>
+                ))}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      <!-- No results message -->
+      <div id="no-results" class="no-results" hidden>
+        <p>No languages found matching your search.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Client-side search script -->
+  <script>
+    const searchInput = document.getElementById('language-search') as HTMLInputElement;
+    const filterModels = document.getElementById('filter-models') as HTMLInputElement;
+    const languageItems = document.querySelectorAll('.language-item');
+    const letterGroups = document.querySelectorAll('.letter-group');
+    const noResults = document.getElementById('no-results');
+
+    function filterLanguages() {
+      const query = searchInput.value.toLowerCase().trim();
+      const modelsOnly = filterModels.checked;
+      let visibleCount = 0;
+
+      languageItems.forEach(item => {
+        const code = item.getAttribute('data-code') || '';
+        const name = item.getAttribute('data-name') || '';
+        const hasModels = item.getAttribute('data-has-models') === 'true';
+
+        const matchesSearch = !query || code.includes(query) || name.includes(query);
+        const matchesFilter = !modelsOnly || hasModels;
+        const visible = matchesSearch && matchesFilter;
+
+        (item as HTMLElement).hidden = !visible;
+        if (visible) visibleCount++;
+      });
+
+      // Hide empty letter groups
+      letterGroups.forEach(group => {
+        const visibleItems = group.querySelectorAll('.language-item:not([hidden])');
+        (group as HTMLElement).hidden = visibleItems.length === 0;
+      });
+
+      // Show/hide no results
+      if (noResults) {
+        noResults.hidden = visibleCount > 0;
+      }
+    }
+
+    searchInput?.addEventListener('input', filterLanguages);
+    filterModels?.addEventListener('change', filterLanguages);
+
+    // Initial filter
+    filterLanguages();
+  </script>
+</BaseLayout>
+
+<style>
+  .hero-compact {
+    padding: var(--space-12) 0;
+    background: var(--color-surface);
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .hero-compact h1 {
+    font-size: var(--font-size-4xl);
+    margin-bottom: var(--space-4);
+  }
+
+  .hero-subtitle {
+    font-size: var(--font-size-lg);
+    color: var(--color-text-secondary);
+    max-width: 700px;
+  }
+
+  .quick-stats {
+    display: flex;
+    gap: var(--space-6);
+    margin-top: var(--space-6);
+  }
+
+  .quick-stat {
+    font-size: var(--font-size-sm);
+    color: var(--color-text-secondary);
+  }
+
+  .quick-stat strong {
+    color: var(--color-accent);
+  }
+
+  /* Filter section */
+  .filter-section {
+    padding: var(--space-6) 0;
+    background: var(--color-bg);
+    border-bottom: 1px solid var(--color-border-light);
+    position: sticky;
+    top: 64px;
+    z-index: 10;
+  }
+
+  .filter-bar {
+    display: flex;
+    gap: var(--space-4);
+    align-items: center;
+    margin-bottom: var(--space-4);
+  }
+
+  .search-box {
+    flex: 1;
+    max-width: 400px;
+  }
+
+  .search-box input {
+    width: 100%;
+    padding: var(--space-3) var(--space-4);
+    font-size: var(--font-size-base);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background: var(--color-surface);
+  }
+
+  .search-box input:focus {
+    outline: none;
+    border-color: var(--color-accent);
+  }
+
+  .filter-options {
+    display: flex;
+    gap: var(--space-4);
+  }
+
+  .filter-checkbox {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-size: var(--font-size-sm);
+    color: var(--color-text-secondary);
+    cursor: pointer;
+  }
+
+  .filter-checkbox input {
+    accent-color: var(--color-accent);
+  }
+
+  /* Alphabet nav */
+  .alphabet-nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-1);
+  }
+
+  .letter-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    font-size: var(--font-size-sm);
+    font-weight: 500;
+    color: var(--color-text-secondary);
+    border-radius: var(--radius-sm);
+    text-decoration: none;
+    transition: all var(--transition-fast);
+  }
+
+  .letter-link:hover {
+    background: var(--color-accent);
+    color: white;
+    text-decoration: none;
+  }
+
+  /* Languages section */
+  .languages-section {
+    padding: var(--space-8) 0 var(--space-16);
+  }
+
+  .letter-group {
+    margin-bottom: var(--space-10);
+  }
+
+  .letter-group[hidden] {
+    display: none;
+  }
+
+  .letter-heading {
+    font-size: var(--font-size-2xl);
+    color: var(--color-accent);
+    padding-bottom: var(--space-3);
+    border-bottom: 2px solid var(--color-accent);
+    margin-bottom: var(--space-4);
+  }
+
+  .languages-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--space-4);
+  }
+
+  .language-item[hidden] {
+    display: none;
+  }
+
+  .no-results {
+    text-align: center;
+    padding: var(--space-16) 0;
+    color: var(--color-text-muted);
+  }
+
+  .no-results[hidden] {
+    display: none;
+  }
+
+  @media (max-width: 1024px) {
+    .languages-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  @media (max-width: 768px) {
+    .filter-bar {
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    .search-box {
+      max-width: none;
+    }
+
+    .languages-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    .alphabet-nav {
+      display: none;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .languages-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

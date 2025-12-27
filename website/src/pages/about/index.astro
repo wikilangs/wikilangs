@@ -1,0 +1,374 @@
+---
+import BaseLayout from '@layouts/BaseLayout.astro';
+import CodeBlock from '@components/CodeBlock.astro';
+import { getGlobalStats } from '@lib/languages';
+
+const stats = getGlobalStats();
+---
+
+<BaseLayout
+  title="About"
+  description="About Wikilangs - open NLP models for every Wikipedia language. Learn about the project, team, and sponsors."
+>
+  <section class="hero-compact">
+    <div class="container">
+      <h1>About Wikilangs</h1>
+      <p class="hero-subtitle">
+        Making multilingual NLP accessible to everyone, one language at a time.
+      </p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="about-grid">
+        <div class="about-content prose">
+          <h2>Mission</h2>
+          <p>
+            Wikilangs is an open-source initiative to democratize access to natural language
+            processing models for every language represented on Wikipedia. We believe that
+            language technology should be accessible to all communities, not just those with
+            well-resourced languages.
+          </p>
+          <p>
+            By providing pre-trained tokenizers, language models, vocabularies, and embeddings
+            for {stats.totalLanguages}+ languages, we enable researchers, educators, and developers
+            to work with languages that are often underserved by mainstream NLP tools.
+          </p>
+
+          <h2>Why Traditional Models?</h2>
+          <p>
+            While large language models have made impressive strides, they come with significant
+            computational requirements and are predominantly trained on high-resource languages.
+            Wikilangs takes a different approach:
+          </p>
+          <ul>
+            <li><strong>Lightweight:</strong> Models run on any hardware, no GPU required</li>
+            <li><strong>Interpretable:</strong> N-grams, Markov chains, and traditional embeddings are well-understood</li>
+            <li><strong>Extensible:</strong> Use our models to extend LLMs with new language support</li>
+            <li><strong>Research-ready:</strong> Every model includes comprehensive evaluation metrics</li>
+          </ul>
+
+          <h2>What We Provide</h2>
+          <p>
+            For each of the {stats.totalLanguages}+ Wikipedia languages, we train and evaluate:
+          </p>
+          <ul>
+            <li>BPE Tokenizers in 4 vocabulary sizes (8k, 16k, 32k, 64k)</li>
+            <li>N-gram language models (2-5 gram, word and subword)</li>
+            <li>Markov chain text generators (depth 1-5)</li>
+            <li>Vocabulary dictionaries with frequency and IDF scores</li>
+            <li>Position-aware word embeddings via BabelVec</li>
+          </ul>
+          <p>
+            Each language repository includes a comprehensive research report with ablation
+            studies, visualizations, and recommendations for production use.
+          </p>
+
+          <h2>Data Source</h2>
+          <p>
+            All models are trained on <a href="https://huggingface.co/datasets/omarkamali/wikipedia-monthly" target="_blank" rel="noopener">wikipedia-monthly</a>,
+            a regularly updated dataset of Wikipedia articles across all languages. This ensures
+            our models stay current with the evolving content of Wikipedia.
+          </p>
+        </div>
+
+        <div class="about-sidebar">
+          <div class="sidebar-card">
+            <h3>Created By</h3>
+            <div class="creator">
+              <div class="creator-info">
+                <strong><a href="https://omarkamali.com" target="_blank" rel="noopener">Omar Kamali</a></strong>
+                <p>Researcher and engineer focused on multilingual NLP, low-resource languages, and accessible AI.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="sidebar-card">
+            <h3>Affiliation</h3>
+            <div class="org">
+              <strong>
+                <a href="https://omneitylabs.com" target="_blank" rel="noopener">
+                  <img src="https://www.google.com/s2/favicons?sz=64&domain_url=omneitylabs.com" alt="" class="inline-logo" />
+                  Omneity Labs
+                </a>
+              </strong>
+              <p>
+                A private research lab specializing in low-resource languages, cultural alignment,
+                and agentic systems. We build technology that serves underrepresented communities
+                and advances the field of multilingual AI.
+              </p>
+            </div>
+          </div>
+
+          <div class="sidebar-card sponsor-card">
+            <h3>Sponsored By</h3>
+            <div class="sponsor">
+              <strong>
+                <a href="https://featherless.ai" target="_blank" rel="noopener">
+                  <img src="https://www.google.com/s2/favicons?sz=64&domain_url=featherless.ai" alt="" class="inline-logo" />
+                  Featherless.ai
+                </a>
+              </strong>
+              <p>
+                We are deeply grateful to <img src="https://www.google.com/s2/favicons?sz=64&domain_url=featherless.ai" alt="" class="inline-logo" /> Featherless.ai for their generous support of this project.
+                Their sponsorship has made it possible to train and host models for hundreds of languages,
+                advancing our mission of democratizing NLP for all.
+              </p>
+            </div>
+          </div>
+
+          <div class="sidebar-card">
+            <h3>Open Source</h3>
+            <p>
+              Wikilangs is fully open source under the MIT license.
+              Models, code, and data are freely available for academic and commercial use.
+            </p>
+            <div class="sidebar-links">
+              <a href="https://github.com/wikilangs/wikilangs" target="_blank" rel="noopener">GitHub</a>
+              <a href="https://huggingface.co/wikilangs" target="_blank" rel="noopener">HuggingFace</a>
+              <a href="https://pypi.org/project/wikilangs/" target="_blank" rel="noopener">PyPI</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Related Projects -->
+  <section class="section section-alt">
+    <div class="container">
+      <h2>Related Projects</h2>
+      <div class="projects-grid">
+        <a href="https://github.com/omarkamali/babelvec" class="project-card" target="_blank" rel="noopener">
+          <h3>BabelVec</h3>
+          <p>Position-aware word-based sentence embeddings. Built for CPU training and inference, and small training corpora.</p>
+        </a>
+        <a href="https://github.com/wikilangs/wikisets" class="project-card" target="_blank" rel="noopener">
+          <h3>Wikisets</h3>
+          <p>Flexible Wikipedia dataset builder to compose your own combination of languages, dates and sizes.</p>
+        </a>
+        <a href="https://huggingface.co/datasets/omarkamali/wikipedia-monthly" class="project-card" target="_blank" rel="noopener">
+          <h3>Wikipedia Monthly</h3>
+          <p>Monthly snapshots of Wikipedia articles across 300+ languages on HuggingFace.</p>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Citation -->
+  <section class="section" id="citation">
+    <div class="container">
+      <h2>Citation</h2>
+      <p class="section-intro">
+        If you use Wikilangs in your research, please cite:
+      </p>
+      <div class="citation-block">
+        <CodeBlock code={`@misc{wikilangs2025,
+  title = {Wikilangs: Open NLP Models for Wikipedia Languages},
+  author = {Kamali, Omar},
+  year = {2025},
+  publisher = {HuggingFace},
+  url = {https://huggingface.co/wikilangs},
+  institution = {Omneity Labs}
+}`} lang="bibtex" />
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact -->
+  <section class="section section-alt">
+    <div class="container text-center">
+      <h2>Get in Touch</h2>
+      <p class="section-intro">
+        Have questions, suggestions, or want to collaborate?
+      </p>
+      <div class="contact-links">
+        <a href="https://github.com/wikilangs/wikilangs/issues" class="btn btn-secondary" target="_blank" rel="noopener">
+          Open an Issue
+        </a>
+        <a href="https://omarkamali.com" class="btn btn-ghost" target="_blank" rel="noopener">
+          Contact Omar
+        </a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .hero-compact {
+    padding: var(--space-12) 0;
+    background: var(--color-surface);
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .hero-compact h1 {
+    font-size: var(--font-size-4xl);
+    margin-bottom: var(--space-4);
+  }
+
+  .hero-subtitle {
+    font-size: var(--font-size-xl);
+    color: var(--color-text-secondary);
+  }
+
+  .about-grid {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr;
+    gap: var(--space-12);
+  }
+
+  .about-content h2 {
+    font-size: var(--font-size-2xl);
+    margin-top: var(--space-10);
+    margin-bottom: var(--space-4);
+  }
+
+  .about-content h2:first-child {
+    margin-top: 0;
+  }
+
+  .about-content p,
+  .about-content li {
+    color: var(--color-text-secondary);
+    line-height: var(--line-height-relaxed);
+  }
+
+  .about-content ul {
+    margin: var(--space-4) 0;
+    padding-left: var(--space-6);
+  }
+
+  .about-content li {
+    margin-bottom: var(--space-2);
+  }
+
+  .about-sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-6);
+  }
+
+  .sidebar-card {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-6);
+  }
+
+  .sidebar-card h3 {
+    font-size: var(--font-size-base);
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: var(--space-4);
+  }
+
+  .sidebar-card strong {
+    font-size: var(--font-size-lg);
+    display: block;
+    margin-bottom: var(--space-2);
+  }
+
+  .sidebar-card strong a {
+    color: var(--color-text);
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+  }
+
+  .inline-logo {
+    width: 20px;
+    height: 20px;
+    border-radius: 4px;
+    vertical-align: text-top;
+    margin-right: 4px;
+  }
+
+  .sidebar-card strong a:hover {
+    color: var(--color-accent);
+  }
+
+  .sidebar-card p {
+    color: var(--color-text-secondary);
+    font-size: var(--font-size-sm);
+    margin: 0;
+  }
+
+  .sponsor-card {
+    border-color: var(--color-accent-light);
+    background: var(--color-surface);
+  }
+
+  .sidebar-links {
+    display: flex;
+    gap: var(--space-4);
+    margin-top: var(--space-4);
+  }
+
+  .sidebar-links a {
+    font-size: var(--font-size-sm);
+  }
+
+  /* Projects */
+  .projects-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-6);
+    margin-top: var(--space-8);
+  }
+
+  .project-card {
+    background: var(--color-bg);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-6);
+    text-decoration: none;
+    transition: all var(--transition-base);
+  }
+
+  .project-card:hover {
+    border-color: var(--color-accent);
+    box-shadow: var(--shadow-md);
+    text-decoration: none;
+  }
+
+  .project-card h3 {
+    color: var(--color-accent);
+    margin-bottom: var(--space-2);
+  }
+
+  .project-card p {
+    color: var(--color-text-secondary);
+    font-size: var(--font-size-sm);
+    margin: 0;
+  }
+
+  /* Citation */
+  .section-intro {
+    font-size: var(--font-size-lg);
+    color: var(--color-text-secondary);
+    margin-bottom: var(--space-6);
+  }
+
+  .citation-block {
+    max-width: 600px;
+  }
+
+  /* Contact */
+  .contact-links {
+    display: flex;
+    gap: var(--space-4);
+    justify-content: center;
+  }
+
+  @media (max-width: 1024px) {
+    .about-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .projects-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

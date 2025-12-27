@@ -1,0 +1,2194 @@
+---
+import BaseLayout from '@layouts/BaseLayout.astro';
+import CodeBlock from '@components/CodeBlock.astro';
+---
+
+<BaseLayout
+  title="Documentation"
+  description="Complete API reference, LLM integration guide, and practical NLP recipes for Wikilangs - the Python package for Wikipedia language models."
+>
+  <section class="hero-compact">
+    <div class="container">
+      <h1>Documentation</h1>
+      <p class="hero-subtitle">
+        API reference, LLM integration, and practical recipes for the Wikilangs Python package.
+      </p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="docs-grid">
+        <nav class="docs-nav" id="docs-nav">
+          <div class="nav-section">
+            <h3>Getting Started</h3>
+            <ul>
+              <li><a href="#installation" data-section="installation">Installation</a></li>
+              <li>
+                <a href="#api" data-section="api">API Reference</a>
+                <ul class="submenu">
+                  <li><a href="#api-tokenizer">Tokenizer</a></li>
+                  <li><a href="#api-ngram">N-gram</a></li>
+                  <li><a href="#api-markov">Markov</a></li>
+                  <li><a href="#api-vocabulary">Vocabulary</a></li>
+                  <li><a href="#api-embeddings">Embeddings</a></li>
+                  <li><a href="#api-languages">Languages</a></li>
+                </ul>
+              </li>
+              <li>
+                <a href="#llm" data-section="llm">LLM Integration</a>
+                <ul class="submenu">
+                  <li><a href="#llm-add-tokens">Add Tokens</a></li>
+                  <li><a href="#llm-freeze">Freeze Embeddings</a></li>
+                  <li><a href="#llm-load-tokenizer">Load Tokenizer</a></li>
+                </ul>
+              </li>
+            </ul>
+          </div>
+          <div class="nav-section">
+            <h3>Recipes</h3>
+            <ul>
+              <li><a href="#language-detection" data-section="language-detection">Language Detection</a></li>
+              <li><a href="#spelling-correction" data-section="spelling-correction">Spelling Correction</a></li>
+              <li><a href="#text-classification" data-section="text-classification">Text Classification</a></li>
+              <li><a href="#keyword-extraction" data-section="keyword-extraction">Keyword Extraction</a></li>
+              <li><a href="#text-similarity" data-section="text-similarity">Text Similarity</a></li>
+              <li><a href="#autocomplete" data-section="autocomplete">Autocomplete</a></li>
+              <li><a href="#creative-writing" data-section="creative-writing">Creative Writing</a></li>
+              <li><a href="#code-switching" data-section="code-switching">Code-Switching</a></li>
+              <li><a href="#readability" data-section="readability">Readability Analysis</a></li>
+              <li><a href="#cross-lingual" data-section="cross-lingual">Cross-Lingual Transfer</a></li>
+              <li><a href="#data-augmentation" data-section="data-augmentation">Data Augmentation</a></li>
+              <li><a href="#anomaly-detection" data-section="anomaly-detection">Anomaly Detection</a></li>
+            </ul>
+          </div>
+          <div class="nav-section">
+            <h3>LLM Recipes</h3>
+            <ul>
+              <li><a href="#llm-extend-vocabulary" data-section="llm-extend-vocabulary">Extend LLM Vocabulary</a></li>
+              <li><a href="#llm-fine-tuning" data-section="llm-fine-tuning">Language Fine-Tuning</a></li>
+              <li><a href="#llm-tokenizer-analysis" data-section="llm-tokenizer-analysis">Tokenizer Analysis</a></li>
+            </ul>
+          </div>
+        </nav>
+
+        <div class="docs-content">
+          <!-- INSTALLATION -->
+          <section id="installation" class="doc-section">
+            <h2>Installation</h2>
+            <p class="section-intro">
+              Wikilangs is available on PyPI. Install the core package and optional dependencies based on your needs.
+            </p>
+
+            <div class="install-block">
+              <h4>Core Package</h4>
+              <CodeBlock code="pip install wikilangs" lang="bash" />
+            </div>
+
+            <div class="install-block">
+              <h4>Optional Dependencies</h4>
+              <CodeBlock code={`# For word embeddings (BabelVec)
+pip install babelvec
+
+# For ISO 639 language metadata
+pip install pycountry
+
+# For LLM integration (extending language models)
+pip install torch transformers sentencepiece`} lang="bash" />
+            </div>
+
+            <div class="tip-box">
+              <strong>Quick Test:</strong> Verify your installation works:
+              <CodeBlock code={`from wikilangs import languages
+print(f"Available: {len(languages('latest'))} languages")`} />
+            </div>
+          </section>
+
+          <!-- API REFERENCE -->
+          <section id="api" class="doc-section">
+            <h2>API Reference</h2>
+            <p class="section-intro">
+              All modules follow a consistent pattern: call the factory function with a date, language code, and optional parameters to get an instance.
+            </p>
+
+            <div class="api-block" id="api-tokenizer">
+              <h3>tokenizer(date, lang, vocab_size, format)</h3>
+              <p>Create a BPE (Byte-Pair Encoding) tokenizer. Tokenizers split text into subword units, enabling efficient text processing even for rare words.</p>
+              <div class="param-table">
+                <table>
+                  <thead>
+                    <tr><th>Parameter</th><th>Type</th><th>Default</th><th>Description</th></tr>
+                  </thead>
+                  <tbody>
+                    <tr><td><code>date</code></td><td>str</td><td>—</td><td>Model date (YYYYMMDD or 'latest')</td></tr>
+                    <tr><td><code>lang</code></td><td>str</td><td>—</td><td>Language code (e.g., 'en', 'ary')</td></tr>
+                    <tr><td><code>vocab_size</code></td><td>int</td><td>16000</td><td>8000, 16000, 32000, or 64000</td></tr>
+                    <tr><td><code>format</code></td><td>str</td><td>'sp'</td><td>'sp' (SentencePiece) or 'hf' (HuggingFace)</td></tr>
+                  </tbody>
+                </table>
+              </div>
+              <p class="methods-label">Methods & Properties:</p>
+              <ul class="methods-list">
+                <li><code>tokenize(text)</code> — Split text into token strings</li>
+                <li><code>encode(text)</code> — Convert text to token IDs</li>
+                <li><code>decode(ids)</code> — Convert token IDs back to text</li>
+                <li><code>get_vocab()</code> — Get the full vocabulary dictionary</li>
+                <li><code>vocab_size</code> — (Property) Get the vocabulary size</li>
+              </ul>
+            </div>
+
+            <div class="api-block" id="api-ngram">
+              <h3>ngram(date, lang, gram_size, variant)</h3>
+              <p>Create an n-gram language model for scoring text probability and predicting next tokens. N-grams capture local word patterns by counting how often sequences of n words appear together.</p>
+              <div class="param-table">
+                <table>
+                  <thead>
+                    <tr><th>Parameter</th><th>Type</th><th>Default</th><th>Description</th></tr>
+                  </thead>
+                  <tbody>
+                    <tr><td><code>gram_size</code></td><td>int</td><td>3</td><td>2, 3, 4, or 5</td></tr>
+                    <tr><td><code>variant</code></td><td>str</td><td>'word'</td><td>'word' or 'subword'</td></tr>
+                  </tbody>
+                </table>
+              </div>
+              <p class="methods-label">Methods & Properties:</p>
+              <ul class="methods-list">
+                <li><code>score(text)</code> — Get log probability of text (higher = more likely)</li>
+                <li><code>predict_next(context, top_k)</code> — Predict most likely next tokens</li>
+                <li><code>vocab_size</code> — (Property) Number of unique n-grams</li>
+                <li><code>total_ngrams</code> — (Property) Total count of n-grams in corpus</li>
+                <li><code>size</code> — (Property) Number of entries in the model</li>
+              </ul>
+            </div>
+
+            <div class="api-block" id="api-markov">
+              <h3>markov(date, lang, depth, variant)</h3>
+              <p>Create a Markov chain text generator. These models generate text by randomly sampling the next word based on what words typically follow the current context.</p>
+              <div class="param-table">
+                <table>
+                  <thead>
+                    <tr><th>Parameter</th><th>Type</th><th>Default</th><th>Description</th></tr>
+                  </thead>
+                  <tbody>
+                    <tr><td><code>depth</code></td><td>int</td><td>2</td><td>Context depth 1-5</td></tr>
+                    <tr><td><code>variant</code></td><td>str</td><td>'word'</td><td>'word' or 'subword'</td></tr>
+                  </tbody>
+                </table>
+              </div>
+              <p class="methods-label">Methods & Properties:</p>
+              <ul class="methods-list">
+                <li><code>generate(length, seed)</code> — Generate text, optionally starting from seed words</li>
+                <li><code>get_transitions(state)</code> — Get probability distribution for next words</li>
+                <li><code>vocab_size</code> — (Property) Number of unique tokens in transitions</li>
+                <li><code>size</code> / <code>total_transitions</code> — (Property) Total number of transitions</li>
+                <li><code>supported_depths</code> — (Property) List of available context depths</li>
+              </ul>
+            </div>
+
+            <div class="api-block" id="api-vocabulary">
+              <h3>vocabulary(date, lang)</h3>
+              <p>Create a vocabulary lookup instance. Vocabularies contain word frequencies and IDF scores from Wikipedia, useful for understanding word importance.</p>
+              <p class="methods-label">Methods & Properties:</p>
+              <ul class="methods-list">
+                <li><code>lookup(word)</code> — Get word info: frequency, IDF score, rank</li>
+                <li><code>get_frequency(word)</code> — Get raw frequency count</li>
+                <li><code>get_words_with_prefix(prefix, top_k)</code> — Find words starting with prefix</li>
+                <li><code>get_similar_words(word, top_k)</code> — (Placeholder) Find semantically similar words</li>
+                <li><code>size</code> — (Property) Total number of words in vocabulary</li>
+                <li><code>words</code> — (Property) Set of all words in vocabulary</li>
+                <li><code>vocab_dict</code> — (Property) Get vocabulary as a dictionary (legacy support)</li>
+              </ul>
+            </div>
+
+            <div class="api-block" id="api-embeddings">
+              <h3>embeddings(date, lang, dimension)</h3>
+              <p>Create word embeddings using BabelVec. Embeddings represent words as dense vectors where similar words are close together in vector space.</p>
+              <p>Dimension options: 32, 64, 128</p>
+              <p class="methods-label">Methods & Properties:</p>
+              <ul class="methods-list">
+                <li><code>embed_word(word)</code> — Get word vector</li>
+                <li><code>embed_sentence(text, method)</code> — Get sentence vector</li>
+                <li><code>words</code> — (Property) List of words in the embedding vocabulary</li>
+              </ul>
+              <p>Sentence aggregation methods: <code>'average'</code>, <code>'rope'</code>, <code>'decay'</code>, <code>'sinusoidal'</code></p>
+            </div>
+
+            <div class="api-block" id="api-languages">
+              <h3>languages(date) / languages_with_metadata(date)</h3>
+              <p>Discover available languages and their ISO 639 metadata.</p>
+              <ul class="methods-list">
+                <li><code>languages(date)</code> — Get list of language codes</li>
+                <li><code>languages_with_metadata(date)</code> — Get list of <code>LanguageInfo</code> objects</li>
+                <li><code>get_language_info(code)</code> — Get <code>LanguageInfo</code> for a specific code</li>
+              </ul>
+              <p class="methods-label">LanguageInfo Attributes:</p>
+              <ul class="methods-list">
+                <li><code>code</code>, <code>name</code>, <code>common_name</code></li>
+                <li><code>alpha_2</code>, <code>alpha_3</code> (ISO 639 codes)</li>
+                <li><code>scope</code>, <code>type</code> (Language classification)</li>
+              </ul>
+            </div>
+          </section>
+
+          <!-- LLM INTEGRATION -->
+          <section id="llm" class="doc-section">
+            <h2>LLM Integration</h2>
+            <p class="section-intro">
+              Wikilangs provides utilities for extending large language models with new language support.
+              This is particularly valuable for low-resource languages that aren't well-represented in
+              existing LLMs. The <code>wikilangs.llm</code> module lets you add vocabulary from any of our
+              340+ languages to models like LLaMA, Mistral, or GPT-2.
+            </p>
+
+            <div class="why-box">
+              <h4>Why extend LLM vocabularies?</h4>
+              <p>
+                Most LLMs are trained primarily on English and a handful of high-resource languages.
+                When processing text in underrepresented languages, they often resort to character-by-character
+                tokenization, leading to:
+              </p>
+              <ul>
+                <li><strong>Inefficiency:</strong> Simple words become dozens of tokens</li>
+                <li><strong>Poor understanding:</strong> The model never learned meaningful representations for these tokens</li>
+                <li><strong>Context exhaustion:</strong> Long documents quickly fill the context window</li>
+              </ul>
+              <p>
+                By adding language-specific tokens and optionally fine-tuning, you can dramatically improve
+                performance for your target language.
+              </p>
+            </div>
+
+            <div class="api-block" id="llm-add-tokens">
+              <h3>add_language_tokens(model, tokenizer, lang, date, size, freeze_non_native_tokens)</h3>
+              <p>Add unique tokens from a Wikilangs tokenizer to an existing LLM and resize its embeddings.</p>
+              <div class="param-table">
+                <table>
+                  <thead>
+                    <tr><th>Parameter</th><th>Type</th><th>Default</th><th>Description</th></tr>
+                  </thead>
+                  <tbody>
+                    <tr><td><code>model</code></td><td>PreTrainedModel</td><td>—</td><td>HuggingFace model to modify</td></tr>
+                    <tr><td><code>tokenizer</code></td><td>PreTrainedTokenizerFast</td><td>—</td><td>Model's tokenizer to extend</td></tr>
+                    <tr><td><code>lang</code></td><td>str</td><td>—</td><td>Language code (e.g., 'ary', 'sw')</td></tr>
+                    <tr><td><code>date</code></td><td>str</td><td>'latest'</td><td>Wikilangs model date</td></tr>
+                    <tr><td><code>size</code></td><td>int</td><td>16000</td><td>Vocabulary size to load</td></tr>
+                    <tr><td><code>freeze_non_native_tokens</code></td><td>bool</td><td>False</td><td>Freeze tokens not in target language</td></tr>
+                  </tbody>
+                </table>
+              </div>
+              <p>Returns: <code>(modified_model, modified_tokenizer)</code></p>
+            </div>
+
+            <div class="api-block" id="llm-freeze">
+              <h3>setup_embedding_freezing(model, tokenizer, tokens_to_freeze)</h3>
+              <p>Freeze specific token embeddings during training. Useful when you want to only train new tokens while keeping existing ones fixed.</p>
+            </div>
+
+            <div class="api-block" id="llm-load-tokenizer">
+              <h3>load_wikilangs_tokenizer_for_llm(lang, date, vocab_size)</h3>
+              <p>Load a Wikilangs tokenizer in HuggingFace format, ready for LLM integration.</p>
+            </div>
+          </section>
+
+          <!-- NLP RECIPES -->
+          <section id="recipes" class="doc-section recipes-section">
+            <h2>NLP Recipes</h2>
+            <p class="section-intro">
+              These recipes demonstrate practical applications of Wikilangs models. Each recipe includes
+              context on <em>why</em> the approach works, <em>when</em> to use it, and complete code you can
+              adapt for your projects.
+            </p>
+
+            <!-- Language Detection -->
+            <article class="recipe" id="language-detection">
+              <div class="recipe-header">
+                <h3>Language Detection</h3>
+                <span class="recipe-tag">Classic NLP</span>
+              </div>
+
+              <div class="recipe-intro">
+                <p>
+                  <strong>The problem:</strong> Given a piece of text, determine what language it's written in.
+                  This is fundamental for multilingual pipelines—you need to know the language before you can
+                  apply language-specific processing.
+                </p>
+                <p>
+                  <strong>The insight:</strong> A language model trained on French will assign higher probability
+                  to French text than to German text. By scoring the same text against multiple language models,
+                  the highest-scoring one reveals the language.
+                </p>
+                <p>
+                  <strong>When to use:</strong> User-generated content, web scraping, document classification,
+                  multilingual chatbots, or any time you receive text of unknown origin.
+                </p>
+              </div>
+
+              <CodeBlock code={`from wikilangs import ngram
+
+def detect_language(text, candidates=['en', 'fr', 'de', 'es', 'ar', 'zh', 'ja', 'ru']):
+    """
+    Detect the language of input text by scoring against multiple n-gram models.
+
+    Returns the most likely language and all scores for analysis.
+    Higher scores (less negative log probabilities) indicate better fit.
+    """
+    scores = {}
+
+    for lang in candidates:
+        try:
+            ng = ngram(date='latest', lang=lang, gram_size=3)
+            scores[lang] = ng.score(text)
+        except Exception:
+            # Language model not available
+            continue
+
+    if not scores:
+        return None, {}
+
+    # The language with highest score (least negative) wins
+    detected = max(scores, key=scores.get)
+    return detected, scores
+
+# Try it out
+examples = [
+    "Bonjour, comment allez-vous aujourd'hui?",
+    "The weather is beautiful this morning.",
+    "Das ist ein interessantes Buch.",
+    "Hola, ¿cómo estás?",
+]
+
+for text in examples:
+    lang, scores = detect_language(text)
+    print(f"'{text[:40]}...' -> {lang}")`} />
+
+              <div class="recipe-notes">
+                <h4>Tips & Variations</h4>
+                <ul>
+                  <li>Use 3-grams for a good balance of speed and accuracy</li>
+                  <li>For short texts (under 20 characters), consider using character-level models</li>
+                  <li>Normalize scores by text length for fairer comparison across different-length inputs</li>
+                  <li>Add confidence thresholds—if top two scores are close, report "uncertain"</li>
+                </ul>
+              </div>
+            </article>
+
+            <!-- Spelling Correction -->
+            <article class="recipe" id="spelling-correction">
+              <div class="recipe-header">
+                <h3>Spelling Correction</h3>
+                <span class="recipe-tag">Text Processing</span>
+              </div>
+
+              <div class="recipe-intro">
+                <p>
+                  <strong>The problem:</strong> Find the correct spelling for a misspelled word. This is
+                  essential for search engines, form validation, and text preprocessing.
+                </p>
+                <p>
+                  <strong>The insight:</strong> Most misspellings are close to the correct word (a few
+                  character edits away). By combining edit distance with word frequency, we can suggest
+                  corrections that are both similar to the input AND actually common words in the language.
+                </p>
+                <p>
+                  <strong>When to use:</strong> Search query correction, OCR post-processing, user input
+                  validation, educational tools for language learners.
+                </p>
+              </div>
+
+              <CodeBlock code={`from wikilangs import vocabulary
+
+def edit_distance(s1, s2):
+    """Compute Levenshtein edit distance between two strings."""
+    if len(s1) < len(s2):
+        s1, s2 = s2, s1
+    if len(s2) == 0:
+        return len(s1)
+
+    prev = range(len(s2) + 1)
+    for i, c1 in enumerate(s1):
+        curr = [i + 1]
+        for j, c2 in enumerate(s2):
+            # Cost is 0 if characters match, 1 otherwise
+            cost = 0 if c1 == c2 else 1
+            curr.append(min(
+                prev[j + 1] + 1,    # deletion
+                curr[j] + 1,        # insertion
+                prev[j] + cost      # substitution
+            ))
+        prev = curr
+    return prev[-1]
+
+def suggest_corrections(word, lang='en', max_distance=2, top_k=5):
+    """
+    Suggest spelling corrections ranked by frequency.
+
+    We search words sharing the same prefix (most typos preserve
+    the first few characters) and filter by edit distance.
+    """
+    vocab = vocabulary(date='latest', lang=lang)
+
+    # Search with progressively shorter prefixes
+    candidates = []
+    for prefix_len in range(min(3, len(word)), 0, -1):
+        prefix = word[:prefix_len]
+        candidates = vocab.get_words_with_prefix(prefix, top_k=200)
+        if len(candidates) >= 10:
+            break
+
+    # Score candidates by edit distance and frequency
+    suggestions = []
+    for candidate in candidates:
+        dist = edit_distance(word.lower(), candidate.lower())
+        if 0 < dist <= max_distance:  # Exclude exact matches
+            info = vocab.lookup(candidate)
+            if info:
+                suggestions.append({
+                    'word': candidate,
+                    'distance': dist,
+                    'frequency': info.get('frequency', 0)
+                })
+
+    # Sort by distance first, then by frequency (descending)
+    suggestions.sort(key=lambda x: (x['distance'], -x['frequency']))
+    return suggestions[:top_k]
+
+# Example usage
+misspelled = ["langauge", "recieve", "occurence", "accomodate", "seperate"]
+
+for word in misspelled:
+    corrections = suggest_corrections(word)
+    if corrections:
+        best = corrections[0]['word']
+        print(f"'{word}' -> '{best}' (and {len(corrections)-1} more options)")`} />
+
+              <div class="recipe-notes">
+                <h4>Tips & Variations</h4>
+                <ul>
+                  <li>For real-time applications, precompute a prefix tree (trie) of the vocabulary</li>
+                  <li>Consider phonetic similarity (Soundex, Metaphone) for homophones</li>
+                  <li>Use n-gram context to pick the right correction ("their" vs "there")</li>
+                </ul>
+              </div>
+            </article>
+
+            <!-- Text Classification -->
+            <article class="recipe" id="text-classification">
+              <div class="recipe-header">
+                <h3>Text Classification</h3>
+                <span class="recipe-tag">Machine Learning</span>
+              </div>
+
+              <div class="recipe-intro">
+                <p>
+                  <strong>The problem:</strong> Automatically categorize text into predefined topics.
+                  This powers spam filters, content moderation, news categorization, and customer support routing.
+                </p>
+                <p>
+                  <strong>The insight:</strong> Different topics use different vocabularies. A sports
+                  article will contain "game", "team", "score"; a tech article will have "algorithm",
+                  "software", "data". By weighting keywords with IDF (inverse document frequency),
+                  we emphasize distinctive words over common ones.
+                </p>
+                <p>
+                  <strong>When to use:</strong> When you need a fast, interpretable classifier without
+                  training data. Good for bootstrapping before you have labeled examples.
+                </p>
+              </div>
+
+              <CodeBlock code={`from wikilangs import vocabulary, tokenizer
+
+def classify_text(text, categories, lang='en'):
+    """
+    Classify text into categories using keyword matching with IDF weighting.
+
+    Args:
+        text: The text to classify
+        categories: Dict mapping category names to lists of keywords
+                   e.g., {'sports': ['game', 'team', 'player']}
+
+    Returns category name and scores for all categories.
+    """
+    vocab = vocabulary(date='latest', lang=lang)
+    tok = tokenizer(date='latest', lang=lang, vocab_size=32000)
+
+    # Tokenize and normalize
+    tokens = tok.tokenize(text.lower())
+    words = set(t.strip('_').lower() for t in tokens if len(t.strip('_')) > 2)
+
+    scores = {}
+    matched_keywords = {}
+
+    for category, keywords in categories.items():
+        score = 0
+        matches = []
+
+        for keyword in keywords:
+            if keyword.lower() in words:
+                info = vocab.lookup(keyword)
+                # IDF weighting: rare words count more
+                weight = info.get('idf_score', 1.0) if info else 1.0
+                score += weight
+                matches.append(keyword)
+
+        scores[category] = score
+        matched_keywords[category] = matches
+
+    # Handle case where no keywords match
+    if all(s == 0 for s in scores.values()):
+        return 'unknown', scores, matched_keywords
+
+    best = max(scores, key=scores.get)
+    return best, scores, matched_keywords
+
+# Define your categories with characteristic keywords
+categories = {
+    'technology': ['computer', 'software', 'algorithm', 'data', 'programming',
+                   'code', 'digital', 'internet', 'machine', 'artificial'],
+    'sports': ['game', 'team', 'player', 'score', 'match', 'championship',
+               'win', 'league', 'coach', 'season'],
+    'science': ['research', 'study', 'experiment', 'theory', 'discovery',
+                'scientist', 'laboratory', 'hypothesis', 'analysis', 'evidence'],
+    'politics': ['government', 'election', 'policy', 'vote', 'president',
+                 'congress', 'law', 'political', 'democracy', 'campaign']
+}
+
+# Test it
+articles = [
+    "The research team published a groundbreaking study on machine learning algorithms.",
+    "The championship game ended with a dramatic last-minute score by the home team.",
+    "Congress passed new legislation affecting digital privacy and data protection.",
+]
+
+for article in articles:
+    category, scores, matches = classify_text(article, categories)
+    print(f"Category: {category}")
+    print(f"  Matched: {matches[category]}")
+    print()`} />
+
+              <div class="recipe-notes">
+                <h4>Tips & Variations</h4>
+                <ul>
+                  <li>Expand keyword lists using embeddings to find similar words automatically</li>
+                  <li>Add negative keywords that should reduce a category's score</li>
+                  <li>For production, train a proper classifier (logistic regression, SVM) on labeled data</li>
+                </ul>
+              </div>
+            </article>
+
+            <!-- Keyword Extraction -->
+            <article class="recipe" id="keyword-extraction">
+              <div class="recipe-header">
+                <h3>Keyword Extraction</h3>
+                <span class="recipe-tag">Information Retrieval</span>
+              </div>
+
+              <div class="recipe-intro">
+                <p>
+                  <strong>The problem:</strong> Automatically identify the most important words or phrases
+                  in a document. Keywords enable search, summarization, and topic discovery.
+                </p>
+                <p>
+                  <strong>The insight:</strong> TF-IDF (Term Frequency × Inverse Document Frequency) finds
+                  words that appear often in this document but rarely in the general corpus. The word
+                  "the" appears everywhere so it's not interesting; "neural" in a biology paper is distinctive.
+                </p>
+                <p>
+                  <strong>When to use:</strong> SEO analysis, document tagging, content summarization,
+                  building search indices, finding themes in user feedback.
+                </p>
+              </div>
+
+              <CodeBlock code={`from wikilangs import vocabulary, tokenizer
+from collections import Counter
+
+def extract_keywords(text, lang='en', top_k=10, min_word_length=3):
+    """
+    Extract keywords using TF-IDF scoring.
+
+    TF (term frequency): How often word appears in this text
+    IDF (inverse document frequency): How rare the word is generally
+
+    High TF-IDF = frequent in this doc + rare overall = distinctive keyword
+    """
+    vocab = vocabulary(date='latest', lang=lang)
+    tok = tokenizer(date='latest', lang=lang, vocab_size=32000)
+
+    # Tokenize and clean
+    tokens = tok.tokenize(text.lower())
+    words = [t.strip('_') for t in tokens
+             if len(t.strip('_')) >= min_word_length
+             and t.strip('_').isalpha()]
+
+    if not words:
+        return []
+
+    # Calculate term frequencies
+    tf = Counter(words)
+    total_words = sum(tf.values())
+
+    # Score each word
+    keywords = []
+    for word, count in tf.items():
+        info = vocab.lookup(word)
+        if info and info.get('idf_score'):
+            tf_score = count / total_words
+            idf_score = info['idf_score']
+            tfidf = tf_score * idf_score
+
+            keywords.append({
+                'word': word,
+                'tfidf': tfidf,
+                'frequency': count,
+                'idf': idf_score
+            })
+
+    # Sort by TF-IDF score
+    keywords.sort(key=lambda x: x['tfidf'], reverse=True)
+    return keywords[:top_k]
+
+# Example: Extract keywords from an article
+article = """
+Natural language processing enables computers to understand, interpret,
+and generate human language. Modern NLP combines machine learning with
+linguistic knowledge. Deep learning models like transformers have
+revolutionized the field, enabling breakthroughs in translation,
+summarization, and question answering. These neural networks learn
+patterns from massive text corpora, developing sophisticated language
+understanding without explicit programming.
+"""
+
+keywords = extract_keywords(article, top_k=8)
+print("Top keywords:")
+for kw in keywords:
+    print(f"  {kw['word']}: TF-IDF={kw['tfidf']:.4f} (appears {kw['frequency']}x)")`} />
+
+              <div class="recipe-notes">
+                <h4>Tips & Variations</h4>
+                <ul>
+                  <li>Filter out stopwords for cleaner results</li>
+                  <li>Extract keyphrases by looking for adjacent keywords</li>
+                  <li>Use TextRank (graph-based) for position-aware keyword extraction</li>
+                </ul>
+              </div>
+            </article>
+
+            <!-- Text Similarity -->
+            <article class="recipe" id="text-similarity">
+              <div class="recipe-header">
+                <h3>Text Similarity</h3>
+                <span class="recipe-tag">Semantic Analysis</span>
+              </div>
+
+              <div class="recipe-intro">
+                <p>
+                  <strong>The problem:</strong> Measure how semantically similar two pieces of text are.
+                  This powers duplicate detection, plagiarism checking, and semantic search.
+                </p>
+                <p>
+                  <strong>The insight:</strong> Word embeddings represent words as vectors in a space
+                  where similar words are close together. By combining word vectors into sentence vectors,
+                  we can compare entire sentences using cosine similarity.
+                </p>
+                <p>
+                  <strong>When to use:</strong> Finding similar documents, FAQ matching, detecting
+                  paraphrases, clustering related content, recommendation systems.
+                </p>
+              </div>
+
+              <CodeBlock code={`from wikilangs import embeddings
+import numpy as np
+
+def cosine_similarity(v1, v2):
+    """
+    Compute cosine similarity between two vectors.
+    Returns value between -1 (opposite) and 1 (identical).
+    """
+    dot = np.dot(v1, v2)
+    norm = np.linalg.norm(v1) * np.linalg.norm(v2)
+    return dot / norm if norm > 0 else 0
+
+def text_similarity(text1, text2, lang='en', method='rope'):
+    """
+    Compute semantic similarity between two texts.
+
+    Methods:
+    - 'average': Simple mean of word vectors
+    - 'rope': RoPE positional encoding (preserves word order)
+    - 'decay': Earlier words weighted more heavily
+    """
+    emb = embeddings(date='latest', lang=lang, dimension=64)
+
+    vec1 = emb.embed_sentence(text1, method=method)
+    vec2 = emb.embed_sentence(text2, method=method)
+
+    return cosine_similarity(vec1, vec2)
+
+def find_most_similar(query, candidates, lang='en'):
+    """Find the most similar text to a query from a list of candidates."""
+    similarities = []
+    for i, candidate in enumerate(candidates):
+        sim = text_similarity(query, candidate, lang)
+        similarities.append((i, candidate, sim))
+
+    similarities.sort(key=lambda x: x[2], reverse=True)
+    return similarities
+
+# Example: FAQ matching
+query = "How do I reset my password?"
+
+faq_questions = [
+    "What are your business hours?",
+    "How can I change my account password?",
+    "Where is your office located?",
+    "How do I update my email address?",
+    "What payment methods do you accept?",
+]
+
+print(f"Query: '{query}'\\n")
+results = find_most_similar(query, faq_questions)
+print("Ranked by similarity:")
+for i, (idx, question, sim) in enumerate(results[:3]):
+    print(f"  {i+1}. {question}")
+    print(f"     Similarity: {sim:.3f}")`} />
+
+              <div class="recipe-notes">
+                <h4>Tips & Variations</h4>
+                <ul>
+                  <li>Use 'rope' for order-sensitive comparisons (questions, instructions)</li>
+                  <li>Use 'average' when word order doesn't matter (keywords, topics)</li>
+                  <li>For large datasets, use approximate nearest neighbor search (FAISS, Annoy)</li>
+                </ul>
+              </div>
+            </article>
+
+            <!-- Autocomplete -->
+            <article class="recipe" id="autocomplete">
+              <div class="recipe-header">
+                <h3>Autocomplete</h3>
+                <span class="recipe-tag">Interactive</span>
+              </div>
+
+              <div class="recipe-intro">
+                <p>
+                  <strong>The problem:</strong> Suggest completions as users type, whether finishing
+                  the current word or predicting the next one. This improves UX and typing speed.
+                </p>
+                <p>
+                  <strong>The insight:</strong> Prefix search finds words that start with what the user
+                  has typed. N-gram models predict what word typically comes next given the previous words.
+                  Combining both gives a powerful autocomplete system.
+                </p>
+                <p>
+                  <strong>When to use:</strong> Search boxes, chat interfaces, code editors,
+                  mobile keyboards, form fields.
+                </p>
+              </div>
+
+              <CodeBlock code={`from wikilangs import ngram, vocabulary
+
+def autocomplete(prefix, lang='en', word_limit=5, next_word_limit=5):
+    """
+    Provide autocomplete suggestions for a text prefix.
+
+    Returns:
+    - word_completions: Ways to finish the current word
+    - next_words: Predictions for the next word (if current word is complete)
+    """
+    vocab = vocabulary(date='latest', lang=lang)
+    ng = ngram(date='latest', lang=lang, gram_size=3)
+
+    words = prefix.strip().split()
+    results = {
+        'word_completions': [],
+        'next_words': [],
+        'input_complete': prefix.endswith(' ')
+    }
+
+    # Word completion: user is mid-word
+    if words and not prefix.endswith(' '):
+        partial = words[-1]
+        completions = vocab.get_words_with_prefix(partial, top_k=word_limit * 2)
+        # Filter out the partial word itself
+        results['word_completions'] = [w for w in completions
+                                        if w.lower() != partial.lower()][:word_limit]
+
+    # Next word prediction: use n-gram model
+    if len(words) >= 1:
+        # Use last 2 words as context for trigram
+        context = ' '.join(words[-2:]) if len(words) >= 2 else words[-1]
+        predictions = ng.predict_next(context, top_k=next_word_limit)
+        results['next_words'] = [word for word, prob in predictions]
+
+    return results
+
+# Simulate typing
+test_inputs = [
+    "The quick bro",      # Mid-word: should complete "brown", etc.
+    "The quick brown ",   # Complete: should predict "fox", etc.
+    "machine learn",      # Mid-word: "learning", "learner"
+    "I want to ",         # Complete: predict next word
+]
+
+for prefix in test_inputs:
+    result = autocomplete(prefix)
+    print(f"Input: '{prefix}'")
+    if result['word_completions']:
+        print(f"  Complete word: {result['word_completions'][:3]}")
+    if result['next_words']:
+        print(f"  Next word: {result['next_words'][:3]}")
+    print()`} />
+
+              <div class="recipe-notes">
+                <h4>Tips & Variations</h4>
+                <ul>
+                  <li>Cache vocabulary lookups for sub-100ms response times</li>
+                  <li>Personalize with user history (boost previously typed words)</li>
+                  <li>For code editors, use subword tokenizers to complete partial identifiers</li>
+                </ul>
+              </div>
+            </article>
+
+            <!-- Creative Writing -->
+            <article class="recipe" id="creative-writing">
+              <div class="recipe-header">
+                <h3>Creative Writing Aid</h3>
+                <span class="recipe-tag">Text Generation</span>
+              </div>
+
+              <div class="recipe-intro">
+                <p>
+                  <strong>The problem:</strong> Generate text continuations or writing prompts to help
+                  overcome writer's block or explore different directions.
+                </p>
+                <p>
+                  <strong>The insight:</strong> Markov chains are probabilistic—they don't always pick the
+                  most likely next word, which creates variety. By seeding with a phrase, we constrain
+                  the generation to stay on topic while exploring unexpected paths.
+                </p>
+                <p>
+                  <strong>When to use:</strong> Creative writing tools, brainstorming aids, educational
+                  exercises, generating placeholder text, exploring story directions.
+                </p>
+              </div>
+
+              <CodeBlock code={`from wikilangs import markov
+import random
+
+def generate_continuations(opening, lang='en', num_variations=3, length=50):
+    """
+    Generate multiple possible continuations for an opening sentence.
+    Useful for exploring different story directions.
+    """
+    mc = markov(date='latest', lang=lang, depth=3)
+
+    # Extract seed from opening (last few words)
+    words = opening.strip().split()
+    seed = words[-3:] if len(words) >= 3 else words
+
+    continuations = []
+    for i in range(num_variations):
+        generated = mc.generate(length=length, seed=seed)
+        # Combine opening with generated text
+        full_text = opening.rstrip() + ' ' + generated
+        continuations.append(full_text)
+
+    return continuations
+
+def generate_writing_prompts(themes, lang='en', num_prompts=2):
+    """
+    Generate writing prompts from theme words.
+    Good for creative exercises and overcoming writer's block.
+    """
+    mc = markov(date='latest', lang=lang, depth=2)
+
+    prompts = []
+    for theme in themes:
+        for _ in range(num_prompts):
+            # Generate a phrase starting with the theme
+            continuation = mc.generate(length=15, seed=[theme])
+            prompt = f"Write about: {theme.title()} — {continuation}..."
+            prompts.append(prompt)
+
+    return prompts
+
+# Generate story continuations
+print("=== Story Continuations ===")
+opening = "The old lighthouse stood alone on the cliff"
+continuations = generate_continuations(opening, num_variations=3, length=30)
+for i, cont in enumerate(continuations, 1):
+    print(f"\\nVersion {i}:")
+    print(f"  {cont[:150]}...")
+
+# Generate writing prompts
+print("\\n=== Writing Prompts ===")
+themes = ['mystery', 'journey', 'memory']
+prompts = generate_writing_prompts(themes, num_prompts=1)
+for prompt in prompts:
+    print(f"• {prompt}")`} />
+
+              <div class="recipe-notes">
+                <h4>Tips & Variations</h4>
+                <ul>
+                  <li>Higher depth (3-5) produces more coherent but less surprising text</li>
+                  <li>Mix outputs from different depth models for variety</li>
+                  <li>Use multiple languages for multilingual creative writing exercises</li>
+                </ul>
+              </div>
+            </article>
+
+            <!-- Code-Switching -->
+            <article class="recipe" id="code-switching">
+              <div class="recipe-header">
+                <h3>Code-Switching Detection</h3>
+                <span class="recipe-tag">Multilingual</span>
+              </div>
+
+              <div class="recipe-intro">
+                <p>
+                  <strong>The problem:</strong> Detect when text switches between languages mid-sentence.
+                  This is common in multilingual communities—Spanglish, Hinglish, Arabic-French mixing, etc.
+                </p>
+                <p>
+                  <strong>The insight:</strong> By scoring sliding windows of text against multiple language
+                  models, we can identify where the language changes. Each window gets assigned to the
+                  language whose model scores it highest.
+                </p>
+                <p>
+                  <strong>When to use:</strong> Social media analysis, transcription services, studying
+                  bilingual speech patterns, preprocessing for language-specific tools.
+                </p>
+              </div>
+
+              <CodeBlock code={`from wikilangs import ngram
+
+def detect_code_switching(text, lang1='en', lang2='es', window_size=3):
+    """
+    Detect language switching within text.
+
+    Returns list of (segment, language) tuples showing where
+    the text switches between languages.
+    """
+    # Load models for both languages
+    ng1 = ngram(date='latest', lang=lang1, gram_size=2)
+    ng2 = ngram(date='latest', lang=lang2, gram_size=2)
+
+    words = text.split()
+    if len(words) < window_size:
+        # Text too short, score as single segment
+        score1 = ng1.score(text)
+        score2 = ng2.score(text)
+        lang = lang1 if score1 > score2 else lang2
+        return [(text, lang)]
+
+    # Score each window
+    segments = []
+    i = 0
+    while i < len(words):
+        window = ' '.join(words[i:i + window_size])
+
+        score1 = ng1.score(window)
+        score2 = ng2.score(window)
+        detected = lang1 if score1 > score2 else lang2
+
+        segments.append((window, detected))
+        i += window_size
+
+    # Merge consecutive same-language segments
+    merged = []
+    for segment, lang in segments:
+        if merged and merged[-1][1] == lang:
+            merged[-1] = (merged[-1][0] + ' ' + segment, lang)
+        else:
+            merged.append((segment, lang))
+
+    return merged
+
+# Example: Spanglish text
+examples = [
+    "I went to the store porque necesitaba comprar some milk for breakfast",
+    "My abuela always says que la familia es lo más importante",
+    "Let's meet mañana at the coffee shop cerca de tu casa",
+]
+
+print("=== Code-Switching Detection ===\\n")
+for text in examples:
+    print(f"Input: {text}")
+    segments = detect_code_switching(text, 'en', 'es')
+    for segment, lang in segments:
+        print(f"  [{lang.upper()}] {segment}")
+    print()`} />
+
+              <div class="recipe-notes">
+                <h4>Tips & Variations</h4>
+                <ul>
+                  <li>Smaller windows detect finer-grained switches but are noisier</li>
+                  <li>Use character n-grams for very short switches (single words)</li>
+                  <li>This technique works for any language pair with trained models</li>
+                </ul>
+              </div>
+            </article>
+
+            <!-- Readability -->
+            <article class="recipe" id="readability">
+              <div class="recipe-header">
+                <h3>Readability Analysis</h3>
+                <span class="recipe-tag">Text Analytics</span>
+              </div>
+
+              <div class="recipe-intro">
+                <p>
+                  <strong>The problem:</strong> Assess how difficult a text is to read. This helps writers
+                  target the right audience and ensures accessibility.
+                </p>
+                <p>
+                  <strong>The insight:</strong> Word frequency is a strong proxy for familiarity. Common
+                  words (rank 1-2000) are learned early; rare words require specialized knowledge.
+                  By analyzing the frequency distribution of words, we estimate reading difficulty.
+                </p>
+                <p>
+                  <strong>When to use:</strong> Content writing tools, educational material assessment,
+                  accessibility checking, plain language compliance.
+                </p>
+              </div>
+
+              <CodeBlock code={`from wikilangs import vocabulary, tokenizer
+import numpy as np
+
+def analyze_readability(text, lang='en'):
+    """
+    Analyze text readability based on vocabulary frequency.
+
+    Returns detailed metrics about word complexity and
+    an overall readability assessment.
+    """
+    vocab = vocabulary(date='latest', lang=lang)
+    tok = tokenizer(date='latest', lang=lang, vocab_size=32000)
+
+    # Tokenize and filter to words
+    tokens = tok.tokenize(text)
+    words = [t.strip('_') for t in tokens
+             if t.strip('_').isalpha() and len(t.strip('_')) > 1]
+
+    if not words:
+        return None
+
+    # Look up ranks for each word
+    ranks = []
+    rare_words = []
+    unknown_words = []
+
+    for word in words:
+        info = vocab.lookup(word.lower())
+        if info and info.get('rank'):
+            rank = info['rank']
+            ranks.append(rank)
+            if rank > 10000:
+                rare_words.append(word)
+        else:
+            unknown_words.append(word)
+
+    if not ranks:
+        return {'error': 'Could not analyze - no known words'}
+
+    avg_rank = np.mean(ranks)
+    median_rank = np.median(ranks)
+
+    # Determine reading level
+    if median_rank < 1500:
+        level = 'elementary'
+        description = 'Suitable for general audiences, easy to read'
+    elif median_rank < 3500:
+        level = 'intermediate'
+        description = 'Standard difficulty, comfortable for educated readers'
+    elif median_rank < 7000:
+        level = 'advanced'
+        description = 'Requires good vocabulary, some specialized terms'
+    else:
+        level = 'specialized'
+        description = 'Technical or academic, requires domain knowledge'
+
+    return {
+        'word_count': len(words),
+        'unique_words': len(set(w.lower() for w in words)),
+        'vocabulary_diversity': len(set(w.lower() for w in words)) / len(words),
+        'average_word_rank': round(avg_rank),
+        'median_word_rank': round(median_rank),
+        'rare_word_percentage': round(len(rare_words) / len(words) * 100, 1),
+        'sample_rare_words': list(set(rare_words))[:5],
+        'reading_level': level,
+        'description': description
+    }
+
+# Compare different texts
+texts = {
+    'children': "The cat sat on the mat. It was a sunny day. The children played in the park.",
+
+    'news': "The committee announced new policy measures aimed at reducing inflation while maintaining employment levels.",
+
+    'academic': "The epistemological implications of quantum entanglement challenge our fundamental ontological assumptions about locality and causality."
+}
+
+print("=== Readability Analysis ===\\n")
+for label, text in texts.items():
+    result = analyze_readability(text)
+    print(f"{label.upper()}:")
+    print(f"  Level: {result['reading_level']} ({result['description']})")
+    print(f"  Median word rank: {result['median_word_rank']}")
+    print(f"  Rare words: {result['rare_word_percentage']}%")
+    if result['sample_rare_words']:
+        print(f"  Examples: {', '.join(result['sample_rare_words'])}")
+    print()`} />
+
+              <div class="recipe-notes">
+                <h4>Tips & Variations</h4>
+                <ul>
+                  <li>Combine with sentence length metrics for fuller readability picture</li>
+                  <li>Compare against target audience benchmarks (e.g., grade level)</li>
+                  <li>Suggest simpler alternatives for rare words</li>
+                </ul>
+              </div>
+            </article>
+
+            <!-- Cross-Lingual -->
+            <article class="recipe" id="cross-lingual">
+              <div class="recipe-header">
+                <h3>Cross-Lingual Word Discovery</h3>
+                <span class="recipe-tag">Multilingual</span>
+              </div>
+
+              <div class="recipe-intro">
+                <p>
+                  <strong>The problem:</strong> Find words in another language that might be related to
+                  a word in your source language—translations, cognates, or conceptually similar terms.
+                </p>
+                <p>
+                  <strong>The insight:</strong> If embeddings are trained on parallel or comparable corpora
+                  (like Wikipedia), similar concepts end up in similar vector spaces. This lets us bridge
+                  languages without explicit translation dictionaries.
+                </p>
+                <p>
+                  <strong>When to use:</strong> Building bilingual dictionaries, finding translation candidates,
+                  language learning tools, cross-lingual information retrieval.
+                </p>
+              </div>
+
+              <CodeBlock code={`from wikilangs import embeddings, vocabulary
+import numpy as np
+
+def find_similar_words_cross_lingual(word, source_lang, target_lang, top_k=10):
+    """
+    Find words in target language that are semantically similar
+    to a word in the source language.
+
+    Note: Works best for concepts that exist in both languages'
+    Wikipedia (shared cultural concepts, technical terms, etc.)
+    """
+    # Load embeddings for both languages
+    source_emb = embeddings(date='latest', lang=source_lang, dimension=64)
+    target_emb = embeddings(date='latest', lang=target_lang, dimension=64)
+    target_vocab = vocabulary(date='latest', lang=target_lang)
+
+    # Get source word vector
+    try:
+        source_vec = source_emb.embed_word(word)
+    except KeyError:
+        return {'error': f"Word '{word}' not found in {source_lang} embeddings"}
+
+    # Compare with frequent target words
+    # (Using top words for efficiency; expand for better coverage)
+    target_words = target_vocab.get_words_with_prefix('', top_k=5000)
+
+    similarities = []
+    for tw in target_words:
+        try:
+            target_vec = target_emb.embed_word(tw)
+            # Cosine similarity
+            sim = np.dot(source_vec, target_vec) / (
+                np.linalg.norm(source_vec) * np.linalg.norm(target_vec)
+            )
+            similarities.append((tw, float(sim)))
+        except (KeyError, Exception):
+            continue
+
+    # Sort by similarity
+    similarities.sort(key=lambda x: x[1], reverse=True)
+    return similarities[:top_k]
+
+# Example: Find French words similar to English concepts
+print("=== Cross-Lingual Word Discovery ===\\n")
+
+test_words = ['computer', 'science', 'music', 'democracy']
+
+for word in test_words:
+    print(f"English '{word}' -> French similar words:")
+    results = find_similar_words_cross_lingual(word, 'en', 'fr', top_k=5)
+    if isinstance(results, dict) and 'error' in results:
+        print(f"  {results['error']}")
+    else:
+        for french_word, sim in results:
+            print(f"  {french_word}: {sim:.3f}")
+    print()`} />
+
+              <div class="recipe-notes">
+                <h4>Tips & Variations</h4>
+                <ul>
+                  <li>Results improve with larger embedding dimensions (128d)</li>
+                  <li>Filter target words by part-of-speech for cleaner results</li>
+                  <li>Use this to bootstrap translation memory for low-resource language pairs</li>
+                </ul>
+              </div>
+            </article>
+
+            <!-- Data Augmentation -->
+            <article class="recipe" id="data-augmentation">
+              <div class="recipe-header">
+                <h3>Data Augmentation</h3>
+                <span class="recipe-tag">Machine Learning</span>
+              </div>
+
+              <div class="recipe-intro">
+                <p>
+                  <strong>The problem:</strong> Generate variations of training data to improve model
+                  robustness. More diverse training examples help models generalize better.
+                </p>
+                <p>
+                  <strong>The insight:</strong> Markov chains and vocabulary can generate plausible
+                  word insertions and substitutions that preserve meaning while adding variety.
+                  Unlike random perturbations, these changes respect language structure.
+                </p>
+                <p>
+                  <strong>When to use:</strong> Expanding small training datasets, improving model
+                  robustness, testing system behavior with varied inputs.
+                </p>
+              </div>
+
+              <CodeBlock code={`from wikilangs import markov, vocabulary, tokenizer
+import random
+
+def augment_text(text, lang='en', num_augments=5):
+    """
+    Generate augmented versions of text for training data expansion.
+
+    Uses multiple strategies:
+    1. Contextual word insertion (Markov chains)
+    2. Synonym-like substitution (prefix matching)
+    """
+    mc = markov(date='latest', lang=lang, depth=2)
+    vocab = vocabulary(date='latest', lang=lang)
+    tok = tokenizer(date='latest', lang=lang, vocab_size=32000)
+
+    words = text.split()
+    augmented = []
+
+    for _ in range(num_augments):
+        new_words = words.copy()
+
+        # Strategy 1: Insert a contextual word
+        if len(words) > 3 and random.random() < 0.5:
+            insert_pos = random.randint(1, len(new_words) - 1)
+            # Get context from preceding words
+            context = tuple(new_words[max(0, insert_pos-2):insert_pos])
+            transitions = mc.get_transitions(context)
+            if transitions:
+                # Sample from likely next words
+                candidates = list(transitions.keys())[:10]
+                if candidates:
+                    new_words.insert(insert_pos, random.choice(candidates))
+
+        # Strategy 2: Replace a word with similar one
+        if len(new_words) > 2 and random.random() < 0.5:
+            # Pick a random content word (skip short words)
+            content_positions = [i for i, w in enumerate(new_words)
+                               if len(w) > 4 and w.isalpha()]
+            if content_positions:
+                replace_pos = random.choice(content_positions)
+                word = new_words[replace_pos]
+                # Find words with same prefix
+                similar = vocab.get_words_with_prefix(word[:3], top_k=10)
+                similar = [w for w in similar if w.lower() != word.lower()]
+                if similar:
+                    new_words[replace_pos] = random.choice(similar)
+
+        augmented.append(' '.join(new_words))
+
+    # Remove duplicates while preserving order
+    seen = set()
+    unique = []
+    for text in augmented:
+        if text not in seen and text != ' '.join(words):
+            seen.add(text)
+            unique.append(text)
+
+    return unique
+
+# Example: Augment training examples
+print("=== Data Augmentation ===\\n")
+
+examples = [
+    "The neural network achieved high accuracy on the test set.",
+    "Customer service representatives handle incoming calls efficiently.",
+]
+
+for original in examples:
+    print(f"Original: {original}")
+    variations = augment_text(original, num_augments=5)
+    print("Augmented:")
+    for i, var in enumerate(variations[:3], 1):
+        print(f"  {i}. {var}")
+    print()`} />
+
+              <div class="recipe-notes">
+                <h4>Tips & Variations</h4>
+                <ul>
+                  <li>Validate augmented samples maintain label correctness</li>
+                  <li>Combine with back-translation for more diverse augmentation</li>
+                  <li>Adjust augmentation aggressiveness based on original dataset size</li>
+                </ul>
+              </div>
+            </article>
+
+            <!-- Anomaly Detection -->
+            <article class="recipe" id="anomaly-detection">
+              <div class="recipe-header">
+                <h3>Anomaly Detection</h3>
+                <span class="recipe-tag">Quality Control</span>
+              </div>
+
+              <div class="recipe-intro">
+                <p>
+                  <strong>The problem:</strong> Identify text that doesn't fit expected patterns—gibberish,
+                  spam, corrupted data, or out-of-domain content.
+                </p>
+                <p>
+                  <strong>The insight:</strong> Language models assign low probability (high perplexity)
+                  to unusual text. Random characters, spam patterns, and text in the wrong language
+                  will score significantly worse than normal text.
+                </p>
+                <p>
+                  <strong>When to use:</strong> Data cleaning pipelines, spam detection, quality assurance
+                  for user-generated content, detecting corrupted records.
+                </p>
+              </div>
+
+              <CodeBlock code={`from wikilangs import ngram
+import numpy as np
+
+def detect_anomalies(texts, lang='en', percentile_threshold=90):
+    """
+    Identify anomalous texts that don't fit normal language patterns.
+
+    Uses perplexity (how "surprised" the model is) to detect:
+    - Random/gibberish text
+    - Spam patterns
+    - Wrong language
+    - Corrupted data
+
+    Returns texts scoring above the threshold percentile.
+    """
+    ng = ngram(date='latest', lang=lang, gram_size=3)
+
+    # Score all texts
+    scored = []
+    for text in texts:
+        if not text.strip():
+            continue
+
+        log_prob = ng.score(text)
+        # Normalize by length (per-word perplexity proxy)
+        word_count = max(len(text.split()), 1)
+        perplexity = -log_prob / word_count
+
+        scored.append({
+            'text': text,
+            'perplexity': perplexity,
+            'log_prob': log_prob
+        })
+
+    if not scored:
+        return [], 0
+
+    # Find threshold
+    perplexities = [s['perplexity'] for s in scored]
+    threshold = np.percentile(perplexities, percentile_threshold)
+
+    # Identify anomalies (high perplexity = unusual)
+    anomalies = []
+    for item in scored:
+        if item['perplexity'] > threshold:
+            preview = item['text'][:80] + '...' if len(item['text']) > 80 else item['text']
+            anomalies.append({
+                'text': preview,
+                'perplexity': round(item['perplexity'], 2),
+                'reason': classify_anomaly(item['perplexity'], threshold)
+            })
+
+    return anomalies, threshold
+
+def classify_anomaly(perplexity, threshold):
+    """Provide a human-readable reason for the anomaly."""
+    ratio = perplexity / threshold
+    if ratio > 3:
+        return "Severely unusual - likely gibberish or wrong language"
+    elif ratio > 2:
+        return "Very unusual - possibly spam or corrupted"
+    else:
+        return "Mildly unusual - may need review"
+
+# Example: Find anomalies in a mixed dataset
+print("=== Anomaly Detection ===\\n")
+
+texts = [
+    # Normal texts
+    "The weather forecast predicts sunny skies for tomorrow.",
+    "Machine learning algorithms require substantial training data.",
+    "The committee will review the proposal next week.",
+    "Scientists discovered a new species in the rainforest.",
+
+    # Anomalies
+    "asdfghjkl qwerty zxcvbnm random keyboard mashing here",
+    "$$$ CLICK NOW !!! FREE MONEY !!! BUY BUY BUY !!!",
+    "Ceci est un texte en français dans un corpus anglais",  # French
+    "aaa bbb ccc ddd eee fff ggg hhh iii jjj kkk lll mmm",
+]
+
+anomalies, threshold = detect_anomalies(texts, percentile_threshold=75)
+
+print(f"Threshold perplexity: {threshold:.2f}\\n")
+print(f"Found {len(anomalies)} anomalies:\\n")
+
+for a in anomalies:
+    print(f"• {a['text']}")
+    print(f"  Perplexity: {a['perplexity']} | {a['reason']}")
+    print()`} />
+
+              <div class="recipe-notes">
+                <h4>Tips & Variations</h4>
+                <ul>
+                  <li>Adjust percentile threshold based on expected anomaly rate</li>
+                  <li>Use multiple language models to detect wrong-language content</li>
+                  <li>Combine with rule-based filters for known spam patterns</li>
+                </ul>
+              </div>
+            </article>
+
+          </section>
+
+          <!-- LLM RECIPES -->
+          <section id="llm-recipes" class="doc-section recipes-section">
+            <h2>LLM Recipes</h2>
+            <p class="section-intro">
+              These recipes show how to integrate Wikilangs with large language models.
+              Whether you're extending an LLM to support a new language or analyzing tokenizer efficiency,
+              these patterns help you work with modern NLP systems.
+            </p>
+
+            <!-- Extend LLM Vocabulary -->
+            <article class="recipe" id="llm-extend-vocabulary">
+              <div class="recipe-header">
+                <h3>Extend LLM Vocabulary for New Languages</h3>
+                <span class="recipe-tag">LLM</span>
+              </div>
+
+              <div class="recipe-intro">
+                <p>
+                  <strong>The problem:</strong> Your LLM doesn't handle your target language well.
+                  It tokenizes words into too many pieces and produces poor outputs.
+                </p>
+                <p>
+                  <strong>The insight:</strong> By adding language-specific tokens from Wikilangs and
+                  resizing the model's embedding layer, you give the LLM proper vocabulary for your language.
+                  The new token embeddings will be learned during fine-tuning.
+                </p>
+                <p>
+                  <strong>When to use:</strong> Adapting LLMs to low-resource languages, improving efficiency
+                  for non-English use cases, building multilingual applications.
+                </p>
+              </div>
+
+              <CodeBlock code={`from transformers import AutoModelForCausalLM, AutoTokenizer
+from wikilangs.llm import add_language_tokens
+
+# Load your base model
+model_name = "meta-llama/Llama-2-7b-hf"  # or any HuggingFace model
+model = AutoModelForCausalLM.from_pretrained(model_name)
+tokenizer = AutoTokenizer.from_pretrained(model_name)
+
+# Check tokenization BEFORE adding new tokens
+test_text = "مرحبا، كيفاش داير؟"  # Moroccan Arabic
+tokens_before = tokenizer.tokenize(test_text)
+print(f"Before: {len(tokens_before)} tokens")
+print(f"Tokens: {tokens_before}")
+
+# Add Moroccan Arabic (Darija) vocabulary
+model, tokenizer = add_language_tokens(
+    model=model,
+    tokenizer=tokenizer,
+    lang='ary',           # Moroccan Arabic
+    size=32000,           # Vocabulary size
+    freeze_non_native_tokens=True  # Optional: freeze English tokens
+)
+
+# Check tokenization AFTER
+tokens_after = tokenizer.tokenize(test_text)
+print(f"\\nAfter: {len(tokens_after)} tokens")
+print(f"Tokens: {tokens_after}")
+
+# Now fine-tune on your Moroccan Arabic data!
+# The new tokens will learn meaningful embeddings during training.`} />
+
+              <div class="recipe-notes">
+                <h4>Tips & Variations</h4>
+                <ul>
+                  <li>Use <code>freeze_non_native_tokens=True</code> to focus learning on new tokens</li>
+                  <li>Start with smaller vocab sizes (16k) for faster initial experiments</li>
+                  <li>Fine-tune on at least 10k sentences to learn good embeddings for new tokens</li>
+                </ul>
+              </div>
+            </article>
+
+            <!-- Language Fine-Tuning -->
+            <article class="recipe" id="llm-fine-tuning">
+              <div class="recipe-header">
+                <h3>Language-Specific Fine-Tuning</h3>
+                <span class="recipe-tag">LLM</span>
+              </div>
+
+              <div class="recipe-intro">
+                <p>
+                  <strong>The problem:</strong> After adding vocabulary, you need to train the model
+                  to actually use these new tokens effectively.
+                </p>
+                <p>
+                  <strong>The insight:</strong> A two-stage approach works well: first train only the
+                  new embeddings while keeping the rest frozen, then optionally do full fine-tuning.
+                  This prevents catastrophic forgetting of existing capabilities.
+                </p>
+              </div>
+
+              <CodeBlock code={`from transformers import AutoModelForCausalLM, AutoTokenizer, TrainingArguments, Trainer
+from wikilangs.llm import add_language_tokens, setup_embedding_freezing
+from datasets import load_dataset
+
+# Load and extend model (as shown above)
+model_name = "meta-llama/Llama-2-7b-hf"
+model = AutoModelForCausalLM.from_pretrained(model_name)
+tokenizer = AutoTokenizer.from_pretrained(model_name)
+
+# Add target language vocabulary
+model, tokenizer = add_language_tokens(
+    model=model,
+    tokenizer=tokenizer,
+    lang='sw',  # Swahili
+    size=16000
+)
+
+# Stage 1: Train only new embeddings
+# Freeze all parameters except embeddings
+for name, param in model.named_parameters():
+    if 'embed' not in name and 'lm_head' not in name:
+        param.requires_grad = False
+
+# Prepare your Swahili dataset
+# dataset = load_dataset("your_swahili_dataset")
+
+training_args = TrainingArguments(
+    output_dir="./swahili-stage1",
+    num_train_epochs=3,
+    per_device_train_batch_size=4,
+    learning_rate=1e-4,  # Higher LR for embedding-only training
+    warmup_steps=100,
+)
+
+# Train stage 1...
+# trainer = Trainer(model=model, args=training_args, train_dataset=dataset)
+# trainer.train()
+
+# Stage 2: Full fine-tuning (optional)
+# Unfreeze all parameters
+for param in model.parameters():
+    param.requires_grad = True
+
+training_args_stage2 = TrainingArguments(
+    output_dir="./swahili-stage2",
+    num_train_epochs=2,
+    learning_rate=1e-5,  # Lower LR for full fine-tuning
+)
+
+# Continue training...`} />
+
+              <div class="recipe-notes">
+                <h4>Tips & Variations</h4>
+                <ul>
+                  <li>Stage 1 typically needs 1-3 epochs; stage 2 needs 1-2 epochs</li>
+                  <li>Use LoRA/QLoRA for parameter-efficient fine-tuning on consumer hardware</li>
+                  <li>Monitor perplexity on held-out data in the target language</li>
+                </ul>
+              </div>
+            </article>
+
+            <!-- Tokenizer Analysis -->
+            <article class="recipe" id="llm-tokenizer-analysis">
+              <div class="recipe-header">
+                <h3>Tokenizer Efficiency Analysis</h3>
+                <span class="recipe-tag">LLM</span>
+              </div>
+
+              <div class="recipe-intro">
+                <p>
+                  <strong>The problem:</strong> You want to understand how well an LLM's tokenizer
+                  handles your target language before investing in fine-tuning.
+                </p>
+                <p>
+                  <strong>The insight:</strong> Compare tokenization stats: tokens per word (fertility),
+                  unknown token rate, and compare against a language-specific Wikilangs tokenizer as baseline.
+                </p>
+              </div>
+
+              <CodeBlock code={`from transformers import AutoTokenizer
+from wikilangs import tokenizer as wikilangs_tokenizer
+
+def analyze_tokenizer_efficiency(text, hf_tokenizer, wl_tokenizer, lang_name):
+    """Compare HuggingFace tokenizer vs Wikilangs tokenizer efficiency."""
+
+    words = text.split()
+
+    # HuggingFace tokenizer
+    hf_tokens = hf_tokenizer.tokenize(text)
+    hf_ids = hf_tokenizer.encode(text)
+
+    # Wikilangs tokenizer
+    wl_tokens = wl_tokenizer.tokenize(text)
+    wl_ids = wl_tokenizer.encode(text)
+
+    print(f"=== Tokenizer Analysis for {lang_name} ===")
+    print(f"Text: '{text[:60]}...'")
+    print(f"Word count: {len(words)}")
+    print()
+    print("HuggingFace Tokenizer:")
+    print(f"  Tokens: {len(hf_tokens)}")
+    print(f"  Fertility (tokens/word): {len(hf_tokens)/len(words):.2f}")
+    print(f"  Sample: {hf_tokens[:10]}")
+    print()
+    print("Wikilangs Tokenizer:")
+    print(f"  Tokens: {len(wl_tokens)}")
+    print(f"  Fertility (tokens/word): {len(wl_tokens)/len(words):.2f}")
+    print(f"  Sample: {wl_tokens[:10]}")
+    print()
+
+    efficiency_gain = (len(hf_tokens) - len(wl_tokens)) / len(hf_tokens) * 100
+    print(f"Potential efficiency gain: {efficiency_gain:.1f}% fewer tokens")
+
+    return {
+        'hf_fertility': len(hf_tokens) / len(words),
+        'wl_fertility': len(wl_tokens) / len(words),
+        'efficiency_gain_pct': efficiency_gain
+    }
+
+# Example: Compare for Arabic text
+llm_tokenizer = AutoTokenizer.from_pretrained("meta-llama/Llama-2-7b-hf")
+arabic_tokenizer = wikilangs_tokenizer(date='latest', lang='ar', vocab_size=32000)
+
+arabic_text = "الذكاء الاصطناعي يغير العالم بطرق لم نتخيلها من قبل"
+
+analyze_tokenizer_efficiency(
+    arabic_text,
+    llm_tokenizer,
+    arabic_tokenizer,
+    "Arabic"
+)`} />
+
+              <div class="recipe-notes">
+                <h4>Interpreting Results</h4>
+                <ul>
+                  <li><strong>Fertility &lt; 1.5:</strong> Excellent - tokenizer handles language well</li>
+                  <li><strong>Fertility 1.5-2.5:</strong> Acceptable - some room for improvement</li>
+                  <li><strong>Fertility &gt; 2.5:</strong> Poor - consider adding language vocabulary</li>
+                  <li>High efficiency gain (>30%) strongly suggests vocabulary extension will help</li>
+                </ul>
+              </div>
+            </article>
+
+          </section>
+
+          <!-- More Ideas -->
+          <section class="doc-section">
+            <h2>More Recipe Ideas</h2>
+            <p class="section-intro">
+              Here are additional applications you can build with Wikilangs models.
+              Each combines the basic building blocks in creative ways.
+            </p>
+
+            <div class="ideas-grid">
+              <div class="idea-card">
+                <h4>Named Entity Recognition</h4>
+                <p>Use vocabulary frequency to identify likely proper nouns—rare words with capital letters are often names.</p>
+              </div>
+              <div class="idea-card">
+                <h4>Sentiment Lexicon Building</h4>
+                <p>Bootstrap sentiment dictionaries using seed words and embedding similarity to find positive/negative terms.</p>
+              </div>
+              <div class="idea-card">
+                <h4>Topic Modeling</h4>
+                <p>Cluster documents using sentence embeddings to discover themes in a corpus.</p>
+              </div>
+              <div class="idea-card">
+                <h4>Grammar Checking</h4>
+                <p>Score sentence variants with n-grams to detect awkward phrasing and suggest corrections.</p>
+              </div>
+              <div class="idea-card">
+                <h4>Plagiarism Detection</h4>
+                <p>Compare n-gram patterns and sentence embeddings across documents to find suspicious similarity.</p>
+              </div>
+              <div class="idea-card">
+                <h4>Language Learning Tools</h4>
+                <p>Build vocabulary trainers that introduce words by frequency rank—common words first.</p>
+              </div>
+            </div>
+          </section>
+
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<script>
+  // Scroll-based navigation highlighting
+  document.addEventListener('DOMContentLoaded', () => {
+    const nav = document.getElementById('docs-nav');
+    const navLinks = nav?.querySelectorAll('a[data-section]') || [];
+    const sections = document.querySelectorAll('.doc-section, .recipe');
+
+    if (!sections.length || !navLinks.length) return;
+
+    const observerOptions = {
+      rootMargin: '-100px 0px -70% 0px',
+      threshold: 0
+    };
+
+    let currentActive: Element | null = null;
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const id = entry.target.id;
+
+          // Remove active class from all links
+          navLinks.forEach(link => link.classList.remove('active'));
+
+          // Add active class to matching link
+          const activeLink = nav?.querySelector(`a[data-section="${id}"]`);
+          if (activeLink) {
+            activeLink.classList.add('active');
+            currentActive = activeLink;
+          }
+        }
+      });
+    }, observerOptions);
+
+    sections.forEach(section => {
+      if (section.id) {
+        observer.observe(section);
+      }
+    });
+  });
+</script>
+
+<style>
+  /* Hero */
+  .hero-compact {
+    padding: var(--space-12) 0;
+    background: var(--color-surface);
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .hero-compact h1 {
+    font-size: var(--font-size-4xl);
+    margin-bottom: var(--space-4);
+  }
+
+  .hero-subtitle {
+    font-size: var(--font-size-xl);
+    color: var(--color-text-secondary);
+  }
+
+  /* Grid Layout */
+  .docs-grid {
+    display: grid;
+    grid-template-columns: 240px 1fr;
+    gap: var(--space-16);
+  }
+
+  .docs-content {
+    min-width: 0;
+  }
+
+  /* Navigation */
+  .docs-nav {
+    position: sticky;
+    top: calc(64px + var(--space-6));
+    align-self: start;
+    max-height: calc(100vh - 120px);
+    overflow-y: auto;
+    padding-right: var(--space-4);
+  }
+
+  .nav-section {
+    margin-bottom: var(--space-6);
+  }
+
+  .docs-nav h3 {
+    font-size: var(--font-size-xs);
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: var(--space-3);
+    font-weight: 600;
+  }
+
+  .docs-nav ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .docs-nav li {
+    margin-bottom: var(--space-1);
+  }
+
+  .docs-nav a {
+    font-size: var(--font-size-sm);
+    color: var(--color-text-secondary);
+    text-decoration: none;
+    display: block;
+    padding: var(--space-1) var(--space-3);
+    border-left: 2px solid transparent;
+    transition: all var(--transition-fast);
+  }
+
+  .docs-nav a:hover {
+    color: var(--color-accent);
+    background: var(--color-surface);
+  }
+
+  .docs-nav a.active {
+    color: var(--color-accent);
+    border-left-color: var(--color-accent);
+    background: var(--color-surface);
+    font-weight: 500;
+  }
+
+  .submenu {
+    margin-top: var(--space-1) !important;
+    margin-left: var(--space-4) !important;
+    border-left: 1px solid var(--color-border-light);
+  }
+
+  .submenu li {
+    margin-bottom: 0 !important;
+  }
+
+  .submenu a {
+    font-size: var(--font-size-xs) !important;
+    padding: var(--space-1) var(--space-3) !important;
+    border-left: none !important;
+  }
+
+  .submenu a:hover {
+    background: none !important;
+    color: var(--color-accent) !important;
+  }
+
+  /* Sections */
+  .doc-section {
+    margin-bottom: var(--space-20);
+    padding-bottom: var(--space-12);
+    border-bottom: 1px solid var(--color-border-light);
+  }
+
+  .doc-section:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+  }
+
+  .doc-section h2 {
+    font-size: var(--font-size-3xl);
+    color: var(--color-text);
+    margin-bottom: var(--space-6);
+    padding-bottom: var(--space-3);
+    border-bottom: 3px solid var(--color-accent);
+  }
+
+  .section-intro {
+    font-size: var(--font-size-lg);
+    color: var(--color-text-secondary);
+    margin-bottom: var(--space-8);
+    line-height: 1.7;
+  }
+
+  /* Installation blocks */
+  .install-block {
+    margin-bottom: var(--space-6);
+  }
+
+  .install-block h4 {
+    font-size: var(--font-size-sm);
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: var(--space-2);
+  }
+
+  .tip-box {
+    background: var(--color-accent-light);
+    border: 1px solid var(--color-accent);
+    border-radius: var(--radius-md);
+    padding: var(--space-4);
+    margin-top: var(--space-6);
+  }
+
+  .tip-box strong {
+    color: var(--color-accent-dark);
+  }
+
+  /* API Blocks */
+  .api-block {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-6);
+    margin-bottom: var(--space-6);
+  }
+
+  .api-block h3 {
+    font-family: var(--font-mono);
+    font-size: var(--font-size-base);
+    color: var(--color-accent);
+    margin: 0 0 var(--space-3);
+    padding-bottom: var(--space-2);
+    border-bottom: 1px solid var(--color-border-light);
+  }
+
+  .api-block p {
+    color: var(--color-text-secondary);
+    margin-bottom: var(--space-4);
+    line-height: 1.6;
+  }
+
+  .param-table {
+    margin: var(--space-4) 0;
+    overflow-x: auto;
+  }
+
+  .param-table table {
+    width: 100%;
+    font-size: var(--font-size-sm);
+  }
+
+  .param-table th {
+    text-align: left;
+    font-weight: 600;
+    padding: var(--space-2) var(--space-3);
+    background: var(--color-bg);
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .param-table td {
+    padding: var(--space-2) var(--space-3);
+    border-bottom: 1px solid var(--color-border-light);
+    vertical-align: top;
+  }
+
+  .methods-label {
+    font-weight: 600;
+    color: var(--color-text);
+    margin-bottom: var(--space-2) !important;
+  }
+
+  .methods-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .methods-list li {
+    padding: var(--space-1) 0;
+    color: var(--color-text-secondary);
+  }
+
+  .methods-list code {
+    color: var(--color-accent);
+  }
+
+  /* Why Box */
+  .why-box {
+    background: var(--color-surface);
+    border-left: 4px solid var(--color-accent);
+    padding: var(--space-6);
+    margin: var(--space-6) 0;
+    border-radius: 0 var(--radius-md) var(--radius-md) 0;
+  }
+
+  .why-box h4 {
+    color: var(--color-accent);
+    margin: 0 0 var(--space-3);
+  }
+
+  .why-box p {
+    color: var(--color-text-secondary);
+    margin-bottom: var(--space-3);
+  }
+
+  .why-box ul {
+    margin: var(--space-3) 0 0;
+    padding-left: var(--space-6);
+  }
+
+  .why-box li {
+    color: var(--color-text-secondary);
+    margin-bottom: var(--space-2);
+  }
+
+  /* Recipes */
+  .recipes-section .section-intro {
+    margin-bottom: var(--space-10);
+  }
+
+  .recipe {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    padding: var(--space-8);
+    margin-bottom: var(--space-10);
+  }
+
+  .recipe-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: var(--space-4);
+    padding-bottom: var(--space-3);
+    border-bottom: 1px solid var(--color-border-light);
+  }
+
+  .recipe-header h3 {
+    font-size: var(--font-size-xl);
+    color: var(--color-accent);
+    margin: 0;
+  }
+
+  .recipe-tag {
+    font-size: var(--font-size-xs);
+    color: var(--color-text-muted);
+    background: var(--color-bg);
+    padding: var(--space-1) var(--space-3);
+    border-radius: var(--radius-full);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .recipe-intro {
+    margin-bottom: var(--space-6);
+  }
+
+  .recipe-intro p {
+    color: var(--color-text-secondary);
+    margin-bottom: var(--space-4);
+    line-height: 1.7;
+  }
+
+  .recipe-intro p:last-child {
+    margin-bottom: 0;
+  }
+
+  .recipe-intro strong {
+    color: var(--color-text);
+  }
+
+  .recipe-notes {
+    margin-top: var(--space-6);
+    padding-top: var(--space-4);
+    border-top: 1px solid var(--color-border-light);
+  }
+
+  .recipe-notes h4 {
+    font-size: var(--font-size-sm);
+    color: var(--color-text);
+    margin: 0 0 var(--space-3);
+  }
+
+  .recipe-notes ul {
+    margin: 0;
+    padding-left: var(--space-5);
+  }
+
+  .recipe-notes li {
+    color: var(--color-text-secondary);
+    margin-bottom: var(--space-2);
+    font-size: var(--font-size-sm);
+  }
+
+  /* Ideas Grid */
+  .ideas-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-4);
+    margin-top: var(--space-6);
+  }
+
+  .idea-card {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-5);
+  }
+
+  .idea-card h4 {
+    font-size: var(--font-size-base);
+    color: var(--color-accent);
+    margin: 0 0 var(--space-2);
+  }
+
+  .idea-card p {
+    font-size: var(--font-size-sm);
+    color: var(--color-text-secondary);
+    margin: 0;
+    line-height: 1.5;
+  }
+
+  /* Responsive */
+  @media (max-width: 1024px) {
+    .docs-grid {
+      grid-template-columns: 200px 1fr;
+      gap: var(--space-8);
+    }
+
+    .ideas-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .docs-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .docs-nav {
+      position: static;
+      max-height: none;
+      margin-bottom: var(--space-8);
+      padding-bottom: var(--space-6);
+      border-bottom: 1px solid var(--color-border);
+      padding-right: 0;
+    }
+
+    .recipe {
+      padding: var(--space-5);
+    }
+
+    .recipe-header {
+      flex-direction: column;
+      gap: var(--space-2);
+    }
+  }
+</style>

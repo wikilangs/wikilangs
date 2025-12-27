@@ -1,0 +1,299 @@
+---
+import BaseLayout from '@layouts/BaseLayout.astro';
+import CodeBlock from '@components/CodeBlock.astro';
+---
+
+<BaseLayout
+  title="Quick Start"
+  description="Get started with Wikilangs in minutes. Install the Python package and start using pre-trained NLP models for 340+ languages."
+>
+  <section class="hero-compact">
+    <div class="container">
+      <h1>Quick Start</h1>
+      <p class="hero-subtitle">
+        Get up and running with Wikilangs in minutes.
+      </p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="quickstart-content">
+        <!-- Installation -->
+        <div class="qs-section">
+          <h2>Installation</h2>
+          <p>Install Wikilangs from PyPI:</p>
+          <CodeBlock code="pip install wikilangs" lang="bash" />
+          <p>For embedding support, also install BabelVec:</p>
+          <CodeBlock code="pip install babelvec" lang="bash" />
+        </div>
+
+        <!-- Basic Usage -->
+        <div class="qs-section">
+          <h2>Basic Usage</h2>
+
+          <h3>Tokenization</h3>
+          <p>Create a BPE tokenizer and tokenize text:</p>
+          <CodeBlock code={`from wikilangs import tokenizer
+
+# Create a tokenizer for English with 32k vocabulary
+tok = tokenizer(date='latest', lang='en', vocab_size=32000)
+
+# Tokenize text
+text = "Natural language processing is fascinating."
+tokens = tok.tokenize(text)
+print(tokens)  # ['_Natural', '_language', '_processing', '_is', '_fasci', 'nating', '.']
+
+# Encode to IDs
+ids = tok.encode(text)
+print(ids)  # [1234, 567, 890, 12, 345, 678, 9]
+
+# Decode back to text
+decoded = tok.decode(ids)
+print(decoded)  # "Natural language processing is fascinating."`} />
+
+          <h3>Text Scoring with N-grams</h3>
+          <p>Score text probability using n-gram models:</p>
+          <CodeBlock code={`from wikilangs import ngram
+
+# Create a 3-gram model for English
+ng = ngram(date='latest', lang='en', gram_size=3)
+
+# Score text (returns log probability)
+score = ng.score("This is a natural sentence.")
+print(f"Log probability: {score}")
+
+# Predict next tokens
+predictions = ng.predict_next("The quick brown", top_k=5)
+for token, prob in predictions:
+    print(f"  {token}: {prob:.4f}")`} />
+
+          <h3>Text Generation with Markov Chains</h3>
+          <p>Generate text using Markov chain models:</p>
+          <CodeBlock code={`from wikilangs import markov
+
+# Create a Markov chain with context depth 3
+mc = markov(date='latest', lang='en', depth=3)
+
+# Generate random text
+text = mc.generate(length=50)
+print(text)
+
+# Generate with a seed phrase
+text = mc.generate(length=50, seed=["The", "history", "of"])
+print(text)`} />
+
+          <h3>Vocabulary Lookup</h3>
+          <p>Look up word frequency and statistics:</p>
+          <CodeBlock code={`from wikilangs import vocabulary
+
+# Create a vocabulary instance
+vocab = vocabulary(date='latest', lang='en')
+
+# Look up a word
+info = vocab.lookup("language")
+print(info)
+# {'token': 'language', 'frequency': 123456, 'idf_score': 5.67, 'rank': 234}
+
+# Get word frequency
+freq = vocab.get_frequency("language")
+print(f"Frequency: {freq}")
+
+# Find words with a prefix
+words = vocab.get_words_with_prefix("lang", top_k=10)
+print(words)`} />
+
+          <h3>Word Embeddings</h3>
+          <p>Get word and sentence embeddings:</p>
+          <CodeBlock code={`from wikilangs import embeddings
+
+# Create embeddings (requires babelvec)
+emb = embeddings(date='latest', lang='en', dimension=64)
+
+# Get word vector
+word_vec = emb.embed_word("language")
+print(word_vec.shape)  # (64,)
+
+# Get sentence vector with position encoding
+sent_vec = emb.embed_sentence(
+    "Language is a beautiful thing.",
+    method='rope'  # or 'average', 'decay', 'sinusoidal'
+)
+print(sent_vec.shape)  # (64,)`} />
+        </div>
+
+        <!-- Language Discovery -->
+        <div class="qs-section">
+          <h2>Discovering Languages</h2>
+          <p>Find available languages and their metadata:</p>
+          <CodeBlock code={`from wikilangs import languages, languages_with_metadata, get_language_info
+
+# Get list of available language codes
+langs = languages(date='latest')
+print(f"Available: {len(langs)} languages")
+print(langs[:10])  # ['aa', 'ab', 'ace', 'ady', 'af', ...]
+
+# Get languages with ISO 639 metadata
+lang_infos = languages_with_metadata(date='latest')
+for info in lang_infos[:5]:
+    print(f"{info.code}: {info.name}")
+
+# Get info for a specific language
+info = get_language_info('ary')
+print(f"{info.name} ({info.code})")
+print(f"  ISO 639-3: {info.alpha_3}")
+print(f"  Type: {info.type}")`} />
+        </div>
+
+        <!-- Model Variants -->
+        <div class="qs-section">
+          <h2>Model Variants</h2>
+
+          <h3>Vocabulary Sizes</h3>
+          <p>Tokenizers come in 4 sizes:</p>
+          <ul>
+            <li><strong>8k</strong> - Smallest, lowest compression</li>
+            <li><strong>16k</strong> - Balanced for general use</li>
+            <li><strong>32k</strong> - Recommended for production</li>
+            <li><strong>64k</strong> - Highest compression, largest model</li>
+          </ul>
+
+          <h3>N-gram Sizes</h3>
+          <p>Choose context length based on your needs:</p>
+          <ul>
+            <li><strong>2-gram</strong> - Fast, less context</li>
+            <li><strong>3-gram</strong> - Good balance (default)</li>
+            <li><strong>4-gram</strong> - More context, larger model</li>
+            <li><strong>5-gram</strong> - Most context, largest model</li>
+          </ul>
+
+          <h3>Word vs Subword</h3>
+          <p>Both n-grams and Markov chains have word and subword variants:</p>
+          <CodeBlock code={`# Word-level (default)
+ng_word = ngram('latest', 'en', gram_size=3, variant='word')
+
+# Subword-level (uses tokenizer vocabulary)
+ng_subword = ngram('latest', 'en', gram_size=3, variant='subword')`} />
+        </div>
+
+        <!-- Next Steps -->
+        <div class="qs-section">
+          <h2>Next Steps</h2>
+          <div class="next-steps-grid">
+            <a href="/languages/" class="next-step-card">
+              <h3>Browse Languages</h3>
+              <p>Explore models for 340+ languages with full evaluation reports.</p>
+            </a>
+            <a href="/docs/" class="next-step-card">
+              <h3>API Reference</h3>
+              <p>Complete documentation for all modules and methods.</p>
+            </a>
+            <a href="/research/" class="next-step-card">
+              <h3>Metrics Guide</h3>
+              <p>Understand perplexity, compression, isotropy, and more.</p>
+            </a>
+            <a href="https://huggingface.co/wikilangs" class="next-step-card" target="_blank" rel="noopener">
+              <h3>HuggingFace Models</h3>
+              <p>Browse and download models directly from HuggingFace.</p>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .hero-compact {
+    padding: var(--space-12) 0;
+    background: var(--color-surface);
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .hero-compact h1 {
+    font-size: var(--font-size-4xl);
+    margin-bottom: var(--space-4);
+  }
+
+  .hero-subtitle {
+    font-size: var(--font-size-xl);
+    color: var(--color-text-secondary);
+  }
+
+  .quickstart-content {
+    max-width: 800px;
+  }
+
+  .qs-section {
+    margin-bottom: var(--space-12);
+  }
+
+  .qs-section h2 {
+    font-size: var(--font-size-2xl);
+    margin-bottom: var(--space-4);
+    padding-bottom: var(--space-2);
+    border-bottom: 2px solid var(--color-accent);
+  }
+
+  .qs-section h3 {
+    font-size: var(--font-size-lg);
+    margin-top: var(--space-6);
+    margin-bottom: var(--space-2);
+    color: var(--color-accent);
+  }
+
+  .qs-section p {
+    color: var(--color-text-secondary);
+    margin-bottom: var(--space-3);
+  }
+
+  .qs-section ul {
+    margin: var(--space-4) 0;
+    padding-left: var(--space-6);
+  }
+
+  .qs-section li {
+    color: var(--color-text-secondary);
+    margin-bottom: var(--space-2);
+  }
+
+  .next-steps-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-4);
+    margin-top: var(--space-6);
+  }
+
+  .next-step-card {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-5);
+    text-decoration: none;
+    transition: all var(--transition-base);
+  }
+
+  .next-step-card:hover {
+    border-color: var(--color-accent);
+    box-shadow: var(--shadow-md);
+    text-decoration: none;
+  }
+
+  .next-step-card h3 {
+    font-size: var(--font-size-base);
+    color: var(--color-accent);
+    margin: 0 0 var(--space-2);
+  }
+
+  .next-step-card p {
+    font-size: var(--font-size-sm);
+    color: var(--color-text-secondary);
+    margin: 0;
+  }
+
+  @media (max-width: 768px) {
+    .next-steps-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

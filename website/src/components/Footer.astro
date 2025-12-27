@@ -1,0 +1,224 @@
+---
+const currentYear = new Date().getFullYear();
+
+const links = {
+  project: [
+    { href: '/languages/', label: 'Languages' },
+    { href: '/quickstart/', label: 'Quick Start' },
+    { href: '/docs/', label: 'Documentation' },
+    { href: '/research/', label: 'Research' },
+  ],
+  resources: [
+    { href: 'https://huggingface.co/wikilangs', label: 'HuggingFace Models', external: true },
+    { href: 'https://huggingface.co/datasets/omarkamali/wikipedia-monthly', label: 'Wikipedia Dataset', external: true },
+    { href: 'https://github.com/omarkamali/babelvec', label: 'BabelVec', external: true },
+    { href: 'https://pypi.org/project/wikilangs/', label: 'PyPI Package', external: true },
+  ],
+  about: [
+    { href: '/about/', label: 'About' },
+    { href: '/about/citation/', label: 'Citation' },
+    { href: '/about/license/', label: 'License' },
+    { href: 'https://github.com/wikilangs/wikilangs', label: 'GitHub', external: true },
+  ],
+};
+---
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a href="/" class="footer-logo">Wikilangs</a>
+        <p class="footer-tagline">
+          Open NLP models for every Wikipedia language.
+          Making multilingual NLP accessible to everyone.
+        </p>
+        <p class="footer-credit">
+          A project by <a href="https://omarkamali.com" target="_blank" rel="noopener">Omar Kamali</a>
+          at <a href="https://omneitylabs.com" target="_blank" rel="noopener">
+            <img src="https://www.google.com/s2/favicons?sz=64&domain_url=omneitylabs.com" alt="" class="inline-logo" />
+            Omneity Labs
+          </a>
+        </p>
+        <p class="footer-sponsor">
+          Sponsored by <a href="https://featherless.ai" target="_blank" rel="noopener">
+            <img src="https://www.google.com/s2/favicons?sz=64&domain_url=featherless.ai" alt="" class="inline-logo" />
+            Featherless.ai
+          </a>
+        </p>
+      </div>
+
+      <div class="footer-links">
+        <div class="footer-section">
+          <h4>Project</h4>
+          <ul>
+            {links.project.map(link => (
+              <li><a href={link.href}>{link.label}</a></li>
+            ))}
+          </ul>
+        </div>
+
+        <div class="footer-section">
+          <h4>Resources</h4>
+          <ul>
+            {links.resources.map(link => (
+              <li>
+                <a href={link.href} target={link.external ? '_blank' : undefined} rel={link.external ? 'noopener' : undefined}>
+                  {link.label}
+                  {link.external && <span class="external-icon" aria-hidden="true">↗</span>}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <div class="footer-section">
+          <h4>About</h4>
+          <ul>
+            {links.about.map(link => (
+              <li>
+                <a href={link.href} target={link.external ? '_blank' : undefined} rel={link.external ? 'noopener' : undefined}>
+                  {link.label}
+                  {link.external && <span class="external-icon" aria-hidden="true">↗</span>}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <p>&copy; {currentYear} Wikilangs. MIT License.</p>
+      <p class="footer-data">
+        Data sourced from <a href="https://wikipedia.org" target="_blank" rel="noopener">Wikipedia</a>
+        under <a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noopener">CC BY-SA 4.0</a>.
+      </p>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .footer {
+    background: var(--color-surface);
+    border-top: 1px solid var(--color-border);
+    padding: var(--space-16) 0 var(--space-8);
+    margin-top: var(--space-20);
+  }
+
+  .footer-grid {
+    display: grid;
+    grid-template-columns: 1.5fr 2fr;
+    gap: var(--space-12);
+  }
+
+  .footer-logo {
+    font-size: var(--font-size-xl);
+    font-weight: 700;
+    color: var(--color-text);
+    text-decoration: none;
+  }
+
+  .inline-logo {
+    width: 16px;
+    height: 16px;
+    vertical-align: text-top;
+    margin-right: 4px;
+    border-radius: 2px;
+    display: inline-block;
+  }
+
+  .footer-tagline {
+    margin-top: var(--space-3);
+    color: var(--color-text-secondary);
+    font-size: var(--font-size-sm);
+    max-width: 280px;
+  }
+
+  .footer-credit {
+    margin-top: var(--space-4);
+    font-size: var(--font-size-sm);
+    color: var(--color-text-muted);
+  }
+
+  .footer-sponsor {
+    margin-top: var(--space-2);
+    font-size: var(--font-size-sm);
+    color: var(--color-text-muted);
+  }
+
+  .footer-sponsor a {
+    color: var(--color-accent);
+    font-weight: 500;
+  }
+
+  .footer-links {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-8);
+  }
+
+  .footer-section h4 {
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+    color: var(--color-text);
+    margin-bottom: var(--space-4);
+  }
+
+  .footer-section ul {
+    list-style: none;
+  }
+
+  .footer-section li {
+    margin-bottom: var(--space-2);
+  }
+
+  .footer-section a {
+    font-size: var(--font-size-sm);
+    color: var(--color-text-secondary);
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1);
+  }
+
+  .footer-section a:hover {
+    color: var(--color-accent);
+  }
+
+  .external-icon {
+    font-size: var(--font-size-xs);
+    opacity: 0.6;
+  }
+
+  .footer-bottom {
+    margin-top: var(--space-12);
+    padding-top: var(--space-6);
+    border-top: 1px solid var(--color-border-light);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: var(--font-size-sm);
+    color: var(--color-text-muted);
+  }
+
+  .footer-data a {
+    color: var(--color-text-secondary);
+  }
+
+  @media (max-width: 768px) {
+    .footer-grid {
+      grid-template-columns: 1fr;
+      gap: var(--space-8);
+    }
+
+    .footer-links {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    .footer-bottom {
+      flex-direction: column;
+      gap: var(--space-2);
+      text-align: center;
+    }
+  }
+</style>

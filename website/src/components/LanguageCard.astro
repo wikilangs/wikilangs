@@ -1,0 +1,131 @@
+---
+import type { LanguageData } from '@lib/languages';
+import { formatNumber, formatCompression } from '@lib/languages';
+
+interface Props {
+  lang: LanguageData;
+  showMetrics?: boolean;
+}
+
+const { lang, showMetrics = true } = Astro.props;
+
+const displayName = lang.common_name || lang.name;
+---
+
+<a href={`/languages/${lang.code}/`} class="language-card">
+  <div class="card-header">
+    <span class="lang-code">{lang.code}</span>
+    {lang.has_models && <span class="badge badge-accent">Models</span>}
+  </div>
+
+  <h3 class="lang-name">{displayName}</h3>
+
+  {lang.name !== displayName && (
+    <p class="lang-alt-name">{lang.name}</p>
+  )}
+
+  {showMetrics && lang.has_models && (
+    <div class="card-metrics">
+      {lang.vocabulary_size && (
+        <div class="metric">
+          <span class="metric-value">{formatNumber(lang.vocabulary_size)}</span>
+          <span class="metric-label">words</span>
+        </div>
+      )}
+      {lang.best_compression_ratio && (
+        <div class="metric">
+          <span class="metric-value">{formatCompression(lang.best_compression_ratio)}</span>
+          <span class="metric-label">compression</span>
+        </div>
+      )}
+    </div>
+  )}
+
+  {!lang.has_models && (
+    <p class="no-models">Coming soon</p>
+  )}
+</a>
+
+<style>
+  .language-card {
+    display: block;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-4);
+    text-decoration: none;
+    transition: all var(--transition-base);
+  }
+
+  .language-card:hover {
+    border-color: var(--color-accent-light);
+    box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
+    text-decoration: none;
+  }
+
+  .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--space-2);
+  }
+
+  .lang-code {
+    font-family: var(--font-mono);
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+    color: var(--color-accent-dark);
+    background: var(--color-accent-light);
+    padding: var(--space-1) var(--space-2);
+    border-radius: var(--radius-sm);
+  }
+
+  .lang-name {
+    font-size: var(--font-size-lg);
+    font-weight: 600;
+    color: var(--color-text);
+    margin: 0;
+  }
+
+  .lang-alt-name {
+    font-size: var(--font-size-sm);
+    color: var(--color-text-muted);
+    margin: var(--space-1) 0 0;
+  }
+
+  .card-metrics {
+    display: flex;
+    gap: var(--space-4);
+    margin-top: var(--space-3);
+    padding-top: var(--space-3);
+    border-top: 1px solid var(--color-border-light);
+  }
+
+  .metric {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .metric-value {
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+    color: var(--color-text);
+  }
+
+  .metric-label {
+    font-size: var(--font-size-xs);
+    color: var(--color-text-muted);
+  }
+
+  .no-models {
+    margin-top: var(--space-3);
+    font-size: var(--font-size-sm);
+    color: var(--color-text-muted);
+    font-style: italic;
+  }
+
+  .badge {
+    font-size: var(--font-size-xs);
+  }
+</style>

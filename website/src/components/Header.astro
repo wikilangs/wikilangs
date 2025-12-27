@@ -1,0 +1,137 @@
+---
+import ThemeToggle from './ThemeToggle.astro';
+
+const navItems = [
+  { href: '/languages/', label: 'Languages' },
+  { href: '/quickstart/', label: 'Quick Start' },
+  { href: '/docs/', label: 'Docs' },
+  { href: '/research/', label: 'Research' },
+];
+
+const currentPath = Astro.url.pathname;
+
+function isActive(href: string): boolean {
+  if (href === '/') return currentPath === '/';
+  return currentPath.startsWith(href);
+}
+---
+
+<header class="header">
+  <div class="container">
+    <nav class="nav">
+      <a href="/" class="logo">
+        <img src="/wikilangs.png" alt="Wikilangs" class="logo-img" />
+        <span class="logo-text">Wikilangs</span>
+      </a>
+
+      <ul class="nav-links">
+        {navItems.map(item => (
+          <li>
+            <a
+              href={item.href}
+              class:list={['nav-link', { active: isActive(item.href) }]}
+            >
+              {item.label}
+            </a>
+          </li>
+        ))}
+      </ul>
+
+      <div class="nav-actions">
+        <ThemeToggle />
+        <a
+          href="https://github.com/wikilangs/wikilangs"
+          class="btn btn-ghost"
+          target="_blank"
+          rel="noopener"
+        >
+          GitHub
+        </a>
+        <a href="https://huggingface.co/wikilangs" class="btn btn-secondary" target="_blank" rel="noopener">
+          Models
+        </a>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<style>
+  .header {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: var(--color-surface);
+    border-bottom: 1px solid var(--color-border);
+    backdrop-filter: blur(8px);
+    transition: background-color var(--transition-base), border-color var(--transition-base);
+  }
+
+  .nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 64px;
+  }
+
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    text-decoration: none;
+  }
+
+  .logo-img {
+    height: 64px;
+    width: auto;
+  }
+
+  .logo-text {
+    font-size: var(--font-size-xl);
+    font-weight: 700;
+    color: var(--color-text);
+    letter-spacing: -0.02em;
+  }
+
+  .nav-links {
+    display: flex;
+    gap: var(--space-1);
+    list-style: none;
+  }
+
+  .nav-link {
+    padding: var(--space-2) var(--space-3);
+    font-size: var(--font-size-sm);
+    font-weight: 500;
+    color: var(--color-text-secondary);
+    text-decoration: none;
+    border-radius: var(--radius-md);
+    transition: all var(--transition-fast);
+  }
+
+  .nav-link:hover {
+    color: var(--color-text);
+    background: var(--color-surface-alt);
+    text-decoration: none;
+  }
+
+  .nav-link.active {
+    color: var(--color-accent-dark);
+    background: var(--color-accent-light);
+  }
+
+  .nav-actions {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+  }
+
+  @media (max-width: 768px) {
+    .nav-links {
+      display: none;
+    }
+
+    .nav-actions .btn-ghost {
+      display: none;
+    }
+  }
+</style>
