@@ -2,7 +2,8 @@
 
 [![PyPI version](https://badge.fury.io/py/wikilangs.svg)](https://badge.fury.io/py/wikilangs)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/release/python-380/)
+[![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/release/python-311/)
+[![DOI](https://zenodo.org/badge/1123873515.svg)](https://doi.org/10.5281/zenodo.18073152)
 
 <img src="website/public/wikilangs.png" width=128>
 
@@ -264,7 +265,8 @@ If you use this package in your research, please cite:
   title = {Wikilangs: Open NLP Models for Wikipedia Languages},
   author = {Kamali, Omar},
   year = {2025},
-  publisher = {HuggingFace},
+  publisher = {Zenodo},
+  doi = {10.5281/zenodo.18073153},
   url = {https://huggingface.co/wikilangs},
   institution = {Omneity Labs}
 }
