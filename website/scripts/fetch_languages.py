@@ -186,8 +186,20 @@ async def fetch_all_languages(concurrency: int = 25) -> list[LanguageData]:
     """Fetch data for all languages with controlled concurrency."""
 
     print("Fetching language list from wikilangs...")
-    lang_infos = languages_with_metadata('latest')
+    try:
+        lang_infos = languages_with_metadata('latest')
+    except Exception as e:
+        raise RuntimeError(
+            "Failed to retrieve languages from wikilangs (dataset config discovery failed). "
+            f"Original error: {e}"
+        )
+
     print(f"Found {len(lang_infos)} languages")
+
+    if len(lang_infos) == 0:
+        raise RuntimeError(
+            "No languages were discovered (0). This would generate an empty website."
+        )
 
     results: list[LanguageData] = []
     semaphore = asyncio.Semaphore(concurrency)
