@@ -1,0 +1,492 @@
+---
+/**
+ * Interactive World Map Component using Leaflet
+ * Shows continents colored by number of available languages
+ */
+
+import languageContinents from '@data/language_continents.json';
+import languages from '@data/languages.json';
+
+interface Props {
+  mode?: 'selector' | 'display';
+}
+
+const { mode = 'display' } = Astro.props;
+
+// Build language name lookup
+const languageNames: Record<string, string> = {};
+for (const lang of languages) {
+  languageNames[lang.code] = lang.common_name || lang.name;
+}
+
+// Aggregate languages by continent using the direct mapping
+const continentStats: Record<string, {
+  total: number;
+  languages: Array<{ code: string; continents: string[] }>;
+}> = {};
+
+// Initialize all continents
+const allContinents = ['Africa', 'Asia', 'Europe', 'North America', 'South America', 'Oceania'];
+for (const continent of allContinents) {
+  continentStats[continent] = { total: 0, languages: [] };
+}
+
+// Process each language and add to its continents
+for (const [langCode, continents] of Object.entries(languageContinents as Record<string, string[]>)) {
+  if (!continents || continents.length === 0) continue;
+
+  for (const continent of continents) {
+    if (continentStats[continent]) {
+      continentStats[continent].languages.push({
+        code: langCode,
+        continents: continents
+      });
+    }
+  }
+}
+
+// Sort languages alphabetically and set totals
+for (const continent of allContinents) {
+  const stats = continentStats[continent];
+  stats.languages.sort((a, b) => {
+    const nameA = languageNames[a.code] || a.code;
+    const nameB = languageNames[b.code] || b.code;
+    return nameA.localeCompare(nameB);
+  });
+  stats.total = stats.languages.length;
+}
+
+// Find max languages for scaling
+let maxLangs = 1;
+for (const continent in continentStats) {
+  if (continentStats[continent].total > maxLangs) {
+    maxLangs = continentStats[continent].total;
+  }
+}
+
+// Continent name mapping for GeoJSON
+const continentNameMap: Record<string, string> = {
+  'Africa': 'Africa',
+  'Antarctica': 'Antarctica',
+  'Asia': 'Asia',
+  'Europe': 'Europe',
+  'North America': 'North America',
+  'Oceania': 'Oceania',
+  'South America': 'South America',
+  'Australia': 'Oceania'
+};
+---
+
+<div class="wm-wrapper" data-mode={mode}>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <div id="world-map"></div>
+
+  <div id="map-info-bar">
+    <div id="info-placeholder">
+      <span class="placeholder-text">Hover over a continent to see languages</span>
+    </div>
+    <div id="info-active">
+      <div class="info-row">
+        <span id="info-continent" class="continent-name"></span>
+        <span id="info-count" class="lang-count"></span>
+        <div id="filter-wrapper">
+          <input type="text" id="lang-filter" placeholder="Filter languages..." />
+        </div>
+        <button id="info-clear" type="button">Clear</button>
+      </div>
+      <div id="info-langs"></div>
+    </div>
+  </div>
+
+  </div>
+
+<style>
+  .wm-wrapper {
+    position: relative;
+    width: 100%;
+  }
+
+  #world-map {
+    width: 100%;
+    height: 400px;
+    border-radius: 12px 12px 0 0;
+    border: 1px solid var(--color-border, #e5e7eb);
+    border-bottom: none;
+    background: #f0f9ff;
+  }
+
+  #map-info-bar {
+    background: var(--color-surface, white);
+    border: 1px solid var(--color-border, #e5e7eb);
+    border-top: none;
+    border-radius: 0 0 12px 12px;
+    padding: 16px 18px;
+    min-height: 100px;
+    box-sizing: border-box;
+  }
+
+  #info-placeholder {
+    height: 100%;
+    min-height: 68px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .placeholder-text {
+    color: var(--color-text-muted, #9ca3af);
+    font-size: 0.875rem;
+  }
+
+  #info-active {
+    display: none;
+  }
+
+  .info-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+
+  .continent-name {
+    font-weight: 600;
+    font-size: 1rem;
+    color: var(--color-text, #1f2937);
+  }
+
+  .lang-count {
+    font-size: 0.75rem;
+    color: var(--color-text-muted, #6b7280);
+    background: var(--color-bg, #f3f4f6);
+    padding: 2px 10px;
+    border-radius: 10px;
+  }
+
+  #info-clear {
+    margin-left: auto;
+    background: none;
+    border: none;
+    font-size: 0.75rem;
+    color: var(--color-text-muted, #9ca3af);
+    cursor: pointer;
+    padding: 4px 8px;
+    border-radius: 4px;
+    display: none;
+  }
+
+  #info-clear:hover {
+    color: #dc2626;
+    background: #fef2f2;
+  }
+
+  .wm-wrapper.is-locked #info-clear {
+    display: block;
+  }
+
+  #info-langs {
+    line-height: 1.8;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 12px;
+    align-items: baseline;
+  }
+
+  #filter-wrapper {
+    display: none;
+    margin-left: auto;
+  }
+
+  .wm-wrapper.is-locked #filter-wrapper {
+    display: block;
+  }
+
+  #lang-filter {
+    padding: 4px 10px;
+    font-size: 0.8rem;
+    border: 1px solid var(--color-border, #e5e7eb);
+    border-radius: 6px;
+    outline: none;
+    width: 160px;
+    background: var(--color-bg, #f9fafb);
+  }
+
+  #lang-filter:focus {
+    border-color: var(--color-accent, #a77297);
+    box-shadow: 0 0 0 2px rgba(167, 114, 151, 0.15);
+  }
+
+  /* Dark mode filter input */
+  #lang-filter {
+    color: var(--color-text, #374151);
+  }
+</style>
+
+<style is:global>
+  .leaflet-container {
+    background: #f0f9ff;
+    font-family: inherit;
+  }
+
+  /* Language chip styling - global for dynamic content */
+  .wm-wrapper .lang-chip {
+    display: inline-flex;
+    align-items: baseline;
+    white-space: nowrap;
+    gap: 2px;
+  }
+
+  .wm-wrapper .lang-chip-name {
+    color: var(--color-text, #374151);
+    text-decoration: none;
+    border-bottom: 1px dotted var(--color-border, #d1d5db);
+  }
+
+  .wm-wrapper .lang-chip-name:hover {
+    color: var(--color-accent, #7b4c6c);
+    border-bottom-color: var(--color-accent, #7b4c6c);
+  }
+
+  /* Button reset for selector mode */
+  .wm-wrapper .lang-chip-btn {
+    background: none;
+    border: none;
+    padding: 0;
+    font: inherit;
+    cursor: pointer;
+    color: var(--color-text, #374151);
+    border-bottom: 1px dotted var(--color-border, #d1d5db);
+  }
+
+  .wm-wrapper .lang-chip-btn:hover {
+    color: var(--color-accent, #7b4c6c);
+    border-bottom-color: var(--color-accent, #7b4c6c);
+  }
+
+  .wm-wrapper .lang-chip-count {
+    color: var(--color-text-muted, #9ca3af);
+    font-size: 0.75em;
+  }
+
+  .wm-wrapper .lang-chip-more {
+    color: var(--color-text-muted, #9ca3af);
+    margin-left: 4px;
+    font-style: italic;
+  }
+
+  .wm-wrapper .no-results {
+    color: var(--color-text-muted, #9ca3af);
+    font-style: italic;
+    padding: 8px 0;
+  }
+
+</style>
+
+<script define:vars={{ continentStats, languageNames, mode, maxLangs, continentNameMap }}>
+  // Load Leaflet
+  const script = document.createElement('script');
+  script.src = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
+  script.onload = initMap;
+  document.head.appendChild(script);
+
+  function initMap() {
+    const mapEl = document.getElementById('world-map');
+    if (!mapEl || typeof L === 'undefined') return;
+
+    // Responsive zoom based on container width
+    const containerWidth = mapEl.offsetWidth;
+    const initialZoom = containerWidth < 500 ? 1 : 2;
+
+    const map = L.map('world-map', {
+      center: [20, 0],
+      zoom: initialZoom,
+      minZoom: 1,
+      maxZoom: 5,
+      worldCopyJump: true,
+      attributionControl: false
+    });
+
+    new ResizeObserver(() => {
+      if (mapEl.offsetWidth > 0) map.invalidateSize();
+    }).observe(mapEl);
+
+    const wrapper = document.querySelector('.wm-wrapper');
+    const placeholder = document.getElementById('info-placeholder');
+    const active = document.getElementById('info-active');
+    const continentEl = document.getElementById('info-continent');
+    const countEl = document.getElementById('info-count');
+    const langsEl = document.getElementById('info-langs');
+    const clearBtn = document.getElementById('info-clear');
+
+    let locked = null;
+    const continentLayers = {};
+
+    function getStyle(continent, hover = false, lock = false) {
+      const stats = continentStats[continent];
+      if (!stats || stats.total === 0) {
+        return { fillColor: '#ffffff', fillOpacity: 1, weight: 1, color: '#e5e7eb' };
+      }
+
+      const ratio = stats.total / maxLangs;
+      const baseOpacity = 0.3 + ratio * 0.5;
+
+      if (lock) {
+        return { fillColor: '#7b4c6c', fillOpacity: 0.85, weight: 2, color: '#5a3a4e' };
+      }
+      if (hover) {
+        return { fillColor: '#a77297', fillOpacity: Math.min(baseOpacity + 0.15, 0.9), weight: 2, color: '#7b4c6c' };
+      }
+      return { fillColor: '#a77297', fillOpacity: baseOpacity, weight: 1, color: '#d4b8c9' };
+    }
+
+    const filterInput = document.getElementById('lang-filter');
+    let currentLangs = [];
+    let currentIsLocked = false;
+
+    function renderLangs(langs, filter = '') {
+      const filtered = filter
+        ? langs.filter(l => {
+            const n = languageNames[l.code] || l.code;
+            return n.toLowerCase().includes(filter.toLowerCase()) || l.code.toLowerCase().includes(filter.toLowerCase());
+          })
+        : langs;
+
+      if (filtered.length === 0) {
+        langsEl.innerHTML = '<span class="no-results">No languages match your filter</span>';
+        return;
+      }
+
+      const displayed = filtered.slice(0, 50);
+      const remaining = filtered.length - 50;
+
+      langsEl.innerHTML = displayed.map(l => {
+        const n = languageNames[l.code] || l.code;
+        const numContinents = l.continents ? l.continents.length : 1;
+        const tag = mode === 'display'
+          ? `<a href="/languages/${l.code}/" class="lang-chip-name">${n}</a>`
+          : currentIsLocked
+            ? `<button data-code="${l.code}" class="lang-chip-name lang-chip-btn">${n}</button>`
+            : `<span class="lang-chip-name">${n}</span>`;
+        // Only show continent count if language spans multiple continents
+        const countBadge = numContinents > 1 ? `<span class="lang-chip-count" title="Spoken in ${numContinents} continents">${numContinents}</span>` : '';
+        return `<span class="lang-chip">${tag}${countBadge}</span>`;
+      }).join('') +
+      (remaining > 0 ? `<span class="lang-chip-more">+${remaining} more</span>` : '');
+
+      if (currentIsLocked && mode === 'selector') {
+        langsEl.querySelectorAll('button').forEach(btn => {
+          btn.onclick = () => {
+            wrapper.dispatchEvent(new CustomEvent('languageSelect', {
+              bubbles: true,
+              detail: { code: btn.dataset.code, name: languageNames[btn.dataset.code] || btn.dataset.code }
+            }));
+          };
+        });
+      }
+    }
+
+    function showInfo(name, stats, isLocked) {
+      const langs = stats.languages || [];
+      currentLangs = langs;
+      currentIsLocked = isLocked;
+
+      placeholder.style.display = 'none';
+      active.style.display = 'block';
+      continentEl.textContent = name;
+      countEl.textContent = langs.length + ' language' + (langs.length !== 1 ? 's' : '');
+
+      wrapper.classList.toggle('is-locked', isLocked);
+
+      // Clear filter when showing new continent
+      if (filterInput) filterInput.value = '';
+
+      renderLangs(langs);
+    }
+
+    // Filter input handler
+    if (filterInput) {
+      filterInput.addEventListener('input', (e) => {
+        renderLangs(currentLangs, e.target.value);
+      });
+    }
+
+    function hideInfo() {
+      if (locked) return;
+      placeholder.style.display = 'flex';
+      active.style.display = 'none';
+      wrapper.classList.remove('is-locked');
+    }
+
+    function clearLock() {
+      if (locked) {
+        locked.layer.setStyle(getStyle(locked.continent));
+        locked = null;
+      }
+      placeholder.style.display = 'flex';
+      active.style.display = 'none';
+      wrapper.classList.remove('is-locked');
+    }
+
+    clearBtn?.addEventListener('click', clearLock);
+
+    // Load continent GeoJSON files (each continent is a separate file)
+    const continentFiles = {
+      'AF': 'Africa',
+      'AS': 'Asia',
+      'EU': 'Europe',
+      'NA': 'North America',
+      'SA': 'South America',
+      'OC': 'Oceania'
+    };
+
+    const baseUrl = 'https://raw.githubusercontent.com/rapomon/geojson-places/master/data/continents';
+
+    Promise.all(
+      Object.entries(continentFiles).map(([code, name]) =>
+        fetch(`${baseUrl}/${code}-simplified.json`)
+          .then(r => r.json())
+          .then(feature => ({ feature, continent: name }))
+          .catch(() => null)
+      )
+    ).then(results => {
+      for (const result of results) {
+        if (!result) continue;
+        const { feature, continent } = result;
+        const stats = continentStats[continent];
+
+        const layer = L.geoJSON(feature, {
+          style: () => getStyle(continent)
+        }).addTo(map);
+
+        continentLayers[continent] = layer;
+
+        if (stats?.total > 0) {
+          layer.on('mouseover', function() {
+            if (locked?.continent !== continent) {
+              layer.setStyle(getStyle(continent, true));
+              if (!locked) showInfo(continent, stats, false);
+            }
+          });
+
+          layer.on('mouseout', function() {
+            if (locked?.continent !== continent) {
+              layer.setStyle(getStyle(continent));
+            }
+            if (!locked) hideInfo();
+          });
+
+          layer.on('click', function(e) {
+            L.DomEvent.stopPropagation(e);
+            if (locked?.continent === continent) { clearLock(); return; }
+            if (locked) locked.layer.setStyle(getStyle(locked.continent));
+            layer.setStyle(getStyle(continent, false, true));
+            locked = { layer, continent, stats };
+            showInfo(continent, stats, true);
+          });
+        }
+      }
+
+      map.on('click', clearLock);
+    });
+  }
+</script>

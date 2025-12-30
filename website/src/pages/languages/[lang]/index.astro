@@ -3,6 +3,9 @@ import BaseLayout from '@layouts/BaseLayout.astro';
 import CodeBlock from '@components/CodeBlock.astro';
 import { getAllLanguages, getLanguage, getVisualizationUrl, formatNumber, formatCompression } from '@lib/languages';
 import type { LanguageData } from '@lib/languages';
+import languageCountries from '@data/language_countries.json';
+import countryNames from '@data/country_names.json';
+import countryToContinentMap from '@data/country_continents.json';
 
 export async function getStaticPaths() {
   const languages = getAllLanguages();
@@ -18,6 +21,57 @@ interface Props {
 
 const { lang } = Astro.props;
 const displayName = lang.common_name || lang.name;
+const nativeName = lang.native_name;
+const textDirection = lang.text_direction || 'ltr';
+
+// Wikipedia URLs
+const languageWikiUrl = `https://en.wikipedia.org/wiki/${encodeURIComponent(displayName.replace(/ /g, '_'))}_language`;
+
+
+// Use pre-fetched Wikipedia samples from languages.json
+const wikiSamples = lang.wikipedia_samples || [];
+
+// Find countries where this language is spoken
+const countryLanguages = languageCountries.country_languages || {};
+const spokenInCountries: Array<{
+  code: string;
+  name: string;
+  isPrimary: boolean;
+  wikiEnUrl: string;
+  wikiLangUrl: string | null;
+  continent: string;
+}> = [];
+
+const continentsSet = new Set<string>();
+
+for (const [countryCode, data] of Object.entries(countryLanguages)) {
+  const allLangs = [...(data.endemic || []), ...(data.macro || [])];
+  const langInfo = allLangs.find(l => l.code === lang.code);
+
+  if (langInfo && countryNames[countryCode]) {
+    const country = countryNames[countryCode];
+    const continent = countryToContinentMap[countryCode] || 'Unknown';
+    continentsSet.add(continent);
+    spokenInCountries.push({
+      code: countryCode,
+      name: country.en,
+      isPrimary: langInfo.primary || false,
+      wikiEnUrl: `https://en.wikipedia.org/wiki/${encodeURIComponent(country.en.replace(/ /g, '_'))}`,
+      wikiLangUrl: lang.code !== 'en' ? `https://${lang.code}.wikipedia.org/wiki/${encodeURIComponent(country.native || country.en)}` : null,
+      continent
+    });
+  }
+}
+
+// Sort: primary first, then alphabetically
+spokenInCountries.sort((a, b) => {
+  if (a.isPrimary !== b.isPrimary) return b.isPrimary ? 1 : -1;
+  return a.name.localeCompare(b.name);
+});
+
+const continentCount = continentsSet.size;
+const countryCount = spokenInCountries.length;
+const continentsList = Array.from(continentsSet);
 
 // Visualization URLs
 const dashboardUrl = getVisualizationUrl(lang.code, 'performance_dashboard');
@@ -45,7 +99,12 @@ const topWordsUrl = getVisualizationUrl(lang.code, 'top20_words');
       <div class="header-content">
         <div class="header-info">
           <div class="lang-code-badge">{lang.code}</div>
-          <h1>{displayName}</h1>
+          <h1>
+            {displayName}
+            {nativeName && nativeName !== displayName && (
+              <span class="native-name" dir={textDirection}>{nativeName}</span>
+            )}
+          </h1>
           {lang.name !== displayName && (
             <p class="alt-name">{lang.name}</p>
           )}
@@ -59,11 +118,17 @@ const topWordsUrl = getVisualizationUrl(lang.code, 'top20_words');
         </div>
 
         <div class="header-actions">
-          <a href={lang.hf_url} class="btn btn-primary" target="_blank" rel="noopener">
-            View on HuggingFace
+          <a href={`/playground/?lang=${lang.code}`} class="btn btn-primary btn-playground">
+            <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polygon points="5 3 19 12 5 21 5 3"></polygon>
+            </svg>
+            Open in Playground
           </a>
-          <a href={`${lang.hf_url}/tree/main`} class="btn btn-secondary" target="_blank" rel="noopener">
-            Browse Files
+          <a href={lang.hf_url} class="btn btn-secondary" target="_blank" rel="noopener">
+            HuggingFace
+          </a>
+          <a href={languageWikiUrl} class="btn btn-secondary" target="_blank" rel="noopener">
+            Wikipedia
           </a>
         </div>
       </div>
@@ -72,32 +137,199 @@ const topWordsUrl = getVisualizationUrl(lang.code, 'top20_words');
 
   {lang.has_models ? (
     <>
-      <!-- Quick Stats -->
-      <section class="stats-bar">
+      <!-- Page Navigation -->
+      <nav class="page-nav">
         <div class="container">
-          <div class="stats-row">
-            <div class="stat-item">
-              <span class="stat-value">{formatNumber(lang.vocabulary_size)}</span>
-              <span class="stat-label">Vocabulary</span>
-            </div>
-            <div class="stat-item">
-              <span class="stat-value">{formatCompression(lang.best_compression_ratio)}</span>
-              <span class="stat-label">Best Compression</span>
-            </div>
-            {lang.best_isotropy && (
+          <div class="nav-tabs">
+            <a href="#overview" class="nav-tab active" data-section="overview">Overview</a>
+            <a href="#explore" class="nav-tab" data-section="explore">Explore</a>
+            <a href="#technical" class="nav-tab" data-section="technical">Technical</a>
+          </div>
+        </div>
+      </nav>
+
+      <!-- OVERVIEW SECTION -->
+      <div id="overview" class="page-section">
+        <!-- Quick Stats with Mini Map -->
+        <section class="stats-bar">
+          <div class="container">
+            <div class="stats-layout">
               <div class="stat-item">
-                <span class="stat-value">{lang.best_isotropy.toFixed(4)}</span>
-                <span class="stat-label">Best Isotropy</span>
+                <span class="stat-value">{formatNumber(lang.vocabulary_size)}</span>
+                <span class="stat-label">Words in Vocabulary</span>
               </div>
-            )}
+              {countryCount > 0 && (
+                <div class="stat-item">
+                  <span class="stat-value">{countryCount}</span>
+                  <span class="stat-label">{countryCount === 1 ? 'Country' : 'Countries'}</span>
+                </div>
+              )}
+              {continentCount > 0 && (
+                <div class="stat-item">
+                  <span class="stat-value">{continentCount}</span>
+                  <span class="stat-label">{continentCount === 1 ? 'Continent' : 'Continents'}</span>
+                </div>
+              )}
+              {countryCount > 0 && (
+                <div class="mini-map-wrapper">
+                  <div id="mini-map" data-continents={JSON.stringify(continentsList)}></div>
+                </div>
+              )}
+            </div>
+          </div>
+        </section>
+
+        {spokenInCountries.length > 0 && (
+          <section class="spoken-in-section">
+            <div class="container">
+              <div class="spoken-in-header">
+                <h2>Spoken In</h2>
+                <span class="primary-legend" title="Primary language in this country">* Primary</span>
+              </div>
+              <p class="countries-list">
+                {spokenInCountries.map((country, i) => (
+                  <>
+                    <a href={country.wikiEnUrl} target="_blank" rel="noopener" class="country-link">
+                      {country.name}{country.isPrimary && <span class="primary-dot" title="Primary language">*</span>}
+                    </a>
+                    {country.wikiLangUrl && (
+                      <a href={country.wikiLangUrl} target="_blank" rel="noopener" class="country-link-lang" title={`View in ${displayName} Wikipedia`}>
+                        ({lang.code})
+                      </a>
+                    )}
+                    {i < spokenInCountries.length - 1 && <span class="country-sep">, </span>}
+                  </>
+                ))}
+              </p>
+            </div>
+          </section>
+        )}
+
+        <!-- Language Samples -->
+        {wikiSamples.length > 0 && (
+          <section class="samples-section">
+            <div class="container">
+              <h2>Sample Text</h2>
+              <p class="section-intro">Sample excerpts from {displayName} Wikipedia articles.</p>
+              <div id="samples-container" dir={textDirection}>
+                {wikiSamples.map(sample => (
+                  <blockquote class="sample-quote" dir={textDirection}>{sample}</blockquote>
+                ))}
+              </div>
+              <div class="samples-actions">
+                <a href={`https://${lang.code}.wikipedia.org/`} class="btn btn-secondary btn-sm" target="_blank" rel="noopener">
+                  Browse {displayName} Wikipedia
+                </a>
+                <a href={`/playground/?lang=${lang.code}&demo=weaver`} class="btn btn-secondary btn-sm">
+                  Try Text Generation
+                </a>
+              </div>
+            </div>
+          </section>
+        )}
+
+        <!-- Top Words Preview -->
+        <section class="section">
+          <div class="container">
+            <h2>Most Common Words</h2>
+            <p class="section-intro">The 20 most frequently used words in {displayName} Wikipedia.</p>
+            <div class="viz-container viz-small">
+              <img src={topWordsUrl} alt={`Top 20 words in ${displayName}`} loading="lazy" />
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <!-- EXPLORE SECTION -->
+      <div id="explore" class="page-section">
+        <!-- Try in Playground -->
+      <section class="playground-links">
+        <div class="container">
+          <h2>Try in Playground</h2>
+          <p class="section-intro">Explore {displayName} interactively with our browser-based demos.</p>
+          <div class="playground-grid">
+            <a href={`/playground/?lang=${lang.code}&demo=weaver`} class="playground-card">
+              <span class="card-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M12 5v14M5 12h14"/>
+                </svg>
+              </span>
+              <span class="card-content">
+                <span class="card-title">Generate Text</span>
+                <span class="card-desc">Watch Markov chains weave words together</span>
+              </span>
+            </a>
+            <a href={`/playground/?lang=${lang.code}&demo=dna`} class="playground-card">
+              <span class="card-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M6 4c0 3.5 6 5 6 9s-6 5.5-6 9M18 4c0 3.5-6 5-6 9s6 5.5 6 9M6 12h12"/>
+                </svg>
+              </span>
+              <span class="card-content">
+                <span class="card-title">Language DNA</span>
+                <span class="card-desc">Explore character frequencies and word patterns</span>
+              </span>
+            </a>
+            <a href={`/playground/?lang=${lang.code}&demo=galaxy`} class="playground-card">
+              <span class="card-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="12" cy="12" r="3"/>
+                  <circle cx="12" cy="12" r="8" stroke-dasharray="4 2"/>
+                </svg>
+              </span>
+              <span class="card-content">
+                <span class="card-title">Word Galaxy</span>
+                <span class="card-desc">See how words connect in semantic space</span>
+              </span>
+            </a>
+            <a href={`/playground/?lang=${lang.code}&demo=zipf`} class="playground-card">
+              <span class="card-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M3 20h18M5 20V10M9 20V8M13 20V5M17 20V3"/>
+                </svg>
+              </span>
+              <span class="card-content">
+                <span class="card-title">Zipf's Law</span>
+                <span class="card-desc">Discover the power law of word frequencies</span>
+              </span>
+            </a>
+            <a href={`/playground/?lang=${lang.code}&demo=museum`} class="playground-card">
+              <span class="card-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M3 21h18M5 21V8l7-5 7 5v13M9 21v-6h6v6"/>
+                </svg>
+              </span>
+              <span class="card-content">
+                <span class="card-title">Rare Words</span>
+                <span class="card-desc">Explore the longest and rarest words</span>
+              </span>
+            </a>
+            <a href={`/playground/?lang=${lang.code}`} class="playground-card playground-card-all">
+              <span class="card-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="3" y="3" width="7" height="7" rx="1"/>
+                  <rect x="14" y="3" width="7" height="7" rx="1"/>
+                  <rect x="3" y="14" width="7" height="7" rx="1"/>
+                  <rect x="14" y="14" width="7" height="7" rx="1"/>
+                </svg>
+              </span>
+              <span class="card-content">
+                <span class="card-title">All Demos</span>
+                <span class="card-desc">Open the full playground for {displayName}</span>
+              </span>
+            </a>
           </div>
         </div>
       </section>
+      </div>
 
-      <!-- Performance Dashboard -->
-      <section class="section">
-        <div class="container">
-          <h2>Performance Dashboard</h2>
+      <!-- TECHNICAL SECTION -->
+      <div id="technical" class="page-section">
+        <!-- Performance Dashboard -->
+        <section class="section">
+          <div class="container">
+            <h2>Performance Dashboard</h2>
+            <p class="section-intro">Key metrics for all model types at a glance.</p>
           <div class="dashboard-image">
             <img
               src={dashboardUrl}
@@ -300,6 +532,32 @@ sent_vec = emb.embed_sentence("A sentence", method='rope')`} />
         </div>
       </section>
 
+      <!-- Technical Metrics Summary -->
+      <section class="section metrics-summary">
+        <div class="container">
+          <h2>Key Metrics</h2>
+          <div class="metrics-grid">
+            <div class="metric-card">
+              <span class="metric-label">Best Compression</span>
+              <span class="metric-value">{formatCompression(lang.best_compression_ratio)}</span>
+              <span class="metric-desc">Characters per token (higher is better)</span>
+            </div>
+            {lang.best_isotropy && (
+              <div class="metric-card">
+                <span class="metric-label">Best Isotropy</span>
+                <span class="metric-value">{lang.best_isotropy.toFixed(4)}</span>
+                <span class="metric-desc">Embedding uniformity (higher is better)</span>
+              </div>
+            )}
+            <div class="metric-card">
+              <span class="metric-label">Vocabulary Size</span>
+              <span class="metric-value">{formatNumber(lang.vocabulary_size)}</span>
+              <span class="metric-desc">Unique words in training data</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
       <!-- Full Report Link -->
       <section class="section">
         <div class="container text-center">
@@ -313,21 +571,44 @@ sent_vec = emb.embed_sentence("A sentence", method='rope')`} />
           </a>
         </div>
       </section>
+      </div>
 
-      <!-- Tab switching script -->
+      <!-- Page navigation and samples scripts -->
       <script>
+        // Page section navigation
+        const navTabs = document.querySelectorAll('.nav-tab');
+        const pageSections = document.querySelectorAll('.page-section');
+
+        function switchSection(sectionId) {
+          navTabs.forEach(tab => {
+            tab.classList.toggle('active', tab.dataset.section === sectionId);
+          });
+          pageSections.forEach(section => {
+            section.classList.toggle('active', section.id === sectionId);
+          });
+        }
+
+        navTabs.forEach(tab => {
+          tab.addEventListener('click', (e) => {
+            e.preventDefault();
+            switchSection(tab.dataset.section);
+            history.pushState(null, '', `#${tab.dataset.section}`);
+          });
+        });
+
+        // Handle initial hash
+        const initialSection = window.location.hash.slice(1) || 'overview';
+        switchSection(initialSection);
+
+        // Model evaluation tabs
         const tabBtns = document.querySelectorAll('.tab-btn');
         const tabContents = document.querySelectorAll('.tab-content');
 
         tabBtns.forEach(btn => {
           btn.addEventListener('click', () => {
             const tabId = btn.getAttribute('data-tab');
-
-            // Update buttons
             tabBtns.forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
-
-            // Update content
             tabContents.forEach(content => {
               content.classList.remove('active');
               if (content.id === `tab-${tabId}`) {
@@ -336,6 +617,74 @@ sent_vec = emb.embed_sentence("A sentence", method='rope')`} />
             });
           });
         });
+      </script>
+
+      <!-- Mini map script -->
+      <script>
+        const miniMapEl = document.getElementById('mini-map');
+        if (miniMapEl) {
+          const highlightContinents = JSON.parse(miniMapEl.dataset.continents || '[]');
+
+          // Load Leaflet
+          const link = document.createElement('link');
+          link.rel = 'stylesheet';
+          link.href = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css';
+          document.head.appendChild(link);
+
+          const script = document.createElement('script');
+          script.src = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
+          script.onload = () => {
+            const map = L.map('mini-map', {
+              center: [20, 0],
+              zoom: 0,
+              minZoom: 0,
+              maxZoom: 2,
+              zoomControl: false,
+              attributionControl: false,
+              dragging: false,
+              scrollWheelZoom: false,
+              doubleClickZoom: false,
+              touchZoom: false
+            });
+
+            // Load continent GeoJSON files
+            const continentFiles = {
+              'AF': 'Africa',
+              'AS': 'Asia',
+              'EU': 'Europe',
+              'NA': 'North America',
+              'SA': 'South America',
+              'OC': 'Oceania'
+            };
+
+            const baseUrl = 'https://raw.githubusercontent.com/rapomon/geojson-places/master/data/continents';
+
+            Promise.all(
+              Object.entries(continentFiles).map(([code, name]) =>
+                fetch(`${baseUrl}/${code}-simplified.json`)
+                  .then(r => r.json())
+                  .then(feature => ({ feature, continent: name }))
+                  .catch(() => null)
+              )
+            ).then(results => {
+              for (const result of results) {
+                if (!result) continue;
+                const { feature, continent } = result;
+                const isHighlighted = highlightContinents.includes(continent);
+
+                L.geoJSON(feature, {
+                  style: {
+                    fillColor: isHighlighted ? '#a77297' : '#ffffff',
+                    fillOpacity: isHighlighted ? 0.75 : 1,
+                    weight: 1,
+                    color: '#e5e7eb'
+                  }
+                }).addTo(map);
+              }
+            });
+          };
+          document.head.appendChild(script);
+        }
       </script>
     </>
   ) : (
@@ -396,6 +745,20 @@ sent_vec = emb.embed_sentence("A sentence", method='rope')`} />
   .header-info h1 {
     font-size: var(--font-size-4xl);
     margin: 0;
+    display: flex;
+    align-items: baseline;
+    gap: var(--space-3);
+    flex-wrap: wrap;
+  }
+
+  .native-name {
+    font-size: var(--font-size-2xl);
+    color: var(--color-text-secondary);
+    font-weight: 400;
+  }
+
+  .native-name[dir="rtl"] {
+    font-family: inherit;
   }
 
   .alt-name {
@@ -425,6 +788,69 @@ sent_vec = emb.embed_sentence("A sentence", method='rope')`} />
     flex-shrink: 0;
   }
 
+  .btn-playground {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+  }
+
+  .btn-playground .btn-icon {
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+  }
+
+  .btn-playground:hover .btn-icon {
+    animation: pulse 0.6s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.15); }
+  }
+
+  /* Page Navigation */
+  .page-nav {
+    background: var(--color-surface);
+    border-bottom: 1px solid var(--color-border);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .nav-tabs {
+    display: flex;
+    gap: var(--space-1);
+  }
+
+  .nav-tab {
+    padding: var(--space-3) var(--space-5);
+    font-size: var(--font-size-sm);
+    font-weight: 500;
+    color: var(--color-text-secondary);
+    text-decoration: none;
+    border-bottom: 2px solid transparent;
+    transition: all var(--transition-fast);
+  }
+
+  .nav-tab:hover {
+    color: var(--color-text);
+  }
+
+  .nav-tab.active {
+    color: var(--color-accent-dark);
+    border-bottom-color: var(--color-accent);
+  }
+
+  /* Page Sections */
+  .page-section {
+    display: none;
+  }
+
+  .page-section.active {
+    display: block;
+  }
+
   /* Stats bar */
   .stats-bar {
     background: var(--color-bg);
@@ -432,10 +858,11 @@ sent_vec = emb.embed_sentence("A sentence", method='rope')`} />
     border-bottom: 1px solid var(--color-border-light);
   }
 
-  .stats-row {
+  .stats-layout {
     display: flex;
-    justify-content: center;
-    gap: var(--space-12);
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-6);
   }
 
   .stat-item {
@@ -453,6 +880,19 @@ sent_vec = emb.embed_sentence("A sentence", method='rope')`} />
     font-size: var(--font-size-sm);
     color: var(--color-text-muted);
     margin-top: var(--space-1);
+  }
+
+  .mini-map-wrapper {
+    flex-shrink: 0;
+  }
+
+  #mini-map {
+    width: 200px;
+    height: 120px;
+    border-radius: var(--radius-md);
+    background: #f0f9ff;
+    border: 1px solid var(--color-border);
+    overflow: hidden;
   }
 
   /* Dashboard */
@@ -589,6 +1029,271 @@ sent_vec = emb.embed_sentence("A sentence", method='rope')`} />
     margin-bottom: var(--space-6);
   }
 
+  /* Playground links */
+  .playground-links {
+    padding: var(--space-8) 0;
+    background: var(--color-bg);
+    border-bottom: 1px solid var(--color-border-light);
+  }
+
+  .playground-links h2 {
+    margin-bottom: var(--space-2);
+  }
+
+  .section-intro {
+    color: var(--color-text-secondary);
+    margin-bottom: var(--space-6);
+  }
+
+  .playground-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-4);
+  }
+
+  .playground-card {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+    padding: var(--space-4) var(--space-5);
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    text-decoration: none;
+    transition: all var(--transition-fast);
+  }
+
+  .playground-card:hover {
+    border-color: var(--color-accent);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+
+  .playground-card .card-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    background: var(--color-accent-light);
+    border-radius: var(--radius-md);
+    flex-shrink: 0;
+  }
+
+  .playground-card .card-icon svg {
+    width: 20px;
+    height: 20px;
+    color: var(--color-accent-dark);
+  }
+
+  .playground-card .card-content {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+  }
+
+  .playground-card .card-title {
+    font-weight: 600;
+    color: var(--color-text);
+  }
+
+  .playground-card .card-desc {
+    font-size: var(--font-size-sm);
+    color: var(--color-text-muted);
+  }
+
+  .playground-card-all {
+    background: var(--color-accent-light);
+    border-color: var(--color-accent-light);
+  }
+
+  .playground-card-all:hover {
+    background: var(--color-accent);
+    border-color: var(--color-accent);
+  }
+
+  .playground-card-all:hover .card-title,
+  .playground-card-all:hover .card-desc {
+    color: white;
+  }
+
+  .playground-card-all:hover .card-icon {
+    background: rgba(255, 255, 255, 0.2);
+  }
+
+  .playground-card-all:hover .card-icon svg {
+    color: white;
+  }
+
+  /* Spoken In Section */
+  .spoken-in-section {
+    padding: var(--space-6) 0;
+    background: var(--color-surface);
+    border-bottom: 1px solid var(--color-border-light);
+  }
+
+  .spoken-in-header {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    margin-bottom: var(--space-3);
+  }
+
+  .spoken-in-header h2 {
+    margin: 0;
+    font-size: var(--font-size-lg);
+  }
+
+  .primary-legend {
+    font-size: var(--font-size-xs);
+    color: var(--color-text-muted);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .primary-legend::before {
+    content: '*';
+    color: var(--color-accent);
+    font-weight: 700;
+  }
+
+  .countries-list {
+    line-height: 1.9;
+    color: var(--color-text-secondary);
+    margin: 0;
+  }
+
+  .country-link {
+    color: var(--color-text);
+    text-decoration: none;
+    border-bottom: 1px dotted var(--color-border);
+    transition: all var(--transition-fast);
+  }
+
+  .country-link:hover {
+    color: var(--color-accent-dark);
+    border-bottom-color: var(--color-accent);
+  }
+
+  .primary-dot {
+    color: var(--color-accent);
+    font-weight: 700;
+    margin-left: 1px;
+  }
+
+  .country-link-lang {
+    font-size: 0.85em;
+    color: var(--color-text-muted);
+    text-decoration: none;
+    margin-left: 2px;
+    transition: color var(--transition-fast);
+  }
+
+  .country-link-lang:hover {
+    color: var(--color-accent);
+  }
+
+  .country-sep {
+    color: var(--color-text-muted);
+  }
+
+  /* Samples Section */
+  .samples-section {
+    padding: var(--space-8) 0;
+    background: var(--color-bg);
+  }
+
+  .samples-section h2 {
+    margin-bottom: var(--space-2);
+  }
+
+  #samples-container {
+    margin-bottom: var(--space-4);
+  }
+
+  .samples-loading {
+    color: var(--color-text-muted);
+    font-style: italic;
+    padding: var(--space-4);
+  }
+
+  .sample-quote {
+    background: var(--color-surface);
+    border-left: 3px solid var(--color-accent);
+    padding: var(--space-4) var(--space-5);
+    margin: 0 0 var(--space-3) 0;
+    border-radius: 0 var(--radius-md) var(--radius-md) 0;
+    font-size: var(--font-size-lg);
+    line-height: 1.6;
+    color: var(--color-text);
+  }
+
+  .sample-quote[dir="rtl"] {
+    border-left: none;
+    border-right: 3px solid var(--color-accent);
+    border-radius: var(--radius-md) 0 0 var(--radius-md);
+    text-align: right;
+  }
+
+  .samples-actions {
+    display: flex;
+    gap: var(--space-3);
+  }
+
+  .btn-sm {
+    padding: var(--space-2) var(--space-4);
+    font-size: var(--font-size-sm);
+  }
+
+  /* Metrics Grid */
+  .metrics-summary {
+    background: var(--color-surface);
+  }
+
+  .metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-4);
+  }
+
+  .metric-card {
+    background: var(--color-bg);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-5);
+    text-align: center;
+  }
+
+  .metric-label {
+    display: block;
+    font-size: var(--font-size-sm);
+    color: var(--color-text-muted);
+    margin-bottom: var(--space-2);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .metric-value {
+    display: block;
+    font-size: var(--font-size-3xl);
+    font-weight: 700;
+    color: var(--color-accent);
+    margin-bottom: var(--space-2);
+  }
+
+  .metric-desc {
+    display: block;
+    font-size: var(--font-size-xs);
+    color: var(--color-text-muted);
+  }
+
+  /* Smaller viz container */
+  .viz-small {
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
   @media (max-width: 768px) {
     .header-content {
       flex-direction: column;
@@ -603,9 +1308,38 @@ sent_vec = emb.embed_sentence("A sentence", method='rope')`} />
       justify-content: center;
     }
 
-    .stats-row {
-      flex-wrap: wrap;
-      gap: var(--space-6);
+    .nav-tabs {
+      justify-content: center;
+    }
+
+    .nav-tab {
+      padding: var(--space-3) var(--space-4);
+    }
+
+    .stats-layout {
+      flex-direction: column;
+      text-align: center;
+    }
+
+    .stat-item .stat-value {
+      font-size: var(--font-size-xl);
+    }
+
+    #mini-map {
+      width: 180px;
+      height: 110px;
+    }
+
+    .samples-actions {
+      flex-direction: column;
+    }
+
+    .metrics-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .playground-grid {
+      grid-template-columns: 1fr;
     }
 
     .code-examples {

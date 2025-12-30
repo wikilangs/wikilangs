@@ -1,0 +1,2257 @@
+---
+import BaseLayout from '@layouts/BaseLayout.astro';
+import WorldMap from '@components/WorldMap.astro';
+import languages from '@data/languages.json';
+import languageCountries from '@data/language_countries.json';
+---
+
+<BaseLayout
+  title="Playground"
+  description="Explore the linguistic universe. Generate text, discover connections, and visualize the DNA of 340+ languages."
+>
+  <!-- Language Selector Modal -->
+  <div id="lang-modal" class="modal hidden">
+    <div class="modal-backdrop"></div>
+    <div class="modal-content modal-content-large">
+      <div class="modal-header">
+        <h2>Choose a Language</h2>
+        <button class="modal-close" aria-label="Close">&times;</button>
+      </div>
+
+      <!-- View toggle -->
+      <div class="view-toggle">
+        <button class="view-btn active" data-view="map">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18">
+            <circle cx="12" cy="12" r="10"/>
+            <path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+          </svg>
+          Map View
+        </button>
+        <button class="view-btn" data-view="list">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18">
+            <rect x="3" y="3" width="7" height="7" rx="1"/>
+            <rect x="14" y="3" width="7" height="7" rx="1"/>
+            <rect x="3" y="14" width="7" height="7" rx="1"/>
+            <rect x="14" y="14" width="7" height="7" rx="1"/>
+          </svg>
+          List View
+        </button>
+      </div>
+
+      <!-- Map View -->
+      <div class="modal-view map-view" id="map-view">
+        <p class="map-hint">Click a country to see available languages</p>
+        <div class="map-wrapper" id="world-map-container">
+          <WorldMap mode="selector" />
+        </div>
+      </div>
+
+      <!-- List View -->
+      <div class="modal-view list-view hidden" id="list-view">
+        <div class="search-box">
+          <input type="text" id="lang-search" placeholder="Search by name or code..." autocomplete="off" />
+        </div>
+        <div class="lang-filters">
+          <button class="filter-btn active" data-filter="all">All</button>
+          <button class="filter-btn" data-filter="major">Major (500k+)</button>
+          <button class="filter-btn" data-filter="medium">Medium</button>
+          <button class="filter-btn" data-filter="emerging">Emerging</button>
+        </div>
+        <div class="lang-grid" id="lang-grid">
+          {languages.map(lang => (
+            <button class="lang-card" data-code={lang.code} data-name={lang.name.toLowerCase()} data-vocab={lang.vocabulary_size}>
+              <span class="lang-code">{lang.code}</span>
+              <span class="lang-name">{lang.name}</span>
+              <span class="lang-vocab">{(lang.vocabulary_size / 1000).toFixed(0)}k words</span>
+            </button>
+          ))}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <section class="hero-playground">
+    <div class="container">
+      <h1>Language Playground</h1>
+      <p class="hero-subtitle">Dive into the linguistic universe. Every language tells a story.</p>
+
+      <!-- Unified Status Bar - 3 sections, fixed layout -->
+      <div class="status-bar">
+        <!-- Section 1: Language Selector -->
+        <button id="select-lang-btn" class="status-section status-selector">
+          <div class="status-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <circle cx="12" cy="12" r="10"/>
+              <path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+            </svg>
+          </div>
+          <span class="status-label">Language</span>
+          <svg class="status-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M6 9l6 6 6-6"/>
+          </svg>
+        </button>
+
+        <!-- Section 2: Selected Language Display -->
+        <div id="lang-display" class="status-section status-display">
+          <div id="lang-empty" class="lang-state lang-state-empty">
+            <span class="empty-dot"></span>
+            <span>No language selected</span>
+          </div>
+          <div id="lang-active" class="lang-state lang-state-active hidden">
+            <span class="lang-badge" id="current-flag">EN</span>
+            <span class="lang-name" id="current-label">English</span>
+          </div>
+        </div>
+
+        <!-- Section 3: Environment Status -->
+        <div id="env-status" class="status-section status-env">
+          <div id="env-loading" class="env-state env-state-loading">
+            <div class="env-spinner">
+              <svg viewBox="0 0 24 24">
+                <circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="2" opacity="0.2"/>
+                <path d="M12 2a10 10 0 0 1 10 10" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <div class="env-info">
+              <span class="env-label" id="progress-status">Setting up environment...</span>
+              <div class="env-progress">
+                <div class="env-progress-track">
+                  <div class="env-progress-fill" id="progress-fill"></div>
+                </div>
+                <span class="env-pct" id="progress-pct">0%</span>
+              </div>
+            </div>
+          </div>
+          <div id="env-ready" class="env-state env-state-ready hidden">
+            <div class="env-check">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <path d="M20 6L9 17l-5-5"/>
+              </svg>
+            </div>
+            <span class="env-ready-label">Ready</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Main Playground -->
+  <section class="playground-main">
+    <div class="container">
+      <div class="demo-grid" id="demo-grid">
+        <!-- Language DNA -->
+        <div class="demo-card" data-demo="dna">
+          <div class="demo-icon dna-icon-wrapper">
+            <svg viewBox="0 0 60 80" class="dna-card-icon">
+              <!-- Left backbone -->
+              <path class="dna-strand-left" d="M15,5 Q30,15 15,25 Q0,35 15,45 Q30,55 15,65 Q0,75 15,80" fill="none" stroke="currentColor" stroke-width="2.5"/>
+              <!-- Right backbone -->
+              <path class="dna-strand-right" d="M45,5 Q30,15 45,25 Q60,35 45,45 Q30,55 45,65 Q60,75 45,80" fill="none" stroke="currentColor" stroke-width="2.5"/>
+              <!-- Base pairs -->
+              <line class="dna-base" x1="15" y1="5" x2="45" y2="5" stroke="currentColor" stroke-width="1.5" opacity="0.4"/>
+              <line class="dna-base" x1="15" y1="25" x2="45" y2="25" stroke="currentColor" stroke-width="1.5" opacity="0.4"/>
+              <line class="dna-base" x1="15" y1="45" x2="45" y2="45" stroke="currentColor" stroke-width="1.5" opacity="0.4"/>
+              <line class="dna-base" x1="15" y1="65" x2="45" y2="65" stroke="currentColor" stroke-width="1.5" opacity="0.4"/>
+              <!-- Nucleotides -->
+              <circle cx="15" cy="5" r="3" fill="currentColor"/>
+              <circle cx="45" cy="5" r="3" fill="currentColor" opacity="0.7"/>
+              <circle cx="15" cy="25" r="3" fill="currentColor"/>
+              <circle cx="45" cy="25" r="3" fill="currentColor" opacity="0.7"/>
+              <circle cx="15" cy="45" r="3" fill="currentColor"/>
+              <circle cx="45" cy="45" r="3" fill="currentColor" opacity="0.7"/>
+              <circle cx="15" cy="65" r="3" fill="currentColor"/>
+              <circle cx="45" cy="65" r="3" fill="currentColor" opacity="0.7"/>
+            </svg>
+          </div>
+          <h3>Language DNA</h3>
+          <p>Discover what makes this language unique - character frequencies, word patterns, and linguistic fingerprints.</p>
+          <button class="demo-btn" data-action="dna">Analyze DNA</button>
+        </div>
+
+        <!-- Word Galaxy -->
+        <div class="demo-card" data-demo="galaxy">
+          <div class="demo-icon galaxy-illustration">
+            <span class="galaxy-center">mind</span>
+            <span class="galaxy-orbit o1">thought</span>
+            <span class="galaxy-orbit o2">idea</span>
+            <span class="galaxy-orbit o3">brain</span>
+            <span class="galaxy-orbit o4">think</span>
+          </div>
+          <h3>Word Galaxy</h3>
+          <p>Watch words orbit around their meanings. See how concepts cluster and connect in semantic space.</p>
+          <button class="demo-btn" data-action="galaxy">Launch Galaxy</button>
+        </div>
+
+        <!-- Text Weaver -->
+        <div class="demo-card" data-demo="weaver">
+          <div class="demo-icon weaver-illustration">
+            <span class="weave-node">the</span>
+            <span class="weave-arrow">→</span>
+            <span class="weave-node">quick</span>
+            <span class="weave-arrow">→</span>
+            <span class="weave-node">fox</span>
+          </div>
+          <h3>Text Weaver</h3>
+          <p>Watch the Markov chain weave words together, creating text that emerges from statistical patterns.</p>
+          <button class="demo-btn" data-action="weaver">Start Weaving</button>
+        </div>
+
+        <!-- Zipf's Law -->
+        <div class="demo-card" data-demo="zipf">
+          <div class="demo-icon zipf-illustration">
+            <span class="zipf-bar b1"></span>
+            <span class="zipf-bar b2"></span>
+            <span class="zipf-bar b3"></span>
+            <span class="zipf-bar b4"></span>
+            <span class="zipf-bar b5"></span>
+            <span class="zipf-bar b6"></span>
+            <span class="zipf-bar b7"></span>
+          </div>
+          <h3>Zipf's Law</h3>
+          <p>Witness one of nature's most beautiful patterns - how word frequencies follow a perfect power law.</p>
+          <button class="demo-btn" data-action="zipf">Reveal Pattern</button>
+        </div>
+
+        <!-- Rare Words Museum -->
+        <div class="demo-card" data-demo="museum">
+          <div class="demo-icon museum-illustration">
+            <span class="museum-word w1">ephemeral</span>
+            <span class="museum-word w2">serendipity</span>
+            <span class="museum-word w3">luminescence</span>
+          </div>
+          <h3>Rare Words Museum</h3>
+          <p>Discover the longest, rarest, and most unusual words. Every language has hidden treasures.</p>
+          <button class="demo-btn" data-action="museum">Enter Museum</button>
+        </div>
+
+        <!-- Language Bridge -->
+        <div class="demo-card" data-demo="bridge">
+          <div class="demo-icon bridge-illustration">
+            <span class="bridge-word left">hello</span>
+            <span class="bridge-connector"></span>
+            <span class="bridge-word right">hola</span>
+          </div>
+          <h3>Language Bridge</h3>
+          <p>Find words that transcend borders. Discover cognates, loanwords, and universal concepts.</p>
+          <button class="demo-btn" data-action="bridge">Build Bridge</button>
+        </div>
+      </div>
+
+      <!-- Demo Display Area -->
+      <div id="demo-display" class="demo-display hidden">
+        <button class="back-btn" id="back-btn">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+            <path d="M12 4L6 10L12 16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+          Back to Playground
+        </button>
+        <div id="demo-content"></div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<script is:inline define:vars={{ languagesData: languages, countryData: languageCountries }}>
+// ========== STATE ==========
+let pyodide = null;
+let pyodideReady = false;
+let currentLang = null;  // No language selected initially
+let loadedModels = {};   // Track which models are loaded: { vocab: bool, markov: bool, ngram: bool }
+let pendingAction = null; // Store pending demo action while selecting language
+
+// ========== DOM ==========
+const modal = document.getElementById('lang-modal');
+const selectLangBtn = document.getElementById('select-lang-btn');
+const langEmpty = document.getElementById('lang-empty');
+const langActive = document.getElementById('lang-active');
+const currentFlag = document.getElementById('current-flag');
+const currentLabel = document.getElementById('current-label');
+const envLoading = document.getElementById('env-loading');
+const envReady = document.getElementById('env-ready');
+const langSearch = document.getElementById('lang-search');
+const langGrid = document.getElementById('lang-grid');
+const progressStatus = document.getElementById('progress-status');
+const progressPct = document.getElementById('progress-pct');
+const progressFill = document.getElementById('progress-fill');
+const demoGrid = document.getElementById('demo-grid');
+const demoDisplay = document.getElementById('demo-display');
+const demoContent = document.getElementById('demo-content');
+const backBtn = document.getElementById('back-btn');
+
+// ========== MODAL ==========
+const mapView = document.getElementById('map-view');
+const listView = document.getElementById('list-view');
+const worldMapContainer = document.getElementById('world-map-container');
+
+function openModal() {
+  modal.classList.remove('hidden');
+  document.body.style.overflow = 'hidden';
+  // Focus search only in list view
+  if (!listView.classList.contains('hidden')) {
+    langSearch.focus();
+  }
+}
+
+function closeModal() {
+  modal.classList.add('hidden');
+  document.body.style.overflow = '';
+  langSearch.value = '';
+  filterLangs('');
+}
+
+selectLangBtn.addEventListener('click', openModal);
+modal.querySelector('.modal-backdrop').addEventListener('click', closeModal);
+modal.querySelector('.modal-close').addEventListener('click', closeModal);
+
+// View toggle
+document.querySelectorAll('.view-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const view = btn.dataset.view;
+    document.querySelectorAll('.view-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+
+    if (view === 'map') {
+      mapView.classList.remove('hidden');
+      listView.classList.add('hidden');
+    } else {
+      mapView.classList.add('hidden');
+      listView.classList.remove('hidden');
+      langSearch.focus();
+    }
+  });
+});
+
+// Handle language selection from world map
+worldMapContainer?.addEventListener('languageSelect', async (e) => {
+  const { code, name } = e.detail;
+
+  // If language changed, reset loaded models
+  if (currentLang && currentLang.code !== code) {
+    loadedModels = {};
+  }
+
+  currentLang = { code, name };
+  updateLangDisplay();
+  closeModal();
+  await runPendingAction();
+});
+
+langSearch.addEventListener('input', e => filterLangs(e.target.value));
+
+function filterLangs(q) {
+  q = q.toLowerCase();
+  langGrid.querySelectorAll('.lang-card').forEach(card => {
+    const match = card.dataset.name.includes(q) || card.dataset.code.includes(q);
+    card.style.display = match ? '' : 'none';
+  });
+}
+
+document.querySelectorAll('.filter-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    const filter = btn.dataset.filter;
+    langGrid.querySelectorAll('.lang-card').forEach(card => {
+      const vocab = parseInt(card.dataset.vocab);
+      let show = true;
+      if (filter === 'major') show = vocab >= 500000;
+      else if (filter === 'medium') show = vocab >= 100000 && vocab < 500000;
+      else if (filter === 'emerging') show = vocab < 100000;
+      card.style.display = show ? '' : 'none';
+    });
+  });
+});
+
+langGrid.addEventListener('click', async e => {
+  const card = e.target.closest('.lang-card');
+  if (!card) return;
+  const newLang = { code: card.dataset.code, name: card.querySelector('.lang-name').textContent };
+
+  // If language changed, reset loaded models
+  if (currentLang && currentLang.code !== newLang.code) {
+    loadedModels = {};
+  }
+
+  currentLang = newLang;
+  updateLangDisplay();
+  closeModal();
+  await runPendingAction();
+});
+
+function updateLangDisplay() {
+  if (!currentLang) return;
+  // Hide empty state, show active state
+  langEmpty.classList.add('hidden');
+  langActive.classList.remove('hidden');
+  // Update display
+  currentFlag.textContent = currentLang.code.toUpperCase();
+  currentLabel.textContent = currentLang.name;
+}
+
+// Run pending action after language selection
+async function runPendingAction() {
+  if (!pendingAction) return;
+  const action = pendingAction;
+  pendingAction = null;
+
+  // Wait for pyodide to be ready
+  if (!pyodideReady) {
+    // Will be triggered by the pyodide ready handler
+    pendingAction = action;
+    return;
+  }
+
+  demoGrid.classList.add('hidden');
+  demoDisplay.classList.remove('hidden');
+  await runDemo(action);
+}
+
+// ========== ENV PROGRESS ==========
+function showProgress(status) {
+  progressStatus.textContent = status;
+  progressPct.textContent = '0%';
+  progressFill.style.width = '0%';
+  envLoading.classList.remove('hidden');
+  envReady.classList.add('hidden');
+}
+
+function updateProgress(pct, status) {
+  progressFill.style.width = pct + '%';
+  progressPct.textContent = Math.round(pct) + '%';
+  if (status) progressStatus.textContent = status;
+}
+
+function hideProgress() {
+  envLoading.classList.add('hidden');
+  envReady.classList.remove('hidden');
+}
+
+function formatBytes(bytes) {
+  if (bytes < 1024) return bytes + ' B';
+  if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+  return (bytes / (1024 * 1024)).toFixed(2) + ' MB';
+}
+
+async function downloadWithProgress(url, label, baseProgress, progressRange) {
+  const startTime = Date.now();
+  let lastUpdate = 0;
+
+  const response = await fetch(url);
+  if (!response.ok) throw new Error(`HTTP ${response.status}`);
+
+  const contentLength = response.headers.get('content-length');
+  const total = contentLength ? parseInt(contentLength) : 0;
+
+  if (!response.body || !total) {
+    // Fallback: no streaming, just show downloading
+    updateProgress(baseProgress + progressRange / 2, `${label}: downloading...`);
+    const data = await response.arrayBuffer();
+    updateProgress(baseProgress + progressRange, `${label}: ${formatBytes(data.byteLength)}`);
+    return new Uint8Array(data);
+  }
+
+  const reader = response.body.getReader();
+  const chunks = [];
+  let received = 0;
+
+  while (true) {
+    const { done, value } = await reader.read();
+    if (done) break;
+
+    chunks.push(value);
+    received += value.length;
+
+    // Update progress (throttle to every 100ms)
+    const now = Date.now();
+    if (now - lastUpdate > 100) {
+      lastUpdate = now;
+      const pct = baseProgress + (received / total) * progressRange;
+      const elapsed = (now - startTime) / 1000;
+      const speed = received / elapsed;
+      const remaining = (total - received) / speed;
+      const eta = remaining > 0 ? `${Math.ceil(remaining)}s` : '';
+
+      updateProgress(pct, `${label}: ${formatBytes(received)} / ${formatBytes(total)}${eta ? ' • ' + eta : ''}`);
+    }
+  }
+
+  // Combine chunks
+  const data = new Uint8Array(received);
+  let pos = 0;
+  for (const chunk of chunks) {
+    data.set(chunk, pos);
+    pos += chunk.length;
+  }
+
+  updateProgress(baseProgress + progressRange, `${label}: ${formatBytes(received)} ✓`);
+  return data;
+}
+
+// ========== PYODIDE ==========
+async function initPyodide() {
+  showProgress('Initializing Python environment...');
+  updateProgress(5);
+
+  try {
+    pyodide = await loadPyodide({
+      indexURL: 'https://cdn.jsdelivr.net/pyodide/v0.27.0/full/'
+    });
+    updateProgress(30, 'Installing pandas...');
+
+    await pyodide.loadPackage('pandas');
+    updateProgress(50, 'Installing numpy...');
+
+    await pyodide.loadPackage('numpy');
+    updateProgress(70, 'Installing parquet support...');
+
+    await pyodide.loadPackage('micropip');
+    const micropip = pyodide.pyimport('micropip');
+    await micropip.install('fastparquet');
+    updateProgress(90, 'Setting up environment...');
+
+    await pyodide.runPythonAsync(PYTHON_CODE);
+    updateProgress(100, 'Environment ready ✓');
+    pyodideReady = true;
+
+    setTimeout(hideProgress, 800);
+  } catch (err) {
+    progressStatus.textContent = 'Error: ' + err.message;
+    console.error(err);
+  }
+}
+
+// Load specific model types lazily
+async function loadVocab() {
+  if (loadedModels.vocab) return true;
+  const lang = currentLang.code;
+  const base = `https://huggingface.co/wikilangs/${lang}/resolve/main/models`;
+
+  showProgress('Loading vocabulary...');
+  const data = await downloadWithProgress(
+    `${base}/vocabulary/${lang}_vocabulary.parquet`,
+    'Vocabulary', 0, 80
+  );
+  updateProgress(90, 'Processing vocabulary...');
+  pyodide.globals.set('_vocab_bytes', data);
+  await pyodide.runPythonAsync(`process_vocab_bytes(_vocab_bytes)`);
+  updateProgress(100, 'Vocabulary ready ✓');
+  loadedModels.vocab = true;
+  await new Promise(r => setTimeout(r, 300));
+  hideProgress();
+  return true;
+}
+
+async function loadMarkov() {
+  if (loadedModels.markov) return true;
+  const lang = currentLang.code;
+  const base = `https://huggingface.co/wikilangs/${lang}/resolve/main/models`;
+
+  showProgress('Loading Markov model...');
+  const data = await downloadWithProgress(
+    `${base}/word_markov/${lang}_markov_ctx2_word.parquet`,
+    'Markov model', 0, 80
+  );
+  updateProgress(90, 'Processing Markov model...');
+  pyodide.globals.set('_markov_bytes', data);
+  await pyodide.runPythonAsync(`process_markov_bytes(_markov_bytes)`);
+  updateProgress(100, 'Markov model ready ✓');
+  loadedModels.markov = true;
+  await new Promise(r => setTimeout(r, 300));
+  hideProgress();
+  return true;
+}
+
+async function loadNgram() {
+  if (loadedModels.ngram) return true;
+  const lang = currentLang.code;
+  const base = `https://huggingface.co/wikilangs/${lang}/resolve/main/models`;
+
+  showProgress('Loading n-gram model...');
+  const data = await downloadWithProgress(
+    `${base}/word_ngram/${lang}_3gram_word.parquet`,
+    'N-gram model', 0, 80
+  );
+  updateProgress(90, 'Processing n-gram model...');
+  pyodide.globals.set('_ngram_bytes', data);
+  await pyodide.runPythonAsync(`process_ngram_bytes(_ngram_bytes)`);
+  updateProgress(100, 'N-gram model ready ✓');
+  loadedModels.ngram = true;
+  await new Promise(r => setTimeout(r, 300));
+  hideProgress();
+  return true;
+}
+
+// Define which models each demo needs
+const demoRequirements = {
+  dna: ['vocab'],
+  galaxy: ['ngram'],
+  weaver: ['markov'],
+  zipf: ['vocab'],
+  museum: ['vocab'],
+  bridge: ['vocab']
+};
+
+async function ensureModelsLoaded(action) {
+  const required = demoRequirements[action] || [];
+  for (const model of required) {
+    if (model === 'vocab') await loadVocab();
+    else if (model === 'markov') await loadMarkov();
+    else if (model === 'ngram') await loadNgram();
+  }
+}
+
+// ========== DEMOS ==========
+document.querySelectorAll('.demo-btn').forEach(btn => {
+  btn.addEventListener('click', async () => {
+    const action = btn.dataset.action;
+
+    if (!currentLang) {
+      // Store the pending action and open language selector
+      pendingAction = action;
+      openModal();
+      return;
+    }
+    if (!pyodideReady) {
+      alert('Please wait for the environment to initialize');
+      return;
+    }
+    demoGrid.classList.add('hidden');
+    demoDisplay.classList.remove('hidden');
+    await runDemo(action);
+  });
+});
+
+backBtn.addEventListener('click', () => {
+  demoDisplay.classList.add('hidden');
+  demoGrid.classList.remove('hidden');
+});
+
+async function runDemo(action) {
+  demoContent.innerHTML = '<div class="demo-loading"><div class="spinner"></div><p>Loading model data...</p></div>';
+
+  try {
+    // Load required models first
+    await ensureModelsLoaded(action);
+
+    // Then run the demo
+    demoContent.innerHTML = '<div class="demo-loading"><div class="spinner"></div><p>Analyzing...</p></div>';
+
+    switch (action) {
+      case 'dna': await showDNA(); break;
+      case 'galaxy': await showGalaxy(); break;
+      case 'weaver': await showWeaver(); break;
+      case 'zipf': await showZipf(); break;
+      case 'museum': await showMuseum(); break;
+      case 'bridge': await showBridge(); break;
+    }
+  } catch (err) {
+    demoContent.innerHTML = `<p class="error">Error: ${err.message}</p>`;
+    console.error(err);
+  }
+}
+
+// ========== DNA DEMO ==========
+async function showDNA() {
+  const result = await pyodide.runPythonAsync(`
+import json
+json.dumps(get_dna_data())
+  `);
+  const data = JSON.parse(result);
+  if (!data) {
+    demoContent.innerHTML = '<p class="error">Could not analyze language</p>';
+    return;
+  }
+
+  // Build character frequency bars SVG
+  const charEntries = Object.entries(data.chars).slice(0, 20);
+  const maxCharFreq = charEntries[0]?.[1] || 1;
+  const charBars = charEntries.map(([char, freq], i) => {
+    const width = (freq / maxCharFreq) * 300;
+    const y = i * 28;
+    return `
+      <g transform="translate(0, ${y})">
+        <text x="0" y="18" class="char-label">${char}</text>
+        <rect x="30" y="4" width="${width}" height="20" rx="3" class="char-bar" style="animation-delay: ${i * 30}ms"/>
+        <text x="${35 + width}" y="18" class="char-pct">${(freq * 100).toFixed(1)}%</text>
+      </g>
+    `;
+  }).join('');
+
+  // Build word length histogram SVG
+  const lenEntries = Object.entries(data.lengths).filter(([k]) => parseInt(k) <= 15);
+  const maxLenFreq = Math.max(...lenEntries.map(([,v]) => v));
+  const barWidth = 35;
+  const lenBars = lenEntries.map(([len, freq], i) => {
+    const height = (freq / maxLenFreq) * 150;
+    const x = i * barWidth;
+    return `
+      <g transform="translate(${x}, 0)">
+        <rect x="2" y="${160 - height}" width="${barWidth - 4}" height="${height}" rx="2" class="len-bar" style="animation-delay: ${i * 50}ms"/>
+        <text x="${barWidth/2}" y="175" class="len-label">${len}</text>
+      </g>
+    `;
+  }).join('');
+
+  // Top words cloud
+  const topWords = data.top_words.slice(0, 30).map((w, i) => {
+    const size = Math.max(0.7, 1.8 - i * 0.04);
+    return `<span class="cloud-word" style="font-size: ${size}em; animation-delay: ${i * 40}ms">${w.word}</span>`;
+  }).join(' ');
+
+  demoContent.innerHTML = `
+    <div class="dna-demo">
+      <header class="demo-header">
+        <h2>Language DNA</h2>
+        <p class="demo-subtitle">${currentLang.name}</p>
+      </header>
+
+      <div class="stats-row">
+        <div class="stat-box">
+          <span class="stat-number">${data.vocab_size.toLocaleString()}</span>
+          <span class="stat-label">Vocabulary</span>
+        </div>
+        <div class="stat-box">
+          <span class="stat-number">${data.avg_len}</span>
+          <span class="stat-label">Avg Length</span>
+        </div>
+        <div class="stat-box">
+          <span class="stat-number">${data.unique_chars}</span>
+          <span class="stat-label">Characters</span>
+        </div>
+      </div>
+
+      <div class="dna-grid">
+        <section class="dna-section">
+          <h3>Character Frequency</h3>
+          <p class="section-hint">Which letters dominate this language?</p>
+          <svg class="char-chart" viewBox="0 0 450 ${charEntries.length * 28}" preserveAspectRatio="xMinYMin meet">
+            ${charBars}
+          </svg>
+        </section>
+
+        <section class="dna-section">
+          <h3>Word Length Distribution</h3>
+          <p class="section-hint">How long are words typically?</p>
+          <svg class="len-chart" viewBox="0 0 ${lenEntries.length * barWidth} 180" preserveAspectRatio="xMinYMin meet">
+            ${lenBars}
+          </svg>
+        </section>
+      </div>
+
+      <section class="dna-section full-width">
+        <h3>Most Common Words</h3>
+        <p class="section-hint">The building blocks of ${currentLang.name}</p>
+        <div class="word-cloud">${topWords}</div>
+      </section>
+
+      <section class="dna-section full-width">
+        <h3>Script Characters</h3>
+        <p class="section-hint">All unique characters found</p>
+        <div class="char-grid">
+          ${data.char_list.slice(0, 60).map(c => `<span class="char-cell">${c}</span>`).join('')}
+        </div>
+      </section>
+    </div>
+  `;
+}
+
+// ========== GALAXY DEMO ==========
+async function showGalaxy() {
+  // Graph state
+  const nodes = new Map(); // word -> {x, y, expanded, strength, depth}
+  const edges = []; // {from, to, strength}
+  const width = 700, height = 550;
+  let dragging = null;
+  let offsetX = 0, offsetY = 0;
+
+  demoContent.innerHTML = `
+    <div class="galaxy-demo">
+      <header class="demo-header">
+        <h2>Word Galaxy</h2>
+        <p class="demo-subtitle">Explore word connections in ${currentLang.name}</p>
+      </header>
+
+      <div class="galaxy-input">
+        <input type="text" id="galaxy-word" placeholder="Enter a word to explore..." />
+        <button id="galaxy-go" class="primary-btn">Explore</button>
+      </div>
+
+      <div class="galaxy-instructions">
+        <span class="instruction-item"><span class="dot expanded"></span> Click to expand</span>
+        <span class="instruction-item"><span class="dot"></span> Already expanded</span>
+        <span class="instruction-item">Drag to reposition</span>
+      </div>
+
+      <div class="galaxy-container" id="galaxy-container">
+        <p class="galaxy-hint">Enter a word above to see its connections</p>
+      </div>
+    </div>
+  `;
+
+  async function getNeighbors(word) {
+    const result = await pyodide.runPythonAsync(`
+import json
+json.dumps(get_word_neighbors("${word.replace(/"/g, '\\"')}"))
+    `);
+    return JSON.parse(result);
+  }
+
+  function renderGraph() {
+    const container = document.getElementById('galaxy-container');
+    if (!container) return;
+
+    // Render edges
+    const edgesSvg = edges.map(e => {
+      const from = nodes.get(e.from);
+      const to = nodes.get(e.to);
+      if (!from || !to) return '';
+      const opacity = 0.1 + (e.strength * 0.3);
+      return `<line x1="${from.x}" y1="${from.y}" x2="${to.x}" y2="${to.y}"
+        stroke="var(--color-accent)" stroke-opacity="${opacity}" stroke-width="1.5"/>`;
+    }).join('');
+
+    // Render nodes
+    const nodesSvg = Array.from(nodes.entries()).map(([word, node]) => {
+      const radius = node.depth === 0 ? 35 : (node.expanded ? 25 : 18);
+      const fontSize = node.depth === 0 ? 13 : (node.expanded ? 11 : 10);
+      const fill = node.depth === 0 ? 'var(--color-accent)' :
+                   (node.expanded ? 'var(--color-accent-dark)' : 'var(--color-surface)');
+      const stroke = node.expanded ? 'none' : 'var(--color-accent)';
+      const textFill = (node.depth === 0 || node.expanded) ? 'white' : 'var(--color-text)';
+      const cursor = node.expanded ? 'grab' : 'pointer';
+
+      // Truncate long words
+      const displayWord = word.length > 12 ? word.slice(0, 10) + '...' : word;
+
+      return `
+        <g class="galaxy-node ${node.expanded ? 'expanded' : 'expandable'}"
+           data-word="${word}" style="cursor: ${cursor}">
+          <circle cx="${node.x}" cy="${node.y}" r="${radius}"
+            fill="${fill}" stroke="${stroke}" stroke-width="2"/>
+          <text x="${node.x}" y="${node.y}" fill="${textFill}"
+            text-anchor="middle" dominant-baseline="middle"
+            font-size="${fontSize}" font-weight="${node.depth === 0 ? 'bold' : 'normal'}"
+            style="pointer-events: none; user-select: none;">${displayWord}</text>
+        </g>
+      `;
+    }).join('');
+
+    container.innerHTML = `
+      <svg viewBox="0 0 ${width} ${height}" class="galaxy-svg interactive">
+        <defs>
+          <radialGradient id="galaxy-bg">
+            <stop offset="0%" stop-color="var(--color-accent)" stop-opacity="0.03"/>
+            <stop offset="100%" stop-color="var(--color-accent)" stop-opacity="0"/>
+          </radialGradient>
+        </defs>
+        <circle cx="${width/2}" cy="${height/2}" r="250" fill="url(#galaxy-bg)"/>
+        <g class="edges">${edgesSvg}</g>
+        <g class="nodes">${nodesSvg}</g>
+      </svg>
+    `;
+
+    // Add click handlers for expanding nodes
+    container.querySelectorAll('.galaxy-node.expandable').forEach(el => {
+      el.addEventListener('click', async (e) => {
+        if (dragging) return;
+        const word = el.dataset.word;
+        await expandNode(word);
+      });
+    });
+
+    // Add drag handlers for all nodes
+    const svg = container.querySelector('svg');
+    container.querySelectorAll('.galaxy-node').forEach(el => {
+      el.addEventListener('mousedown', (e) => {
+        e.preventDefault();
+        const word = el.dataset.word;
+        const node = nodes.get(word);
+        if (!node) return;
+        dragging = word;
+        const rect = svg.getBoundingClientRect();
+        const scaleX = width / rect.width;
+        const scaleY = height / rect.height;
+        offsetX = (e.clientX - rect.left) * scaleX - node.x;
+        offsetY = (e.clientY - rect.top) * scaleY - node.y;
+        svg.style.cursor = 'grabbing';
+      });
+    });
+
+    svg.addEventListener('mousemove', (e) => {
+      if (!dragging) return;
+      const node = nodes.get(dragging);
+      if (!node) return;
+      const rect = svg.getBoundingClientRect();
+      const scaleX = width / rect.width;
+      const scaleY = height / rect.height;
+      node.x = Math.max(40, Math.min(width - 40, (e.clientX - rect.left) * scaleX - offsetX));
+      node.y = Math.max(40, Math.min(height - 40, (e.clientY - rect.top) * scaleY - offsetY));
+      renderGraph();
+    });
+
+    svg.addEventListener('mouseup', () => {
+      dragging = null;
+      svg.style.cursor = '';
+    });
+
+    svg.addEventListener('mouseleave', () => {
+      dragging = null;
+      svg.style.cursor = '';
+    });
+  }
+
+  async function expandNode(word) {
+    const node = nodes.get(word);
+    if (!node || node.expanded) return;
+
+    // Show loading state
+    node.expanded = true;
+    renderGraph();
+
+    const neighbors = await getNeighbors(word);
+    if (!neighbors.length) return;
+
+    const maxStr = neighbors[0].strength;
+    const angleStep = (Math.PI * 2) / neighbors.length;
+    const baseAngle = Math.random() * Math.PI * 2; // Random starting angle
+
+    neighbors.slice(0, 8).forEach((n, i) => {
+      if (nodes.has(n.word)) {
+        // Just add edge if node exists
+        if (!edges.some(e => (e.from === word && e.to === n.word) || (e.from === n.word && e.to === word))) {
+          edges.push({ from: word, to: n.word, strength: n.strength / maxStr });
+        }
+        return;
+      }
+
+      // Position new node around parent
+      const angle = baseAngle + angleStep * i;
+      const dist = 90 + (1 - n.strength / maxStr) * 60;
+      const x = Math.max(50, Math.min(width - 50, node.x + Math.cos(angle) * dist));
+      const y = Math.max(50, Math.min(height - 50, node.y + Math.sin(angle) * dist));
+
+      nodes.set(n.word, {
+        x, y,
+        expanded: false,
+        strength: n.strength / maxStr,
+        depth: node.depth + 1
+      });
+
+      edges.push({ from: word, to: n.word, strength: n.strength / maxStr });
+    });
+
+    // Apply simple force-directed layout to avoid overlaps
+    for (let iter = 0; iter < 50; iter++) {
+      Array.from(nodes.entries()).forEach(([w1, n1]) => {
+        Array.from(nodes.entries()).forEach(([w2, n2]) => {
+          if (w1 >= w2) return;
+          const dx = n2.x - n1.x;
+          const dy = n2.y - n1.y;
+          const dist = Math.sqrt(dx * dx + dy * dy) || 1;
+          const minDist = 70;
+          if (dist < minDist) {
+            const force = (minDist - dist) / dist * 0.3;
+            const fx = dx * force;
+            const fy = dy * force;
+            if (n1.depth > 0) { n1.x -= fx; n1.y -= fy; }
+            if (n2.depth > 0) { n2.x += fx; n2.y += fy; }
+          }
+        });
+      });
+
+      // Keep nodes in bounds
+      nodes.forEach((n) => {
+        n.x = Math.max(50, Math.min(width - 50, n.x));
+        n.y = Math.max(50, Math.min(height - 50, n.y));
+      });
+    }
+
+    renderGraph();
+  }
+
+  async function initGraph(startWord) {
+    nodes.clear();
+    edges.length = 0;
+
+    const container = document.getElementById('galaxy-container');
+    container.innerHTML = '<div class="demo-loading"><div class="spinner"></div></div>';
+
+    const neighbors = await getNeighbors(startWord);
+
+    if (!neighbors.length) {
+      container.innerHTML = `<p class="no-results">No connections found for "${startWord}". Try a more common word.</p>`;
+      return;
+    }
+
+    // Add center node
+    nodes.set(startWord, {
+      x: width / 2,
+      y: height / 2,
+      expanded: true,
+      strength: 1,
+      depth: 0
+    });
+
+    // Add initial neighbors
+    const maxStr = neighbors[0].strength;
+    neighbors.slice(0, 10).forEach((n, i) => {
+      const angle = (i / Math.min(10, neighbors.length)) * Math.PI * 2 - Math.PI / 2;
+      const dist = 100 + (1 - n.strength / maxStr) * 80;
+      nodes.set(n.word, {
+        x: width / 2 + Math.cos(angle) * dist,
+        y: height / 2 + Math.sin(angle) * dist,
+        expanded: false,
+        strength: n.strength / maxStr,
+        depth: 1
+      });
+      edges.push({ from: startWord, to: n.word, strength: n.strength / maxStr });
+    });
+
+    renderGraph();
+  }
+
+  document.getElementById('galaxy-go').addEventListener('click', async () => {
+    const word = document.getElementById('galaxy-word').value.trim();
+    if (!word) return;
+    await initGraph(word);
+  });
+
+  document.getElementById('galaxy-word').addEventListener('keydown', async (e) => {
+    if (e.key === 'Enter') {
+      const word = e.target.value.trim();
+      if (word) await initGraph(word);
+    }
+  });
+}
+
+// ========== WEAVER DEMO ==========
+async function showWeaver() {
+  demoContent.innerHTML = `
+    <div class="weaver-demo">
+      <header class="demo-header">
+        <h2>Text Weaver</h2>
+        <p class="demo-subtitle">Markov chain text generation for ${currentLang.name}</p>
+      </header>
+
+      <div class="weaver-controls">
+        <div class="control-row">
+          <label>Seed words (optional)</label>
+          <input type="text" id="weaver-seed" placeholder="Start with these words..." />
+        </div>
+        <div class="control-row">
+          <label>Length: <span id="len-val">60</span> words</label>
+          <input type="range" id="weaver-len" min="20" max="150" value="60" />
+        </div>
+        <button id="weave-go" class="primary-btn">Weave Text</button>
+      </div>
+
+      <div class="weaver-output" id="weaver-output">
+        <p class="output-hint">Click "Weave Text" to generate</p>
+      </div>
+    </div>
+  `;
+
+  const lenSlider = document.getElementById('weaver-len');
+  const lenVal = document.getElementById('len-val');
+  lenSlider.addEventListener('input', () => lenVal.textContent = lenSlider.value);
+
+  document.getElementById('weave-go').addEventListener('click', async () => {
+    const seed = document.getElementById('weaver-seed').value;
+    const len = document.getElementById('weaver-len').value;
+    const output = document.getElementById('weaver-output');
+
+    output.innerHTML = '<div class="generating"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>';
+
+    const seedArg = seed ? `"${seed.replace(/"/g, '\\"')}"` : 'None';
+    const result = await pyodide.runPythonAsync(`generate_text(${len}, ${seedArg})`);
+
+    // Typewriter effect
+    output.innerHTML = '';
+    const words = result.split(' ');
+    for (let i = 0; i < words.length; i++) {
+      const span = document.createElement('span');
+      span.className = 'typed-word';
+      span.textContent = words[i] + ' ';
+      span.style.animationDelay = `${i * 25}ms`;
+      output.appendChild(span);
+    }
+  });
+}
+
+// ========== ZIPF DEMO ==========
+async function showZipf() {
+  const result = await pyodide.runPythonAsync(`
+import json
+json.dumps(get_zipf_data())
+  `);
+  const data = JSON.parse(result);
+
+  if (!data || !data.length) {
+    demoContent.innerHTML = '<p class="error">Could not load frequency data</p>';
+    return;
+  }
+
+  // SVG chart
+  const width = 700, height = 400;
+  const margin = { top: 30, right: 30, bottom: 50, left: 70 };
+  const chartW = width - margin.left - margin.right;
+  const chartH = height - margin.top - margin.bottom;
+
+  const maxRank = 500;
+  const maxFreq = data[0].frequency;
+  const minFreq = data[Math.min(maxRank, data.length) - 1].frequency;
+
+  // Log scales
+  const xScale = r => margin.left + (Math.log10(r) / Math.log10(maxRank)) * chartW;
+  const yScale = f => margin.top + chartH - (Math.log10(f) / Math.log10(maxFreq)) * chartH;
+
+  // Path
+  let path = `M ${xScale(1)} ${yScale(data[0].frequency)}`;
+  for (let i = 1; i < Math.min(maxRank, data.length); i++) {
+    path += ` L ${xScale(i + 1)} ${yScale(data[i].frequency)}`;
+  }
+
+  // Highlighted points
+  const highlights = [0, 4, 9, 49, 99, 199, 499].filter(i => i < data.length);
+  const points = highlights.map(i => `
+    <circle cx="${xScale(i + 1)}" cy="${yScale(data[i].frequency)}" r="5" fill="var(--color-accent)"/>
+    <text x="${xScale(i + 1)}" y="${yScale(data[i].frequency) - 10}" text-anchor="middle" font-size="10" fill="var(--color-text-secondary)">${data[i].word}</text>
+  `).join('');
+
+  // Top words table
+  const topTable = data.slice(0, 10).map((d, i) => `
+    <div class="zipf-row">
+      <span class="zipf-rank">#${i + 1}</span>
+      <span class="zipf-word">${d.word}</span>
+      <span class="zipf-freq">${d.frequency.toLocaleString()}</span>
+    </div>
+  `).join('');
+
+  demoContent.innerHTML = `
+    <div class="zipf-demo">
+      <header class="demo-header">
+        <h2>Zipf's Law</h2>
+        <p class="demo-subtitle">${currentLang.name} word frequency distribution</p>
+      </header>
+
+      <div class="zipf-chart-container">
+        <svg viewBox="0 0 ${width} ${height}" class="zipf-chart">
+          <!-- Grid -->
+          <g class="grid">
+            ${[1, 10, 100].map(r => `<line x1="${xScale(r)}" y1="${margin.top}" x2="${xScale(r)}" y2="${height - margin.bottom}" stroke="var(--color-border)" stroke-dasharray="3,3"/>`).join('')}
+          </g>
+
+          <!-- Axes -->
+          <line x1="${margin.left}" y1="${height - margin.bottom}" x2="${width - margin.right}" y2="${height - margin.bottom}" stroke="var(--color-text)"/>
+          <line x1="${margin.left}" y1="${margin.top}" x2="${margin.left}" y2="${height - margin.bottom}" stroke="var(--color-text)"/>
+
+          <!-- Labels -->
+          <text x="${width / 2}" y="${height - 10}" text-anchor="middle" fill="var(--color-text-secondary)" font-size="12">Word Rank (log scale)</text>
+          <text x="15" y="${height / 2}" text-anchor="middle" fill="var(--color-text-secondary)" font-size="12" transform="rotate(-90, 15, ${height / 2})">Frequency (log)</text>
+
+          <!-- Axis ticks -->
+          ${[1, 10, 100, 500].map(r => `<text x="${xScale(r)}" y="${height - margin.bottom + 20}" text-anchor="middle" font-size="10" fill="var(--color-text-secondary)">${r}</text>`).join('')}
+
+          <!-- Data line -->
+          <path d="${path}" fill="none" stroke="var(--color-accent)" stroke-width="2" class="zipf-line"/>
+
+          <!-- Points -->
+          ${points}
+        </svg>
+      </div>
+
+      <div class="zipf-insight">
+        <h3>The Pattern</h3>
+        <p>The most common word appears <strong>${Math.round(data[0].frequency / data[1].frequency)}×</strong> more than #2,
+        and <strong>${Math.round(data[0].frequency / data[9].frequency)}×</strong> more than #10.
+        This power law appears in every human language.</p>
+      </div>
+
+      <div class="zipf-table">
+        <h3>Top 10 Words</h3>
+        ${topTable}
+      </div>
+    </div>
+  `;
+}
+
+// ========== MUSEUM DEMO ==========
+async function showMuseum() {
+  const result = await pyodide.runPythonAsync(`
+import json
+json.dumps(get_rare_words())
+  `);
+  const data = JSON.parse(result);
+
+  if (!data) {
+    demoContent.innerHTML = '<p class="error">Could not load vocabulary</p>';
+    return;
+  }
+
+  const longestCards = data.longest.slice(0, 8).map(w => `
+    <div class="exhibit-card gold">
+      <span class="exhibit-word">${w.word}</span>
+      <span class="exhibit-meta">${w.length} characters</span>
+    </div>
+  `).join('');
+
+  const unusualCards = data.unusual.slice(0, 12).map(w => `
+    <div class="exhibit-card purple">
+      <span class="exhibit-word">${w.word}</span>
+      <span class="exhibit-meta">${w.freq.toLocaleString()} uses</span>
+    </div>
+  `).join('');
+
+  const rareCards = data.rarest.slice(0, 10).map(w => `
+    <div class="exhibit-card red">
+      <span class="exhibit-word">${w.word}</span>
+      <span class="exhibit-meta">${w.freq} sighting${w.freq > 1 ? 's' : ''}</span>
+    </div>
+  `).join('');
+
+  demoContent.innerHTML = `
+    <div class="museum-demo">
+      <header class="demo-header">
+        <h2>Rare Words Museum</h2>
+        <p class="demo-subtitle">Hidden treasures of ${currentLang.name}</p>
+      </header>
+
+      <section class="exhibit-section">
+        <div class="exhibit-header">
+          <span class="exhibit-icon">🏆</span>
+          <div>
+            <h3>Hall of Giants</h3>
+            <p>The longest words in the vocabulary</p>
+          </div>
+        </div>
+        <div class="exhibit-grid">${longestCards}</div>
+      </section>
+
+      <section class="exhibit-section">
+        <div class="exhibit-header">
+          <span class="exhibit-icon">✨</span>
+          <div>
+            <h3>Cabinet of Curiosities</h3>
+            <p>Words with unusual characters</p>
+          </div>
+        </div>
+        <div class="exhibit-grid">${unusualCards}</div>
+      </section>
+
+      <section class="exhibit-section">
+        <div class="exhibit-header">
+          <span class="exhibit-icon">🔮</span>
+          <div>
+            <h3>Endangered Collection</h3>
+            <p>Rarely seen words</p>
+          </div>
+        </div>
+        <div class="exhibit-grid">${rareCards}</div>
+      </section>
+    </div>
+  `;
+}
+
+// ========== BRIDGE DEMO ==========
+async function showBridge() {
+  const otherLangs = languagesData.filter(l => l.code !== currentLang.code);
+
+  demoContent.innerHTML = `
+    <div class="bridge-demo">
+      <header class="demo-header">
+        <h2>Language Bridge</h2>
+        <p class="demo-subtitle">Find shared words between languages</p>
+      </header>
+
+      <div class="bridge-selector">
+        <div class="bridge-lang">
+          <span class="bridge-code">${currentLang.code.toUpperCase()}</span>
+          <span>${currentLang.name}</span>
+        </div>
+        <span class="bridge-arrow">⟷</span>
+        <select id="bridge-target">
+          ${otherLangs.map(l => `<option value="${l.code}">${l.name}</option>`).join('')}
+        </select>
+        <button id="bridge-go" class="primary-btn">Find Connections</button>
+      </div>
+
+      <div class="bridge-results" id="bridge-results">
+        <p class="bridge-hint">Select a language and click "Find Connections"</p>
+      </div>
+    </div>
+  `;
+
+  document.getElementById('bridge-go').addEventListener('click', async () => {
+    const target = document.getElementById('bridge-target').value;
+    const results = document.getElementById('bridge-results');
+
+    results.innerHTML = '<div class="demo-loading"><div class="spinner"></div><p>Building bridge...</p></div>';
+
+    // Fetch target vocab
+    const targetWords = await pyodide.runPythonAsync(`
+import json
+await fetch_target_vocab('${target}')
+    `);
+
+    // Find shared
+    const shared = await pyodide.runPythonAsync(`
+import json
+json.dumps(find_shared())
+    `);
+
+    const sharedWords = JSON.parse(shared);
+    const targetName = otherLangs.find(l => l.code === target)?.name || target;
+
+    if (!sharedWords.length) {
+      results.innerHTML = '<p class="no-results">No obvious shared words found.</p>';
+      return;
+    }
+
+    results.innerHTML = `
+      <div class="shared-header">
+        <h3>${sharedWords.length} Shared Words</h3>
+        <p>Words appearing in both ${currentLang.name} and ${targetName}</p>
+      </div>
+      <div class="shared-grid">
+        ${sharedWords.map(w => `
+          <div class="shared-card">
+            <span class="shared-word">${w.word}</span>
+            <span class="shared-freq">${w.frequency.toLocaleString()}</span>
+          </div>
+        `).join('')}
+      </div>
+    `;
+  });
+}
+
+// ========== PYTHON CODE ==========
+const PYTHON_CODE = `
+import pandas as pd
+import numpy as np
+import json
+import random
+from collections import defaultdict
+from pyodide.http import pyfetch
+
+class Store:
+    vocab_df = None
+    vocab_idx = {}
+    markov_idx = {}
+    ngram_idx = {}
+    target_words = set()
+
+store = Store()
+
+def bytes_to_df(data):
+    """Convert JS Uint8Array to pandas DataFrame"""
+    import io
+    # Convert JS typed array to Python bytes
+    raw = bytes(data.to_py())
+    return pd.read_parquet(io.BytesIO(raw))
+
+def process_vocab_bytes(data):
+    """Process vocabulary parquet from JS bytes"""
+    df = bytes_to_df(data)
+    store.vocab_df = df
+    # Vectorized: build index using zip on columns (much faster than iterrows)
+    tokens = df['token'].tolist()
+    freqs = df['frequency'].tolist()
+    idfs = df['idf_score'].tolist()
+    ranks = df['rank'].tolist()
+    store.vocab_idx = {t: {'freq': int(f), 'idf': float(i), 'rank': int(r)}
+                       for t, f, i, r in zip(tokens, freqs, idfs, ranks)}
+    return True
+
+def process_markov_bytes(data):
+    """Process Markov model parquet from JS bytes"""
+    df = bytes_to_df(data)
+    store.markov_idx = defaultdict(list)
+    # Use itertuples (10x faster than iterrows)
+    for row in df.itertuples(index=False):
+        ctx = row.context
+        if isinstance(ctx, str):
+            ctx = tuple(json.loads(ctx))
+        else:
+            ctx = tuple(ctx)
+        store.markov_idx[ctx].append((row.next_token, float(row.probability)))
+    return True
+
+def process_ngram_bytes(data):
+    """Process n-gram model parquet from JS bytes"""
+    df = bytes_to_df(data)
+    store.ngram_idx = defaultdict(list)
+    # Use itertuples (10x faster than iterrows)
+    for row in df.itertuples(index=False):
+        ng = row.ngram
+        if isinstance(ng, str):
+            ng = json.loads(ng)
+        else:
+            ng = list(ng)
+        if len(ng) >= 2:
+            store.ngram_idx[tuple(ng[:-1])].append((ng[-1], int(row.frequency)))
+    return True
+
+# Legacy async functions (kept for bridge demo)
+async def fetch_parquet(url):
+    try:
+        resp = await pyfetch(url)
+        if resp.status != 200:
+            return None
+        data = await resp.bytes()
+        with open('/tmp/data.parquet', 'wb') as f:
+            f.write(data)
+        return pd.read_parquet('/tmp/data.parquet')
+    except Exception as e:
+        print(f"Fetch error: {e}")
+        return None
+
+def get_dna_data():
+    if store.vocab_df is None:
+        return None
+    df = store.vocab_df
+    tokens = df['token'].tolist()
+    freqs = df['frequency'].tolist()
+
+    # Char freq
+    char_freq = defaultdict(int)
+    for t, f in zip(tokens[:8000], freqs[:8000]):
+        for c in str(t).lower():
+            if c.isalpha():
+                char_freq[c] += f
+    total = sum(char_freq.values())
+    chars = {k: v/total for k, v in sorted(char_freq.items(), key=lambda x: -x[1])[:30]}
+
+    # Length dist
+    len_freq = defaultdict(int)
+    for t, f in zip(tokens[:8000], freqs[:8000]):
+        len_freq[len(str(t))] += f
+    total_len = sum(len_freq.values())
+    lengths = {str(k): v/total_len for k, v in sorted(len_freq.items()) if k <= 20}
+
+    # Top words
+    top_words = [{'word': t, 'freq': f} for t, f in zip(tokens[:50], freqs[:50])]
+
+    # Unique chars
+    all_chars = set()
+    for t in tokens[:3000]:
+        all_chars.update(str(t))
+    char_list = sorted(all_chars)
+
+    # Avg length
+    avg_len = sum(len(str(t)) * f for t, f in zip(tokens[:8000], freqs[:8000])) / sum(freqs[:8000])
+
+    return {
+        'chars': chars,
+        'lengths': lengths,
+        'top_words': top_words,
+        'char_list': char_list[:100],
+        'vocab_size': len(df),
+        'avg_len': round(avg_len, 2),
+        'unique_chars': len(char_list)
+    }
+
+def get_zipf_data():
+    if store.vocab_df is None:
+        return None
+    df = store.vocab_df.head(500)
+    return [{'rank': i+1, 'frequency': int(row['frequency']), 'word': row['token']} for i, (_, row) in enumerate(df.iterrows())]
+
+def get_rare_words():
+    if store.vocab_df is None:
+        return None
+    df = store.vocab_df
+    tokens = df['token'].tolist()
+    freqs = df['frequency'].tolist()
+
+    # Longest
+    with_len = [(t, len(str(t)), f) for t, f in zip(tokens, freqs) if f > 3]
+    longest = sorted(with_len, key=lambda x: -x[1])[:20]
+
+    # Unusual chars
+    common = set('abcdefghijklmnopqrstuvwxyz0123456789')
+    unusual = []
+    for t, f in zip(tokens[:4000], freqs[:4000]):
+        if any(c.lower() not in common for c in str(t)) and f > 5:
+            unusual.append((t, f))
+    unusual = unusual[:30]
+
+    # Rarest
+    rarest = [(t, f) for t, f in zip(tokens[-80:], freqs[-80:]) if len(str(t)) > 3][:20]
+
+    return {
+        'longest': [{'word': t, 'length': l, 'freq': f} for t, l, f in longest],
+        'unusual': [{'word': t, 'freq': f} for t, f in unusual],
+        'rarest': [{'word': t, 'freq': f} for t, f in rarest]
+    }
+
+def generate_text(length=50, seed=None):
+    if not store.markov_idx:
+        return "Model not loaded"
+    if seed:
+        toks = seed.strip().split()
+        ctx = tuple(toks[-2:]) if len(toks) >= 2 else tuple(toks)
+    else:
+        ctx = random.choice(list(store.markov_idx.keys()))
+    result = list(ctx)
+    for _ in range(length):
+        trans = store.markov_idx.get(ctx, [])
+        if not trans:
+            ctx = random.choice(list(store.markov_idx.keys()))
+            trans = store.markov_idx.get(ctx, [])
+            if not trans:
+                break
+        toks, probs = zip(*trans)
+        total = sum(probs)
+        probs = [p/total for p in probs]
+        nxt = random.choices(toks, weights=probs)[0]
+        result.append(nxt)
+        ctx = (ctx[-1], nxt) if len(ctx) >= 2 else (nxt,)
+    cleaned = [t[1:] if t.startswith('▁') else t for t in result]
+    return ' '.join(cleaned)
+
+def get_word_neighbors(word, limit=20):
+    if not store.ngram_idx:
+        return []
+    neighbors = defaultdict(int)
+    for ctx, trans in store.ngram_idx.items():
+        if word in ctx:
+            for nxt, freq in trans:
+                if nxt != word:
+                    neighbors[nxt] += freq
+        for nxt, freq in trans:
+            if nxt == word:
+                for c in ctx:
+                    if c != word:
+                        neighbors[c] += freq
+    return [{'word': w, 'strength': s} for w, s in sorted(neighbors.items(), key=lambda x: -x[1])[:limit]]
+
+async def fetch_target_vocab(lang):
+    url = f"https://huggingface.co/wikilangs/{lang}/resolve/main/models/vocabulary/{lang}_vocabulary.parquet"
+    df = await fetch_parquet(url)
+    if df is None:
+        store.target_words = set()
+        return False
+    store.target_words = set(w.lower() for w in df['token'].head(4000).tolist())
+    return True
+
+def find_shared():
+    if not store.vocab_idx or not store.target_words:
+        return []
+    shared = []
+    for word, data in store.vocab_idx.items():
+        if word.lower() in store.target_words and len(word) > 3:
+            shared.append({'word': word, 'frequency': data['freq']})
+    return sorted(shared, key=lambda x: -x['frequency'])[:50]
+`;
+
+// ========== URL PARAMS ==========
+function getQueryParams() {
+  const params = new URLSearchParams(window.location.search);
+  return {
+    lang: params.get('lang'),
+    demo: params.get('demo')
+  };
+}
+
+async function handleDeepLink() {
+  const { lang, demo } = getQueryParams();
+
+  if (lang) {
+    // Find the language in our data
+    const langData = languagesData.find(l => l.code === lang);
+    if (langData) {
+      currentLang = { code: langData.code, name: langData.name };
+      loadedModels = {};
+      updateLangDisplay();
+
+      // If a specific demo was requested, wait for Pyodide and launch it
+      if (demo && ['dna', 'galaxy', 'weaver', 'zipf', 'museum', 'bridge'].includes(demo)) {
+        // Wait for Pyodide to be ready
+        const waitForPyodide = () => {
+          if (pyodideReady) {
+            demoGrid.classList.add('hidden');
+            demoDisplay.classList.remove('hidden');
+            runDemo(demo);
+          } else {
+            setTimeout(waitForPyodide, 100);
+          }
+        };
+        waitForPyodide();
+      }
+    }
+  }
+}
+
+// ========== CLEANUP (Memory Management) ==========
+function unloadModels() {
+  if (!pyodide || !pyodideReady) return;
+
+  try {
+    // Clear Python store data
+    pyodide.runPython(`
+if 'store' in dir():
+    store.vocab_df = None
+    store.vocab_idx = {}
+    store.markov_idx = {}
+    store.ngram_idx = {}
+    store.target_words = set()
+    `);
+
+    // Reset JS tracking
+    loadedModels = {};
+    console.log('Models unloaded to free memory');
+  } catch (e) {
+    console.warn('Error unloading models:', e);
+  }
+}
+
+// Unload models when navigating away
+window.addEventListener('beforeunload', unloadModels);
+
+// Also unload when page becomes hidden (tab switch, minimize)
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden) {
+    unloadModels();
+  }
+});
+
+// ========== INIT ==========
+const script = document.createElement('script');
+script.src = 'https://cdn.jsdelivr.net/pyodide/v0.27.0/full/pyodide.js';
+script.onload = () => {
+  initPyodide();
+  handleDeepLink();
+};
+document.head.appendChild(script);
+</script>
+
+<style is:global>
+/* ========== MODAL ========== */
+.modal { position: fixed; inset: 0; z-index: 100; display: flex; align-items: center; justify-content: center; }
+.modal.hidden { display: none; }
+.modal-backdrop { position: absolute; inset: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(4px); }
+.modal-content { position: relative; background: var(--color-surface); border-radius: 16px; padding: 24px; max-width: 900px; width: 90%; max-height: 85vh; overflow-y: auto; }
+.modal-content-large { max-width: 1100px; }
+.modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+.modal-header h2 { margin: 0; font-size: 1.5rem; }
+.modal-close { background: none; border: none; font-size: 2rem; color: var(--color-text-secondary); cursor: pointer; line-height: 1; }
+
+/* View Toggle */
+.view-toggle { display: flex; gap: 8px; margin-bottom: 16px; padding: 4px; background: var(--color-bg); border-radius: 10px; width: fit-content; }
+.view-btn { display: flex; align-items: center; gap: 6px; padding: 8px 16px; background: transparent; border: none; border-radius: 8px; color: var(--color-text-muted); cursor: pointer; font-size: 0.875rem; font-weight: 500; transition: all 0.2s; }
+.view-btn:hover { color: var(--color-text); }
+.view-btn.active { background: var(--color-surface); color: var(--color-accent); box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.view-btn svg { flex-shrink: 0; }
+
+/* Modal Views */
+.modal-view { transition: opacity 0.2s; }
+.modal-view.hidden { display: none; }
+
+/* Map View */
+.map-view { }
+.map-hint { text-align: center; color: var(--color-text-muted); font-size: 0.875rem; margin-bottom: 12px; }
+.map-wrapper { border-radius: 12px; overflow: hidden; }
+.map-legend { display: flex; justify-content: center; gap: 24px; margin-top: 16px; flex-wrap: wrap; }
+.legend-item { display: flex; align-items: center; gap: 8px; font-size: 0.8rem; color: var(--color-text-secondary); }
+.legend-swatch { width: 24px; height: 16px; border-radius: 3px; border: 1px solid var(--color-border); }
+.legend-swatch.endemic { background: hsl(262, 70%, 65%); }
+.legend-swatch.macro { background: repeating-linear-gradient(45deg, hsl(262, 75%, 50%), hsl(262, 75%, 50%) 2px, transparent 2px, transparent 4px); }
+.legend-swatch.mixed { background: hsl(262, 70%, 65%); background-image: repeating-linear-gradient(45deg, transparent, transparent 2px, rgba(99, 102, 241, 0.5) 2px, rgba(99, 102, 241, 0.5) 4px); }
+
+/* List View */
+.list-view { }
+.search-box input { width: 100%; padding: 12px 16px; font-size: 1rem; border: 2px solid var(--color-border); border-radius: 8px; background: var(--color-bg); color: var(--color-text); }
+.search-box input:focus { outline: none; border-color: var(--color-accent); }
+.lang-filters { display: flex; gap: 8px; margin: 16px 0; flex-wrap: wrap; }
+.filter-btn { padding: 8px 16px; border: 1px solid var(--color-border); border-radius: 20px; background: transparent; color: var(--color-text-secondary); cursor: pointer; font-size: 0.875rem; }
+.filter-btn.active { background: var(--color-accent); color: white; border-color: var(--color-accent); }
+.lang-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px; max-height: 400px; overflow-y: auto; }
+.lang-card { display: flex; flex-direction: column; align-items: flex-start; padding: 12px 16px; background: var(--color-bg); border: 1px solid var(--color-border); border-radius: 8px; cursor: pointer; text-align: left; transition: all 0.2s; }
+.lang-card:hover { border-color: var(--color-accent); transform: translateY(-2px); }
+.lang-code { font-size: 0.7rem; font-weight: 700; color: var(--color-accent); text-transform: uppercase; }
+.lang-name { font-weight: 600; color: var(--color-text); }
+.lang-vocab { font-size: 0.75rem; color: var(--color-text-muted); }
+
+/* ========== HERO ========== */
+.hero-playground { padding: 28px 0 20px; background: linear-gradient(135deg, var(--color-surface) 0%, var(--color-bg) 100%); border-bottom: 1px solid var(--color-border); text-align: center; }
+.hero-playground h1 { font-size: 1.75rem; margin-bottom: 6px; background: linear-gradient(135deg, var(--color-accent), var(--color-accent-dark)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+.hero-subtitle { font-size: 1rem; color: var(--color-text-secondary); margin-bottom: 16px; }
+
+/* ========== STATUS BAR ========== */
+.status-bar {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 1px;
+  max-width: 700px;
+  margin: 0 auto;
+  background: var(--color-border);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+}
+
+.status-section {
+  background: var(--color-surface);
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 52px;
+}
+
+/* Section 1: Language Selector Button */
+.status-selector {
+  cursor: pointer;
+  border: none;
+  font: inherit;
+  transition: background 0.2s;
+}
+.status-selector:hover {
+  background: var(--color-bg);
+}
+.status-selector .status-icon {
+  width: 24px;
+  height: 24px;
+  color: var(--color-accent);
+  flex-shrink: 0;
+}
+.status-selector .status-label {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--color-text);
+}
+.status-selector .status-chevron {
+  width: 16px;
+  height: 16px;
+  color: var(--color-text-muted);
+  transition: transform 0.2s;
+}
+.status-selector:hover .status-chevron {
+  transform: translateY(2px);
+  color: var(--color-accent);
+}
+
+/* Section 2: Language Display */
+.status-display {
+  justify-content: center;
+  min-width: 180px;
+}
+.lang-state { display: flex; align-items: center; gap: 10px; }
+.lang-state.hidden { display: none; }
+
+.lang-state-empty {
+  color: var(--color-text-muted);
+  font-size: 0.875rem;
+}
+.lang-state-empty .empty-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--color-border);
+  animation: empty-pulse 2s ease-in-out infinite;
+}
+@keyframes empty-pulse {
+  0%, 100% { opacity: 0.5; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.2); }
+}
+
+.lang-state-active .lang-badge {
+  background: linear-gradient(135deg, var(--color-accent), var(--color-accent-dark));
+  color: white;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-weight: 700;
+  font-size: 0.8rem;
+  font-family: var(--font-mono);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.lang-state-active .lang-name {
+  font-weight: 600;
+  color: var(--color-text);
+  font-size: 0.95rem;
+}
+
+/* Section 3: Environment Status */
+.status-env {
+  min-width: 200px;
+}
+.env-state { display: flex; align-items: center; gap: 10px; width: 100%; }
+.env-state.hidden { display: none; }
+
+/* Loading state */
+.env-state-loading .env-spinner {
+  width: 20px;
+  height: 20px;
+  color: var(--color-accent);
+  flex-shrink: 0;
+}
+.env-state-loading .env-spinner svg {
+  width: 100%;
+  height: 100%;
+  animation: spinner-rotate 1s linear infinite;
+}
+@keyframes spinner-rotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+.env-state-loading .env-info {
+  flex: 1;
+  min-width: 0;
+}
+.env-state-loading .env-label {
+  display: block;
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+  margin-bottom: 6px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.env-progress {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.env-progress-track {
+  flex: 1;
+  height: 6px;
+  background: var(--color-border);
+  border-radius: 3px;
+  overflow: hidden;
+}
+.env-progress-fill {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, var(--color-accent), var(--color-accent-dark));
+  border-radius: 3px;
+  transition: width 0.3s ease;
+  position: relative;
+}
+.env-progress-fill::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+  animation: shimmer 1.5s infinite;
+}
+@keyframes shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+.env-pct {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--color-accent);
+  font-family: var(--font-mono);
+  min-width: 32px;
+  text-align: right;
+}
+
+/* Ready state */
+.env-state-ready {
+  justify-content: center;
+}
+.env-state-ready .env-check {
+  width: 22px;
+  height: 22px;
+  background: linear-gradient(135deg, #10b981, #059669);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  animation: check-pop 0.3s ease-out;
+}
+.env-state-ready .env-check svg {
+  width: 14px;
+  height: 14px;
+}
+@keyframes check-pop {
+  0% { transform: scale(0); }
+  70% { transform: scale(1.2); }
+  100% { transform: scale(1); }
+}
+.env-state-ready .env-ready-label {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #10b981;
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+  .status-bar {
+    grid-template-columns: 1fr;
+    max-width: 100%;
+  }
+  .status-section {
+    justify-content: center;
+  }
+  .status-display {
+    border-top: 1px solid var(--color-border);
+    border-bottom: 1px solid var(--color-border);
+  }
+}
+
+/* ========== LOADING OVERLAY ========== */
+.loading-overlay { position: fixed; inset: 0; z-index: 200; background: rgba(0,0,0,0.9); display: flex; align-items: center; justify-content: center; }
+.loading-overlay.hidden { display: none; }
+.loading-card { background: var(--color-surface); border-radius: 16px; padding: 40px; text-align: center; max-width: 400px; width: 90%; }
+.loading-card h3 { margin: 24px 0 8px; font-size: 1.25rem; }
+.loading-card p { color: var(--color-text-secondary); margin-bottom: 24px; }
+.progress-container { height: 8px; background: var(--color-border); border-radius: 4px; overflow: hidden; }
+.progress-bar { height: 100%; background: linear-gradient(90deg, var(--color-accent), var(--color-accent-dark)); border-radius: 4px; transition: width 0.3s; width: 0%; }
+.progress-text { display: block; margin-top: 12px; font-size: 0.875rem; color: var(--color-text-secondary); }
+
+/* DNA Helix Spinner */
+.dna-helix-spinner {
+  width: 80px;
+  height: 100px;
+  margin: 0 auto;
+  perspective: 200px;
+}
+.helix-svg {
+  width: 100%;
+  height: 100%;
+  animation: dna-rotate 2.5s linear infinite;
+  transform-style: preserve-3d;
+}
+.helix-backbone {
+  fill: none;
+  stroke-width: 3;
+  stroke-linecap: round;
+}
+.helix-backbone.left { stroke: var(--color-accent); }
+.helix-backbone.right { stroke: var(--color-accent-dark, #6366f1); }
+.base-pair {
+  stroke: var(--color-text-muted, #888);
+  stroke-width: 2;
+  stroke-dasharray: 3 2;
+  opacity: 0.6;
+}
+.nucleotide {
+  fill: var(--color-accent);
+}
+.nucleotide:nth-child(even) { fill: var(--color-accent-dark, #6366f1); }
+/* Staggered pulse for nucleotides */
+.n1, .n2 { animation: nuc-pulse 2.5s ease-in-out infinite 0s; }
+.n3, .n4 { animation: nuc-pulse 2.5s ease-in-out infinite 0.2s; }
+.n5, .n6 { animation: nuc-pulse 2.5s ease-in-out infinite 0.4s; }
+.n7, .n8 { animation: nuc-pulse 2.5s ease-in-out infinite 0.6s; }
+.n9, .n10 { animation: nuc-pulse 2.5s ease-in-out infinite 0.8s; }
+.n11, .n12 { animation: nuc-pulse 2.5s ease-in-out infinite 1s; }
+@keyframes dna-rotate {
+  0% { transform: rotateY(0deg); }
+  100% { transform: rotateY(360deg); }
+}
+@keyframes nuc-pulse {
+  0%, 100% { r: 4; opacity: 1; }
+  50% { r: 5; opacity: 0.8; }
+}
+
+/* ========== DEMO GRID ========== */
+.playground-main { padding: 48px 0; }
+.demo-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px; }
+.demo-grid.hidden { display: none; }
+.demo-card { background: var(--color-surface); border: 1px solid var(--color-border); border-radius: 16px; padding: 32px; transition: all 0.3s; }
+.demo-card:hover { transform: translateY(-4px); box-shadow: 0 12px 40px rgba(0,0,0,0.15); border-color: var(--color-accent); }
+.demo-icon { width: 60px; height: 60px; margin-bottom: 20px; color: var(--color-accent); }
+.demo-icon svg { width: 100%; height: 100%; }
+.demo-card h3 { font-size: 1.25rem; margin-bottom: 8px; }
+.demo-card p { color: var(--color-text-secondary); font-size: 0.9rem; line-height: 1.6; margin-bottom: 20px; }
+.demo-btn { width: 100%; padding: 12px; background: var(--color-accent); color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; transition: opacity 0.2s; }
+.demo-btn:hover { opacity: 0.9; }
+
+/* DNA Card Icon - Rotating Double Helix */
+.dna-icon-wrapper {
+  perspective: 150px;
+}
+.dna-card-icon {
+  animation: dna-spin 4s linear infinite;
+  transform-style: preserve-3d;
+}
+@keyframes dna-spin {
+  0% { transform: rotateY(0deg); }
+  100% { transform: rotateY(360deg); }
+}
+
+/* Word Galaxy Illustration */
+.galaxy-illustration {
+  position: relative;
+  width: 60px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.galaxy-center {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--color-accent);
+  z-index: 2;
+}
+.galaxy-orbit {
+  position: absolute;
+  font-size: 0.55rem;
+  color: var(--color-text-secondary);
+  opacity: 0.8;
+  animation: orbit 8s linear infinite;
+}
+.galaxy-orbit.o1 { animation-delay: 0s; }
+.galaxy-orbit.o2 { animation-delay: -2s; }
+.galaxy-orbit.o3 { animation-delay: -4s; }
+.galaxy-orbit.o4 { animation-delay: -6s; }
+@keyframes orbit {
+  0% { transform: rotate(0deg) translateX(28px) rotate(0deg); }
+  100% { transform: rotate(360deg) translateX(28px) rotate(-360deg); }
+}
+
+/* Text Weaver Illustration */
+.weaver-illustration {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.weave-node {
+  font-size: 0.6rem;
+  padding: 3px 6px;
+  background: rgba(var(--color-accent-rgb, 139, 92, 246), 0.15);
+  border: 1px solid var(--color-accent);
+  border-radius: 3px;
+  color: var(--color-accent);
+}
+.weave-arrow {
+  color: var(--color-accent);
+  font-size: 0.7rem;
+  opacity: 0.6;
+}
+
+/* Zipf's Law Illustration */
+.zipf-illustration {
+  display: flex;
+  align-items: flex-end;
+  gap: 3px;
+  height: 45px;
+}
+.zipf-bar {
+  width: 6px;
+  background: var(--color-accent);
+  border-radius: 2px 2px 0 0;
+}
+.zipf-bar.b1 { height: 100%; }
+.zipf-bar.b2 { height: 60%; opacity: 0.9; }
+.zipf-bar.b3 { height: 40%; opacity: 0.8; }
+.zipf-bar.b4 { height: 28%; opacity: 0.7; }
+.zipf-bar.b5 { height: 20%; opacity: 0.6; }
+.zipf-bar.b6 { height: 15%; opacity: 0.5; }
+.zipf-bar.b7 { height: 12%; opacity: 0.4; }
+
+/* Rare Words Museum Illustration */
+.museum-illustration {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.museum-word {
+  font-size: 0.65rem;
+  font-style: italic;
+  color: var(--color-text-secondary);
+  letter-spacing: 0.3px;
+}
+.museum-word.w1 { color: var(--color-accent); font-weight: 600; font-size: 0.7rem; }
+.museum-word.w2 { opacity: 0.7; font-size: 0.6rem; }
+.museum-word.w3 { opacity: 0.5; font-size: 0.55rem; }
+
+/* Language Bridge Illustration */
+.bridge-illustration {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.bridge-word {
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 3px 8px;
+  border-radius: 4px;
+  background: rgba(var(--color-accent-rgb, 139, 92, 246), 0.15);
+  border: 1px solid var(--color-accent);
+  color: var(--color-accent);
+}
+.bridge-connector {
+  width: 16px;
+  height: 2px;
+  background: var(--color-accent);
+  position: relative;
+}
+.bridge-connector::before,
+.bridge-connector::after {
+  content: '';
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  background: var(--color-accent);
+  border-radius: 50%;
+  top: 50%;
+  transform: translateY(-50%);
+}
+.bridge-connector::before { left: -2px; }
+.bridge-connector::after { right: -2px; }
+
+/* ========== DEMO DISPLAY ========== */
+.demo-display { background: var(--color-surface); border-radius: 16px; padding: 32px; border: 1px solid var(--color-border); }
+.demo-display.hidden { display: none; }
+.back-btn { display: flex; align-items: center; gap: 8px; background: none; border: none; color: var(--color-accent); font-size: 1rem; cursor: pointer; margin-bottom: 24px; padding: 0; }
+.back-btn:hover { text-decoration: underline; }
+.demo-loading { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 60px; color: var(--color-text-secondary); }
+.spinner { width: 40px; height: 40px; border: 3px solid var(--color-border); border-top-color: var(--color-accent); border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 16px; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ========== DEMO HEADER ========== */
+.demo-header { margin-bottom: 32px; }
+.demo-header h2 { font-size: 2rem; margin-bottom: 4px; }
+.demo-subtitle { color: var(--color-text-secondary); font-size: 1.1rem; }
+
+/* ========== STATS ROW ========== */
+.stats-row { display: flex; gap: 16px; margin-bottom: 32px; flex-wrap: wrap; }
+.stat-box { background: var(--color-bg); padding: 20px 28px; border-radius: 12px; text-align: center; flex: 1; min-width: 140px; }
+.stat-number { display: block; font-size: 2rem; font-weight: 700; color: var(--color-accent); }
+.stat-label { font-size: 0.875rem; color: var(--color-text-secondary); }
+
+/* ========== DNA DEMO ========== */
+.dna-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 32px; margin-bottom: 32px; }
+.dna-section { background: var(--color-bg); border-radius: 12px; padding: 24px; }
+.dna-section.full-width { grid-column: 1 / -1; }
+.dna-section h3 { font-size: 1.1rem; margin-bottom: 4px; }
+.section-hint { color: var(--color-text-muted); font-size: 0.875rem; margin-bottom: 16px; }
+.char-chart { width: 100%; height: auto; }
+.char-chart .char-label { font-family: var(--font-mono); font-size: 14px; fill: var(--color-text); }
+.char-chart .char-bar { fill: var(--color-accent); animation: bar-grow 0.5s ease-out forwards; transform-origin: left; }
+.char-chart .char-pct { font-size: 11px; fill: var(--color-text-secondary); }
+@keyframes bar-grow { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+.len-chart { width: 100%; height: auto; }
+.len-chart .len-bar { fill: var(--color-accent); animation: bar-rise 0.5s ease-out forwards; transform-origin: bottom; }
+.len-chart .len-label { font-size: 10px; fill: var(--color-text-secondary); text-anchor: middle; }
+@keyframes bar-rise { from { transform: scaleY(0); } to { transform: scaleY(1); } }
+.word-cloud { line-height: 2.2; }
+.cloud-word { display: inline-block; padding: 4px 10px; margin: 4px; background: var(--color-surface); border-radius: 4px; color: var(--color-accent-dark); animation: fade-in 0.3s ease-out forwards; opacity: 0; }
+@keyframes fade-in { to { opacity: 1; } }
+.char-grid { display: flex; flex-wrap: wrap; gap: 6px; }
+.char-cell { padding: 8px 12px; background: var(--color-surface); border-radius: 4px; font-family: var(--font-mono); font-size: 1rem; }
+
+/* ========== GALAXY DEMO ========== */
+.galaxy-demo { }
+.galaxy-input { display: flex; gap: 12px; margin-bottom: 16px; }
+.galaxy-input input { flex: 1; padding: 12px 16px; border: 2px solid var(--color-border); border-radius: 8px; background: var(--color-bg); color: var(--color-text); font-size: 1rem; }
+.galaxy-input input:focus { outline: none; border-color: var(--color-accent); }
+.primary-btn { padding: 12px 24px; background: var(--color-accent); color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; white-space: nowrap; }
+.primary-btn:hover { opacity: 0.9; }
+.galaxy-instructions {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  margin-bottom: 16px;
+  font-size: 0.8rem;
+  color: var(--color-text-muted);
+}
+.instruction-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.instruction-item .dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 2px solid var(--color-accent);
+  background: var(--color-surface);
+}
+.instruction-item .dot.expanded {
+  background: var(--color-accent);
+  border-color: var(--color-accent);
+}
+.galaxy-container { background: var(--color-bg); border-radius: 12px; min-height: 550px; display: flex; align-items: center; justify-content: center; overflow: hidden; border: 1px solid var(--color-border); }
+.galaxy-hint { color: var(--color-text-muted); }
+.galaxy-svg { width: 100%; height: auto; }
+.galaxy-svg.interactive { cursor: default; }
+.galaxy-node { transition: transform 0.15s ease; }
+.galaxy-node.expandable:hover circle { transform-origin: center; transform: scale(1.1); }
+.galaxy-node.expandable:hover { filter: drop-shadow(0 0 8px var(--color-accent)); }
+.galaxy-node circle { transition: transform 0.15s ease, fill 0.15s ease; }
+.orbit-word { animation: orbit-fade 0.5s ease-out forwards; opacity: 0; }
+@keyframes orbit-fade { to { opacity: 1; } }
+
+/* ========== WEAVER DEMO ========== */
+.weaver-controls { display: flex; flex-direction: column; gap: 16px; margin-bottom: 24px; max-width: 500px; }
+.control-row { display: flex; flex-direction: column; gap: 8px; }
+.control-row label { font-size: 0.9rem; color: var(--color-text-secondary); }
+.control-row input[type="text"] { padding: 12px 16px; border: 2px solid var(--color-border); border-radius: 8px; background: var(--color-bg); color: var(--color-text); font-size: 1rem; }
+.control-row input[type="range"] { width: 100%; }
+.weaver-output { background: var(--color-bg); border-radius: 12px; padding: 24px; min-height: 150px; line-height: 1.8; font-size: 1.1rem; }
+.output-hint { color: var(--color-text-muted); margin: 0; }
+.generating { display: flex; gap: 4px; }
+.generating .dot { width: 8px; height: 8px; background: var(--color-accent); border-radius: 50%; animation: bounce 1.4s infinite ease-in-out both; }
+.generating .dot:nth-child(1) { animation-delay: -0.32s; }
+.generating .dot:nth-child(2) { animation-delay: -0.16s; }
+@keyframes bounce { 0%, 80%, 100% { transform: scale(0); } 40% { transform: scale(1); } }
+.typed-word { display: inline; animation: type-in 0.2s ease-out forwards; opacity: 0; }
+@keyframes type-in { to { opacity: 1; } }
+
+/* ========== ZIPF DEMO ========== */
+.zipf-chart-container { background: var(--color-bg); border-radius: 12px; padding: 20px; margin-bottom: 24px; }
+.zipf-chart { width: 100%; height: auto; }
+.zipf-line { animation: draw-line 1.5s ease-out forwards; stroke-dasharray: 2000; stroke-dashoffset: 2000; }
+@keyframes draw-line { to { stroke-dashoffset: 0; } }
+.zipf-insight { background: var(--color-accent-light); padding: 20px; border-radius: 12px; margin-bottom: 24px; }
+.zipf-insight h3 { color: var(--color-accent-dark); margin-bottom: 8px; }
+.zipf-insight p { color: var(--color-accent-dark); margin: 0; }
+.zipf-table h3 { margin-bottom: 12px; }
+.zipf-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 16px; background: var(--color-bg); border-radius: 8px; margin-bottom: 8px; }
+.zipf-rank { color: var(--color-text-muted); font-size: 0.875rem; width: 40px; }
+.zipf-word { flex: 1; font-weight: 600; }
+.zipf-freq { color: var(--color-accent); font-size: 0.9rem; }
+
+/* ========== MUSEUM DEMO ========== */
+.exhibit-section { margin-bottom: 40px; }
+.exhibit-header { display: flex; align-items: center; gap: 16px; margin-bottom: 20px; }
+.exhibit-icon { font-size: 2rem; }
+.exhibit-header h3 { margin: 0; }
+.exhibit-header p { margin: 0; color: var(--color-text-secondary); font-size: 0.9rem; }
+.exhibit-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 12px; }
+.exhibit-card { background: var(--color-bg); border-radius: 10px; padding: 16px; border-left: 4px solid; transition: transform 0.2s; }
+.exhibit-card:hover { transform: translateY(-2px); }
+.exhibit-card.gold { border-color: #f59e0b; }
+.exhibit-card.purple { border-color: #8b5cf6; }
+.exhibit-card.red { border-color: #ef4444; }
+.exhibit-word { display: block; font-family: var(--font-mono); font-size: 0.9rem; word-break: break-all; margin-bottom: 8px; }
+.exhibit-meta { font-size: 0.75rem; color: var(--color-text-muted); }
+
+/* ========== BRIDGE DEMO ========== */
+.bridge-selector { display: flex; align-items: center; gap: 16px; margin-bottom: 24px; flex-wrap: wrap; }
+.bridge-lang { display: flex; align-items: center; gap: 8px; background: var(--color-bg); padding: 10px 16px; border-radius: 8px; }
+.bridge-code { background: var(--color-accent); color: white; padding: 4px 8px; border-radius: 4px; font-weight: 700; font-size: 0.8rem; }
+.bridge-arrow { color: var(--color-accent); font-size: 1.5rem; }
+.bridge-selector select { padding: 10px 16px; border: 2px solid var(--color-border); border-radius: 8px; background: var(--color-bg); color: var(--color-text); font-size: 1rem; }
+.bridge-results { background: var(--color-bg); border-radius: 12px; padding: 24px; min-height: 200px; }
+.bridge-hint { color: var(--color-text-muted); text-align: center; margin: 60px 0; }
+.shared-header { margin-bottom: 20px; }
+.shared-header h3 { margin-bottom: 4px; }
+.shared-header p { color: var(--color-text-secondary); margin: 0; }
+.shared-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 10px; }
+.shared-card { background: var(--color-surface); padding: 12px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; }
+.shared-word { font-weight: 600; }
+.shared-freq { font-size: 0.8rem; color: var(--color-text-muted); }
+
+/* ========== UTILITIES ========== */
+.error { color: var(--color-error); text-align: center; padding: 40px; }
+.no-results { color: var(--color-text-muted); text-align: center; padding: 40px; }
+
+/* ========== RESPONSIVE ========== */
+@media (max-width: 768px) {
+  .hero-playground h1 { font-size: 2rem; }
+  .demo-grid { grid-template-columns: 1fr; }
+  .dna-grid { grid-template-columns: 1fr; }
+  .stats-row { flex-direction: column; }
+  .bridge-selector { flex-direction: column; align-items: stretch; }
+  .galaxy-input { flex-direction: column; }
+}
+</style>

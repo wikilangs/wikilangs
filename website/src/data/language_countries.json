@@ -1,0 +1,3795 @@
+{
+  "country_languages": {
+    "US": {
+      "endemic": [],
+      "macro": [
+        {
+          "code": "en",
+          "primary": true
+        }
+      ]
+    },
+    "GB": {
+      "endemic": [
+        {
+          "code": "cy",
+          "primary": false
+        }
+      ],
+      "macro": [
+        {
+          "code": "en",
+          "primary": true
+        }
+      ]
+    },
+    "CA": {
+      "endemic": [],
+      "macro": [
+        {
+          "code": "en",
+          "primary": true
+        },
+        {
+          "code": "fr",
+          "primary": false
+        }
+      ]
+    },
+    "AU": {
+      "endemic": [],
+      "macro": [
+        {
+          "code": "en",
+          "primary": true
+        }
+      ]
+    },
+    "NZ": {
+      "endemic": [],
+      "macro": [
+        {
+          "code": "en",
+          "primary": true
+        }
+      ]
+    },
+    "IE": {
+      "endemic": [
+        {
+          "code": "ga",
+          "primary": true
+        }
+      ],
+      "macro": [
+        {
+          "code": "en",
+          "primary": true
+        }
+      ]
+    },
+    "ZA": {
+      "endemic": [],
+      "macro": [
+        {
+          "code": "en",
+          "primary": true
+        }
+      ]
+    },
+    "IN": {
+      "endemic": [],
+      "macro": [
+        {
+          "code": "en",
+          "primary": false
+        },
+        {
+          "code": "hi",
+          "primary": true
+        },
+        {
+          "code": "bn",
+          "primary": false
+        },
+        {
+          "code": "ta",
+          "primary": false
+        },
+        {
+          "code": "te",
+          "primary": false
+        },
+        {
+          "code": "mr",
+          "primary": false
+        },
+        {
+          "code": "ur",
+          "primary": false
+        }
+      ]
+    },
+    "PH": {
+      "endemic": [
+        {
+          "code": "tl",
+          "primary": true
+        }
+      ],
+      "macro": [
+        {
+          "code": "en",
+          "primary": false
+        }
+      ]
+    },
+    "SG": {
+      "endemic": [],
+      "macro": [
+        {
+          "code": "en",
+          "primary": false
+        },
+        {
+          "code": "zh",
+          "primary": false
+        },
+        {
+          "code": "ta",
+          "primary": false
+        },
+        {
+          "code": "ms",
+          "primary": false
+        }
+      ]
+    },
+    "MY": {
+      "endemic": [],
+      "macro": [
+        {
+          "code": "en",
+          "primary": false
+        },
+        {
+          "code": "zh",
+          "primary": false
+        },
+        {
+          "code": "ta",
+          "primary": false
+        },
+        {
+          "code": "ms",
+          "primary": true
+        }
+      ]
+    },
+    "NG": {
+      "endemic": [],
+      "macro": [
+        {
+          "code": "en",
+          "primary": false
+        }
+      ]
+    },
+    "KE": {
+      "endemic": [],
+      "macro": [
+        {
+          "code": "en",
+          "primary": false
+        },
+        {
+          "code": "sw",
+          "primary": true
+        }
+      ]
+    },
+    "GH": {
+      "endemic": [],
+      "macro": [
+        {
+          "code": "en",
+          "primary": false
+        }
+      ]
+    },
+    "JM": {
+      "endemic": [],
+      "macro": [
+        {
+          "code": "en",
+          "primary": false
+        }
+      ]
+    },
+    "TT": {
+      "endemic": [],
+      "macro": [
+        {
+          "code": "en",
+          "primary": false
+        }
+      ]
+    },
+    "MT": {
+      "endemic": [],
+      "macro": [
+        {
+          "code": "en",
+          "primary": false
+        }
+      ]
+    },
+    "ES": {
+      "endemic": [
+        {
+          "code": "ca",
+          "primary": false
+        },
+        {
+          "code": "gl",
+          "primary": false
+        },
+        {
+          "code": "eu",
+          "primary": false
+        }
+      ],
+      "macro": [
+        {
+          "code": "es",
+          "primary": true
+        }
+      ]
+    },
+    "MX": {
+      "endemic": [],
+      "macro": [
+        {
+          "code": "es",
+          "primary": true
+        }
+      ]
+    },
+    "AR": {
+      "endemic": [],
+      "macro": [
+        {
+          "code": "es",
+          "primary": true
+        }
+      ]
+    },
+    "CO": {
+      "endemic": [],
+      "macro": [
+        {
+          "code": "es",
+          "primary": true
+        }
+      ]
+    },
+    "PE": {
+      "endemic": [],
+      "macro": [
+        {
+          "code": "es",
+          "primary": true
+        }
+      ]
+    },
+    "VE": {
+      "endemic": [],
+      "macro": [
+        {
+          "code": "es",
+          "primary": true
+        }
+      ]
+    },
+    "CL": {
+      "endemic": [],
+      "macro": [
+        {
+          "code": "es",
+          "primary": true
+        }
+      ]
+    },
+    "EC": {
+      "endemic": [],
+      "macro": [
+        {
+          "code": "es",
+          "primary": true
+        }
+      ]
+    },
+    "GT": {
+      "endemic": [],
+      "macro": [
+        {
+          "code": "es",
+          "primary": true
+        }
+      ]
+    },
+    "CU": {
+      "endemic": [],
+      "macro": [
+        {
+          "code": "es",
+          "primary": true
+        }
+      ]
+    },
+    "BO": {
+      "endemic": [],
+      "macro": [
+        {
+          "code": "es",
+          "primary": true
+        }
+      ]
+    },
+    "DO": {
+      "endemic": [],
+      "macro": [
+        {
+          "code": "es",
+          "primary": true
+        }
+      ]
+    },
+    "HN": {
+      "endemic": [],
+      "macro": [
+        {
+          "code": "es",
+          "primary": true
+        }
+      ]
+    },
+    "SV": {
+      "endemic": [],
+      "macro": [
+        {
+          "code": "es",
+          "primary": true
+        }
+      ]
+    },
+    "NI": {
+      "endemic": [],
+      "macro": [
+        {
+          "code": "es",
+          "primary": true
+        }
+      ]
+    },
+    "CR": {
+      "endemic": [],
+      "macro": [
+        {
+          "code": "es",
+          "primary": true
+        }
+      ]
+    },
+    "PA": {
+      "endemic": [],
+      "macro": [
+        {
+          "code": "es",
+          "primary": true
+        }
+      ]
+    },
+    "PY": {
+      "endemic": [],
+      "macro": [
+        {
+          "code": "es",
+          "primary": true
+        }
+      ]
+    },
+    "UY": {
+      "endemic": [],
+      "macro": [
+        {
+          "code": "es",
+          "primary": true
+        }
+      ]
+    },
+    "PR": {
+      "endemic": [],
+      "macro": [
+        {
+          "code": "es",
+          "primary": true
+        }
+      ]
+    },
+    "GQ": {
+      "endemic": [],
+      "macro": [
+        {
+          "code": "es",
+          "primary": true
+        }
+      ]
+    },
+    "FR": {
+      "endemic": [
+        {
+          "code": "ca",
+          "primary": false
+        },
+        {
+          "code": "eu",
+          "primary": false
+        }
+      ],
+      "macro": [
+        {
+          "code": "fr",
+          "primary": true
+        }
+      ]
+    },
+    "BE": {
+      "endemic": [],
+      "macro": [
+        {
+          "code": "fr",
+          "primary": true
+        },
+        {
+          "code": "de",
+          "primary": false
+        },
+        {
+          "code": "nl",
+          "primary": false
+        }
+      ]
+    },
+    "CH": {
+      "endemic": [],
+      "macro": [
+        {
+          "code": "fr",
+          "primary": false
+        },
+        {
+          "code": "de",
+          "primary": false
+        },
+        {
+          "code": "it",
+          "primary": false
+        }
+      ]
+    },
+    "SN": {
+      "endemic": [],
+      "macro": [
+        {
+          "code": "fr",
+          "primary": true
+        }
+      ]
+    },
+    "CI": {
+      "endemic": [],
+      "macro": [
+        {
+          "code": "fr",
+          "primary": true
+        }
+      ]
+    },
+    "CM": {
+      "endemic": [],
+      "macro": [
+        {
+          "code": "fr",
+          "primary": true
+        }
+      ]
+    },
+    "CD": {
+      "endemic": [],
+      "macro": [
+        {
+          "code": "fr",
+          "primary": true
+        },
+        {
+          "code": "sw",
+          "primary": false
+        }
+      ]
+    },
+    "MG": {
+      "endemic": [],
+      "macro": [
+        {
+          "code": "fr",
+          "primary": true
+        }
+      ]
+    },
+    "ML": {
+      "endemic": [],
+      "macro": [
+        {
+          "code": "fr",
+          "primary": true
+        }
+      ]
+    },
+    "BF": {
+      "endemic": [],
+      "macro": [
+        {
+          "code": "fr",
+          "primary": true
+        }
+      ]
+    },
+    "NE": {
+      "endemic": [],
+      "macro": [
+        {
+          "code": "fr",
+          "primary": true
+        }
+      ]
+    },
+    "TG": {
+      "endemic": [],
+      "macro": [
+        {
+          "code": "fr",
+          "primary": true
+        }
+      ]
+    },
+    "BJ": {
+      "endemic": [],
+      "macro": [
+        {
+          "code": "fr",
+          "primary": true
+        }
+      ]
+    },
+    "GA": {
+      "endemic": [],
+      "macro": [
+        {
+          "code": "fr",
+          "primary": true
+        }
+      ]
+    },
+    "CG": {
+      "endemic": [],
+      "macro": [
+        {
+          "code": "fr",
+          "primary": true
+        }
+      ]
+    },
+    "DJ": {
+      "endemic": [],
+      "macro": [
+        {
+          "code": "fr",
+          "primary": true
+        },
+        {
+          "code": "ar",
+          "primary": false
+        }
+      ]
+    },
+    "RW": {
+      "endemic": [],
+      "macro": [
+        {
+          "code": "fr",
+          "primary": true
+        },
+        {
+          "code": "sw",
+          "primary": false
+        }
+      ]
+    },
+    "BI": {
+      "endemic": [],
+      "macro": [
+        {
+          "code": "fr",
+          "primary": true
+        }
+      ]
+    },
+    "HT": {
+      "endemic": [],
+      "macro": [
+        {
+          "code": "fr",
+          "primary": true
+        }
+      ]
+    },
+    "LU": {
+      "endemic": [],
+      "macro": [
+        {
+          "code": "fr",
+          "primary": true
+        },
+        {
+          "code": "de",
+          "primary": false
+        }
+      ]
+    },
+    "MC": {
+      "endemic": [],
+      "macro": [
+        {
+          "code": "fr",
+          "primary": true
+        }
+      ]
+    },
+    "PT": {
+      "endemic": [],
+      "macro": [
+        {
+          "code": "pt",
+          "primary": true
+        }
+      ]
+    },
+    "BR": {
+      "endemic": [],
+      "macro": [
+        {
+          "code": "pt",
+          "primary": true
+        }
+      ]
+    },
+    "AO": {
+      "endemic": [],
+      "macro": [
+        {
+          "code": "pt",
+          "primary": true
+        }
+      ]
+    },
+    "MZ": {
+      "endemic": [],
+      "macro": [
+        {
+          "code": "pt",
+          "primary": true
+        }
+      ]
+    },
+    "GW": {
+      "endemic": [],
+      "macro": [
+        {
+          "code": "pt",
+          "primary": true
+        }
+      ]
+    },
+    "TL": {
+      "endemic": [],
+      "macro": [
+        {
+          "code": "pt",
+          "primary": true
+        }
+      ]
+    },
+    "CV": {
+      "endemic": [],
+      "macro": [
+        {
+          "code": "pt",
+          "primary": true
+        }
+      ]
+    },
+    "ST": {
+      "endemic": [],
+      "macro": [
+        {
+          "code": "pt",
+          "primary": true
+        }
+      ]
+    },
+    "DE": {
+      "endemic": [],
+      "macro": [
+        {
+          "code": "de",
+          "primary": true
+        }
+      ]
+    },
+    "AT": {
+      "endemic": [],
+      "macro": [
+        {
+          "code": "de",
+          "primary": true
+        }
+      ]
+    },
+    "LI": {
+      "endemic": [],
+      "macro": [
+        {
+          "code": "de",
+          "primary": true
+        }
+      ]
+    },
+    "IT": {
+      "endemic": [
+        {
+          "code": "ca",
+          "primary": false
+        }
+      ],
+      "macro": [
+        {
+          "code": "it",
+          "primary": true
+        }
+      ]
+    },
+    "SM": {
+      "endemic": [],
+      "macro": [
+        {
+          "code": "it",
+          "primary": true
+        }
+      ]
+    },
+    "VA": {
+      "endemic": [],
+      "macro": [
+        {
+          "code": "it",
+          "primary": true
+        }
+      ]
+    },
+    "NL": {
+      "endemic": [],
+      "macro": [
+        {
+          "code": "nl",
+          "primary": true
+        }
+      ]
+    },
+    "SR": {
+      "endemic": [],
+      "macro": [
+        {
+          "code": "nl",
+          "primary": true
+        }
+      ]
+    },
+    "RU": {
+      "endemic": [],
+      "macro": [
+        {
+          "code": "ru",
+          "primary": true
+        }
+      ]
+    },
+    "BY": {
+      "endemic": [],
+      "macro": [
+        {
+          "code": "ru",
+          "primary": true
+        }
+      ]
+    },
+    "KZ": {
+      "endemic": [],
+      "macro": [
+        {
+          "code": "ru",
+          "primary": false
+        }
+      ]
+    },
+    "KG": {
+      "endemic": [],
+      "macro": [
+        {
+          "code": "ru",
+          "primary": false
+        }
+      ]
+    },
+    "UA": {
+      "endemic": [],
+      "macro": [
+        {
+          "code": "ru",
+          "primary": false
+        },
+        {
+          "code": "uk",
+          "primary": true
+        }
+      ]
+    },
+    "CN": {
+      "endemic": [],
+      "macro": [
+        {
+          "code": "zh",
+          "primary": true
+        }
+      ]
+    },
+    "TW": {
+      "endemic": [],
+      "macro": [
+        {
+          "code": "zh",
+          "primary": true
+        }
+      ]
+    },
+    "HK": {
+      "endemic": [],
+      "macro": [
+        {
+          "code": "zh",
+          "primary": true
+        }
+      ]
+    },
+    "MO": {
+      "endemic": [],
+      "macro": [
+        {
+          "code": "zh",
+          "primary": true
+        }
+      ]
+    },
+    "JP": {
+      "endemic": [],
+      "macro": [
+        {
+          "code": "ja",
+          "primary": true
+        }
+      ]
+    },
+    "KR": {
+      "endemic": [],
+      "macro": [
+        {
+          "code": "ko",
+          "primary": true
+        }
+      ]
+    },
+    "KP": {
+      "endemic": [],
+      "macro": [
+        {
+          "code": "ko",
+          "primary": true
+        }
+      ]
+    },
+    "SA": {
+      "endemic": [],
+      "macro": [
+        {
+          "code": "ar",
+          "primary": true
+        }
+      ]
+    },
+    "EG": {
+      "endemic": [],
+      "macro": [
+        {
+          "code": "ar",
+          "primary": true
+        }
+      ]
+    },
+    "IQ": {
+      "endemic": [],
+      "macro": [
+        {
+          "code": "ar",
+          "primary": true
+        }
+      ]
+    },
+    "MA": {
+      "endemic": [],
+      "macro": [
+        {
+          "code": "ar",
+          "primary": true
+        }
+      ]
+    },
+    "DZ": {
+      "endemic": [],
+      "macro": [
+        {
+          "code": "ar",
+          "primary": true
+        }
+      ]
+    },
+    "SD": {
+      "endemic": [],
+      "macro": [
+        {
+          "code": "ar",
+          "primary": true
+        }
+      ]
+    },
+    "SY": {
+      "endemic": [],
+      "macro": [
+        {
+          "code": "ar",
+          "primary": true
+        }
+      ]
+    },
+    "TN": {
+      "endemic": [],
+      "macro": [
+        {
+          "code": "ar",
+          "primary": true
+        }
+      ]
+    },
+    "YE": {
+      "endemic": [],
+      "macro": [
+        {
+          "code": "ar",
+          "primary": true
+        }
+      ]
+    },
+    "JO": {
+      "endemic": [],
+      "macro": [
+        {
+          "code": "ar",
+          "primary": true
+        }
+      ]
+    },
+    "AE": {
+      "endemic": [],
+      "macro": [
+        {
+          "code": "ar",
+          "primary": true
+        }
+      ]
+    },
+    "LB": {
+      "endemic": [],
+      "macro": [
+        {
+          "code": "ar",
+          "primary": true
+        }
+      ]
+    },
+    "LY": {
+      "endemic": [],
+      "macro": [
+        {
+          "code": "ar",
+          "primary": true
+        }
+      ]
+    },
+    "KW": {
+      "endemic": [],
+      "macro": [
+        {
+          "code": "ar",
+          "primary": true
+        }
+      ]
+    },
+    "OM": {
+      "endemic": [],
+      "macro": [
+        {
+          "code": "ar",
+          "primary": true
+        }
+      ]
+    },
+    "QA": {
+      "endemic": [],
+      "macro": [
+        {
+          "code": "ar",
+          "primary": true
+        }
+      ]
+    },
+    "BH": {
+      "endemic": [],
+      "macro": [
+        {
+          "code": "ar",
+          "primary": true
+        }
+      ]
+    },
+    "PS": {
+      "endemic": [],
+      "macro": [
+        {
+          "code": "ar",
+          "primary": true
+        }
+      ]
+    },
+    "MR": {
+      "endemic": [],
+      "macro": [
+        {
+          "code": "ar",
+          "primary": true
+        }
+      ]
+    },
+    "SO": {
+      "endemic": [],
+      "macro": [
+        {
+          "code": "ar",
+          "primary": true
+        }
+      ]
+    },
+    "BD": {
+      "endemic": [],
+      "macro": [
+        {
+          "code": "bn",
+          "primary": true
+        }
+      ]
+    },
+    "LK": {
+      "endemic": [],
+      "macro": [
+        {
+          "code": "ta",
+          "primary": false
+        }
+      ]
+    },
+    "PK": {
+      "endemic": [],
+      "macro": [
+        {
+          "code": "ur",
+          "primary": true
+        }
+      ]
+    },
+    "IR": {
+      "endemic": [],
+      "macro": [
+        {
+          "code": "fa",
+          "primary": true
+        }
+      ]
+    },
+    "AF": {
+      "endemic": [],
+      "macro": [
+        {
+          "code": "fa",
+          "primary": false
+        }
+      ]
+    },
+    "TJ": {
+      "endemic": [],
+      "macro": [
+        {
+          "code": "fa",
+          "primary": false
+        }
+      ]
+    },
+    "TR": {
+      "endemic": [],
+      "macro": [
+        {
+          "code": "tr",
+          "primary": true
+        }
+      ]
+    },
+    "CY": {
+      "endemic": [],
+      "macro": [
+        {
+          "code": "tr",
+          "primary": false
+        },
+        {
+          "code": "el",
+          "primary": true
+        }
+      ]
+    },
+    "VN": {
+      "endemic": [],
+      "macro": [
+        {
+          "code": "vi",
+          "primary": true
+        }
+      ]
+    },
+    "TH": {
+      "endemic": [],
+      "macro": [
+        {
+          "code": "th",
+          "primary": true
+        }
+      ]
+    },
+    "ID": {
+      "endemic": [],
+      "macro": [
+        {
+          "code": "id",
+          "primary": true
+        },
+        {
+          "code": "ms",
+          "primary": false
+        }
+      ]
+    },
+    "BN": {
+      "endemic": [],
+      "macro": [
+        {
+          "code": "ms",
+          "primary": true
+        }
+      ]
+    },
+    "TZ": {
+      "endemic": [],
+      "macro": [
+        {
+          "code": "sw",
+          "primary": true
+        }
+      ]
+    },
+    "UG": {
+      "endemic": [],
+      "macro": [
+        {
+          "code": "sw",
+          "primary": false
+        }
+      ]
+    },
+    "PL": {
+      "endemic": [],
+      "macro": [
+        {
+          "code": "pl",
+          "primary": true
+        }
+      ]
+    },
+    "CZ": {
+      "endemic": [],
+      "macro": [
+        {
+          "code": "cs",
+          "primary": true
+        }
+      ]
+    },
+    "HU": {
+      "endemic": [],
+      "macro": [
+        {
+          "code": "hu",
+          "primary": true
+        }
+      ]
+    },
+    "RO": {
+      "endemic": [],
+      "macro": [
+        {
+          "code": "hu",
+          "primary": false
+        },
+        {
+          "code": "ro",
+          "primary": true
+        }
+      ]
+    },
+    "SK": {
+      "endemic": [],
+      "macro": [
+        {
+          "code": "hu",
+          "primary": false
+        }
+      ]
+    },
+    "RS": {
+      "endemic": [],
+      "macro": [
+        {
+          "code": "hu",
+          "primary": false
+        }
+      ]
+    },
+    "MD": {
+      "endemic": [],
+      "macro": [
+        {
+          "code": "ro",
+          "primary": true
+        }
+      ]
+    },
+    "GR": {
+      "endemic": [],
+      "macro": [
+        {
+          "code": "el",
+          "primary": true
+        }
+      ]
+    },
+    "FI": {
+      "endemic": [],
+      "macro": [
+        {
+          "code": "fi",
+          "primary": true
+        },
+        {
+          "code": "sv",
+          "primary": false
+        }
+      ]
+    },
+    "SE": {
+      "endemic": [],
+      "macro": [
+        {
+          "code": "sv",
+          "primary": true
+        }
+      ]
+    },
+    "NO": {
+      "endemic": [],
+      "macro": [
+        {
+          "code": "no",
+          "primary": true
+        }
+      ]
+    },
+    "DK": {
+      "endemic": [],
+      "macro": [
+        {
+          "code": "da",
+          "primary": true
+        }
+      ]
+    },
+    "AD": {
+      "endemic": [
+        {
+          "code": "ca",
+          "primary": true
+        }
+      ],
+      "macro": []
+    },
+    "IL": {
+      "endemic": [],
+      "macro": [
+        {
+          "code": "he",
+          "primary": true
+        }
+      ]
+    }
+  },
+  "language_countries": {
+    "en": {
+      "countries": [
+        "US",
+        "GB",
+        "CA",
+        "AU",
+        "NZ",
+        "IE",
+        "ZA",
+        "IN",
+        "PH",
+        "SG",
+        "MY",
+        "NG",
+        "KE",
+        "GH",
+        "JM",
+        "TT",
+        "MT"
+      ],
+      "is_macro": true
+    },
+    "es": {
+      "countries": [
+        "ES",
+        "MX",
+        "AR",
+        "CO",
+        "PE",
+        "VE",
+        "CL",
+        "EC",
+        "GT",
+        "CU",
+        "BO",
+        "DO",
+        "HN",
+        "SV",
+        "NI",
+        "CR",
+        "PA",
+        "PY",
+        "UY",
+        "PR",
+        "GQ"
+      ],
+      "is_macro": true
+    },
+    "fr": {
+      "countries": [
+        "FR",
+        "CA",
+        "BE",
+        "CH",
+        "SN",
+        "CI",
+        "CM",
+        "CD",
+        "MG",
+        "ML",
+        "BF",
+        "NE",
+        "TG",
+        "BJ",
+        "GA",
+        "CG",
+        "DJ",
+        "RW",
+        "BI",
+        "HT",
+        "LU",
+        "MC"
+      ],
+      "is_macro": true
+    },
+    "pt": {
+      "countries": [
+        "PT",
+        "BR",
+        "AO",
+        "MZ",
+        "GW",
+        "TL",
+        "CV",
+        "ST"
+      ],
+      "is_macro": true
+    },
+    "de": {
+      "countries": [
+        "DE",
+        "AT",
+        "CH",
+        "LI",
+        "LU",
+        "BE"
+      ],
+      "is_macro": true
+    },
+    "it": {
+      "countries": [
+        "IT",
+        "CH",
+        "SM",
+        "VA"
+      ],
+      "is_macro": true
+    },
+    "nl": {
+      "countries": [
+        "NL",
+        "BE",
+        "SR"
+      ],
+      "is_macro": true
+    },
+    "ru": {
+      "countries": [
+        "RU",
+        "BY",
+        "KZ",
+        "KG",
+        "UA"
+      ],
+      "is_macro": true
+    },
+    "zh": {
+      "countries": [
+        "CN",
+        "TW",
+        "HK",
+        "MO",
+        "SG",
+        "MY"
+      ],
+      "is_macro": true
+    },
+    "ja": {
+      "countries": [
+        "JP"
+      ],
+      "is_macro": true
+    },
+    "ko": {
+      "countries": [
+        "KR",
+        "KP"
+      ],
+      "is_macro": true
+    },
+    "ar": {
+      "countries": [
+        "SA",
+        "EG",
+        "IQ",
+        "MA",
+        "DZ",
+        "SD",
+        "SY",
+        "TN",
+        "YE",
+        "JO",
+        "AE",
+        "LB",
+        "LY",
+        "KW",
+        "OM",
+        "QA",
+        "BH",
+        "PS",
+        "MR",
+        "SO",
+        "DJ"
+      ],
+      "is_macro": true
+    },
+    "hi": {
+      "countries": [
+        "IN"
+      ],
+      "is_macro": true
+    },
+    "bn": {
+      "countries": [
+        "BD",
+        "IN"
+      ],
+      "is_macro": true
+    },
+    "ta": {
+      "countries": [
+        "IN",
+        "LK",
+        "SG",
+        "MY"
+      ],
+      "is_macro": true
+    },
+    "te": {
+      "countries": [
+        "IN"
+      ],
+      "is_macro": true
+    },
+    "mr": {
+      "countries": [
+        "IN"
+      ],
+      "is_macro": true
+    },
+    "ur": {
+      "countries": [
+        "PK",
+        "IN"
+      ],
+      "is_macro": true
+    },
+    "fa": {
+      "countries": [
+        "IR",
+        "AF",
+        "TJ"
+      ],
+      "is_macro": true
+    },
+    "tr": {
+      "countries": [
+        "TR",
+        "CY"
+      ],
+      "is_macro": true
+    },
+    "vi": {
+      "countries": [
+        "VN"
+      ],
+      "is_macro": true
+    },
+    "th": {
+      "countries": [
+        "TH"
+      ],
+      "is_macro": true
+    },
+    "id": {
+      "countries": [
+        "ID"
+      ],
+      "is_macro": true
+    },
+    "ms": {
+      "countries": [
+        "MY",
+        "BN",
+        "SG",
+        "ID"
+      ],
+      "is_macro": true
+    },
+    "tl": {
+      "countries": [
+        "PH"
+      ],
+      "is_macro": false
+    },
+    "sw": {
+      "countries": [
+        "TZ",
+        "KE",
+        "UG",
+        "RW",
+        "CD"
+      ],
+      "is_macro": true
+    },
+    "pl": {
+      "countries": [
+        "PL"
+      ],
+      "is_macro": true
+    },
+    "uk": {
+      "countries": [
+        "UA"
+      ],
+      "is_macro": true
+    },
+    "cs": {
+      "countries": [
+        "CZ"
+      ],
+      "is_macro": true
+    },
+    "hu": {
+      "countries": [
+        "HU",
+        "RO",
+        "SK",
+        "RS"
+      ],
+      "is_macro": true
+    },
+    "ro": {
+      "countries": [
+        "RO",
+        "MD"
+      ],
+      "is_macro": true
+    },
+    "el": {
+      "countries": [
+        "GR",
+        "CY"
+      ],
+      "is_macro": true
+    },
+    "fi": {
+      "countries": [
+        "FI"
+      ],
+      "is_macro": true
+    },
+    "sv": {
+      "countries": [
+        "SE",
+        "FI"
+      ],
+      "is_macro": true
+    },
+    "no": {
+      "countries": [
+        "NO"
+      ],
+      "is_macro": true
+    },
+    "da": {
+      "countries": [
+        "DK"
+      ],
+      "is_macro": true
+    },
+    "ga": {
+      "countries": [
+        "IE"
+      ],
+      "is_macro": false
+    },
+    "cy": {
+      "countries": [
+        "GB"
+      ],
+      "is_macro": false
+    },
+    "ca": {
+      "countries": [
+        "ES",
+        "AD",
+        "FR",
+        "IT"
+      ],
+      "is_macro": false
+    },
+    "gl": {
+      "countries": [
+        "ES"
+      ],
+      "is_macro": false
+    },
+    "eu": {
+      "countries": [
+        "ES",
+        "FR"
+      ],
+      "is_macro": false
+    },
+    "he": {
+      "countries": [
+        "IL"
+      ],
+      "is_macro": true
+    }
+  },
+  "country_stats": {
+    "US": {
+      "total": 1,
+      "endemic": 0,
+      "macro": 1,
+      "languages": {
+        "endemic": [],
+        "macro": [
+          {
+            "code": "en",
+            "primary": true
+          }
+        ]
+      }
+    },
+    "GB": {
+      "total": 2,
+      "endemic": 1,
+      "macro": 1,
+      "languages": {
+        "endemic": [
+          {
+            "code": "cy",
+            "primary": false
+          }
+        ],
+        "macro": [
+          {
+            "code": "en",
+            "primary": true
+          }
+        ]
+      }
+    },
+    "CA": {
+      "total": 2,
+      "endemic": 0,
+      "macro": 2,
+      "languages": {
+        "endemic": [],
+        "macro": [
+          {
+            "code": "en",
+            "primary": true
+          },
+          {
+            "code": "fr",
+            "primary": false
+          }
+        ]
+      }
+    },
+    "AU": {
+      "total": 1,
+      "endemic": 0,
+      "macro": 1,
+      "languages": {
+        "endemic": [],
+        "macro": [
+          {
+            "code": "en",
+            "primary": true
+          }
+        ]
+      }
+    },
+    "NZ": {
+      "total": 1,
+      "endemic": 0,
+      "macro": 1,
+      "languages": {
+        "endemic": [],
+        "macro": [
+          {
+            "code": "en",
+            "primary": true
+          }
+        ]
+      }
+    },
+    "IE": {
+      "total": 2,
+      "endemic": 1,
+      "macro": 1,
+      "languages": {
+        "endemic": [
+          {
+            "code": "ga",
+            "primary": true
+          }
+        ],
+        "macro": [
+          {
+            "code": "en",
+            "primary": true
+          }
+        ]
+      }
+    },
+    "ZA": {
+      "total": 1,
+      "endemic": 0,
+      "macro": 1,
+      "languages": {
+        "endemic": [],
+        "macro": [
+          {
+            "code": "en",
+            "primary": true
+          }
+        ]
+      }
+    },
+    "IN": {
+      "total": 7,
+      "endemic": 0,
+      "macro": 7,
+      "languages": {
+        "endemic": [],
+        "macro": [
+          {
+            "code": "en",
+            "primary": false
+          },
+          {
+            "code": "hi",
+            "primary": true
+          },
+          {
+            "code": "bn",
+            "primary": false
+          },
+          {
+            "code": "ta",
+            "primary": false
+          },
+          {
+            "code": "te",
+            "primary": false
+          },
+          {
+            "code": "mr",
+            "primary": false
+          },
+          {
+            "code": "ur",
+            "primary": false
+          }
+        ]
+      }
+    },
+    "PH": {
+      "total": 2,
+      "endemic": 1,
+      "macro": 1,
+      "languages": {
+        "endemic": [
+          {
+            "code": "tl",
+            "primary": true
+          }
+        ],
+        "macro": [
+          {
+            "code": "en",
+            "primary": false
+          }
+        ]
+      }
+    },
+    "SG": {
+      "total": 4,
+      "endemic": 0,
+      "macro": 4,
+      "languages": {
+        "endemic": [],
+        "macro": [
+          {
+            "code": "en",
+            "primary": false
+          },
+          {
+            "code": "zh",
+            "primary": false
+          },
+          {
+            "code": "ta",
+            "primary": false
+          },
+          {
+            "code": "ms",
+            "primary": false
+          }
+        ]
+      }
+    },
+    "MY": {
+      "total": 4,
+      "endemic": 0,
+      "macro": 4,
+      "languages": {
+        "endemic": [],
+        "macro": [
+          {
+            "code": "en",
+            "primary": false
+          },
+          {
+            "code": "zh",
+            "primary": false
+          },
+          {
+            "code": "ta",
+            "primary": false
+          },
+          {
+            "code": "ms",
+            "primary": true
+          }
+        ]
+      }
+    },
+    "NG": {
+      "total": 1,
+      "endemic": 0,
+      "macro": 1,
+      "languages": {
+        "endemic": [],
+        "macro": [
+          {
+            "code": "en",
+            "primary": false
+          }
+        ]
+      }
+    },
+    "KE": {
+      "total": 2,
+      "endemic": 0,
+      "macro": 2,
+      "languages": {
+        "endemic": [],
+        "macro": [
+          {
+            "code": "en",
+            "primary": false
+          },
+          {
+            "code": "sw",
+            "primary": true
+          }
+        ]
+      }
+    },
+    "GH": {
+      "total": 1,
+      "endemic": 0,
+      "macro": 1,
+      "languages": {
+        "endemic": [],
+        "macro": [
+          {
+            "code": "en",
+            "primary": false
+          }
+        ]
+      }
+    },
+    "JM": {
+      "total": 1,
+      "endemic": 0,
+      "macro": 1,
+      "languages": {
+        "endemic": [],
+        "macro": [
+          {
+            "code": "en",
+            "primary": false
+          }
+        ]
+      }
+    },
+    "TT": {
+      "total": 1,
+      "endemic": 0,
+      "macro": 1,
+      "languages": {
+        "endemic": [],
+        "macro": [
+          {
+            "code": "en",
+            "primary": false
+          }
+        ]
+      }
+    },
+    "MT": {
+      "total": 1,
+      "endemic": 0,
+      "macro": 1,
+      "languages": {
+        "endemic": [],
+        "macro": [
+          {
+            "code": "en",
+            "primary": false
+          }
+        ]
+      }
+    },
+    "ES": {
+      "total": 4,
+      "endemic": 3,
+      "macro": 1,
+      "languages": {
+        "endemic": [
+          {
+            "code": "ca",
+            "primary": false
+          },
+          {
+            "code": "gl",
+            "primary": false
+          },
+          {
+            "code": "eu",
+            "primary": false
+          }
+        ],
+        "macro": [
+          {
+            "code": "es",
+            "primary": true
+          }
+        ]
+      }
+    },
+    "MX": {
+      "total": 1,
+      "endemic": 0,
+      "macro": 1,
+      "languages": {
+        "endemic": [],
+        "macro": [
+          {
+            "code": "es",
+            "primary": true
+          }
+        ]
+      }
+    },
+    "AR": {
+      "total": 1,
+      "endemic": 0,
+      "macro": 1,
+      "languages": {
+        "endemic": [],
+        "macro": [
+          {
+            "code": "es",
+            "primary": true
+          }
+        ]
+      }
+    },
+    "CO": {
+      "total": 1,
+      "endemic": 0,
+      "macro": 1,
+      "languages": {
+        "endemic": [],
+        "macro": [
+          {
+            "code": "es",
+            "primary": true
+          }
+        ]
+      }
+    },
+    "PE": {
+      "total": 1,
+      "endemic": 0,
+      "macro": 1,
+      "languages": {
+        "endemic": [],
+        "macro": [
+          {
+            "code": "es",
+            "primary": true
+          }
+        ]
+      }
+    },
+    "VE": {
+      "total": 1,
+      "endemic": 0,
+      "macro": 1,
+      "languages": {
+        "endemic": [],
+        "macro": [
+          {
+            "code": "es",
+            "primary": true
+          }
+        ]
+      }
+    },
+    "CL": {
+      "total": 1,
+      "endemic": 0,
+      "macro": 1,
+      "languages": {
+        "endemic": [],
+        "macro": [
+          {
+            "code": "es",
+            "primary": true
+          }
+        ]
+      }
+    },
+    "EC": {
+      "total": 1,
+      "endemic": 0,
+      "macro": 1,
+      "languages": {
+        "endemic": [],
+        "macro": [
+          {
+            "code": "es",
+            "primary": true
+          }
+        ]
+      }
+    },
+    "GT": {
+      "total": 1,
+      "endemic": 0,
+      "macro": 1,
+      "languages": {
+        "endemic": [],
+        "macro": [
+          {
+            "code": "es",
+            "primary": true
+          }
+        ]
+      }
+    },
+    "CU": {
+      "total": 1,
+      "endemic": 0,
+      "macro": 1,
+      "languages": {
+        "endemic": [],
+        "macro": [
+          {
+            "code": "es",
+            "primary": true
+          }
+        ]
+      }
+    },
+    "BO": {
+      "total": 1,
+      "endemic": 0,
+      "macro": 1,
+      "languages": {
+        "endemic": [],
+        "macro": [
+          {
+            "code": "es",
+            "primary": true
+          }
+        ]
+      }
+    },
+    "DO": {
+      "total": 1,
+      "endemic": 0,
+      "macro": 1,
+      "languages": {
+        "endemic": [],
+        "macro": [
+          {
+            "code": "es",
+            "primary": true
+          }
+        ]
+      }
+    },
+    "HN": {
+      "total": 1,
+      "endemic": 0,
+      "macro": 1,
+      "languages": {
+        "endemic": [],
+        "macro": [
+          {
+            "code": "es",
+            "primary": true
+          }
+        ]
+      }
+    },
+    "SV": {
+      "total": 1,
+      "endemic": 0,
+      "macro": 1,
+      "languages": {
+        "endemic": [],
+        "macro": [
+          {
+            "code": "es",
+            "primary": true
+          }
+        ]
+      }
+    },
+    "NI": {
+      "total": 1,
+      "endemic": 0,
+      "macro": 1,
+      "languages": {
+        "endemic": [],
+        "macro": [
+          {
+            "code": "es",
+            "primary": true
+          }
+        ]
+      }
+    },
+    "CR": {
+      "total": 1,
+      "endemic": 0,
+      "macro": 1,
+      "languages": {
+        "endemic": [],
+        "macro": [
+          {
+            "code": "es",
+            "primary": true
+          }
+        ]
+      }
+    },
+    "PA": {
+      "total": 1,
+      "endemic": 0,
+      "macro": 1,
+      "languages": {
+        "endemic": [],
+        "macro": [
+          {
+            "code": "es",
+            "primary": true
+          }
+        ]
+      }
+    },
+    "PY": {
+      "total": 1,
+      "endemic": 0,
+      "macro": 1,
+      "languages": {
+        "endemic": [],
+        "macro": [
+          {
+            "code": "es",
+            "primary": true
+          }
+        ]
+      }
+    },
+    "UY": {
+      "total": 1,
+      "endemic": 0,
+      "macro": 1,
+      "languages": {
+        "endemic": [],
+        "macro": [
+          {
+            "code": "es",
+            "primary": true
+          }
+        ]
+      }
+    },
+    "PR": {
+      "total": 1,
+      "endemic": 0,
+      "macro": 1,
+      "languages": {
+        "endemic": [],
+        "macro": [
+          {
+            "code": "es",
+            "primary": true
+          }
+        ]
+      }
+    },
+    "GQ": {
+      "total": 1,
+      "endemic": 0,
+      "macro": 1,
+      "languages": {
+        "endemic": [],
+        "macro": [
+          {
+            "code": "es",
+            "primary": true
+          }
+        ]
+      }
+    },
+    "FR": {
+      "total": 3,
+      "endemic": 2,
+      "macro": 1,
+      "languages": {
+        "endemic": [
+          {
+            "code": "ca",
+            "primary": false
+          },
+          {
+            "code": "eu",
+            "primary": false
+          }
+        ],
+        "macro": [
+          {
+            "code": "fr",
+            "primary": true
+          }
+        ]
+      }
+    },
+    "BE": {
+      "total": 3,
+      "endemic": 0,
+      "macro": 3,
+      "languages": {
+        "endemic": [],
+        "macro": [
+          {
+            "code": "fr",
+            "primary": true
+          },
+          {
+            "code": "de",
+            "primary": false
+          },
+          {
+            "code": "nl",
+            "primary": false
+          }
+        ]
+      }
+    },
+    "CH": {
+      "total": 3,
+      "endemic": 0,
+      "macro": 3,
+      "languages": {
+        "endemic": [],
+        "macro": [
+          {
+            "code": "fr",
+            "primary": false
+          },
+          {
+            "code": "de",
+            "primary": false
+          },
+          {
+            "code": "it",
+            "primary": false
+          }
+        ]
+      }
+    },
+    "SN": {
+      "total": 1,
+      "endemic": 0,
+      "macro": 1,
+      "languages": {
+        "endemic": [],
+        "macro": [
+          {
+            "code": "fr",
+            "primary": true
+          }
+        ]
+      }
+    },
+    "CI": {
+      "total": 1,
+      "endemic": 0,
+      "macro": 1,
+      "languages": {
+        "endemic": [],
+        "macro": [
+          {
+            "code": "fr",
+            "primary": true
+          }
+        ]
+      }
+    },
+    "CM": {
+      "total": 1,
+      "endemic": 0,
+      "macro": 1,
+      "languages": {
+        "endemic": [],
+        "macro": [
+          {
+            "code": "fr",
+            "primary": true
+          }
+        ]
+      }
+    },
+    "CD": {
+      "total": 2,
+      "endemic": 0,
+      "macro": 2,
+      "languages": {
+        "endemic": [],
+        "macro": [
+          {
+            "code": "fr",
+            "primary": true
+          },
+          {
+            "code": "sw",
+            "primary": false
+          }
+        ]
+      }
+    },
+    "MG": {
+      "total": 1,
+      "endemic": 0,
+      "macro": 1,
+      "languages": {
+        "endemic": [],
+        "macro": [
+          {
+            "code": "fr",
+            "primary": true
+          }
+        ]
+      }
+    },
+    "ML": {
+      "total": 1,
+      "endemic": 0,
+      "macro": 1,
+      "languages": {
+        "endemic": [],
+        "macro": [
+          {
+            "code": "fr",
+            "primary": true
+          }
+        ]
+      }
+    },
+    "BF": {
+      "total": 1,
+      "endemic": 0,
+      "macro": 1,
+      "languages": {
+        "endemic": [],
+        "macro": [
+          {
+            "code": "fr",
+            "primary": true
+          }
+        ]
+      }
+    },
+    "NE": {
+      "total": 1,
+      "endemic": 0,
+      "macro": 1,
+      "languages": {
+        "endemic": [],
+        "macro": [
+          {
+            "code": "fr",
+            "primary": true
+          }
+        ]
+      }
+    },
+    "TG": {
+      "total": 1,
+      "endemic": 0,
+      "macro": 1,
+      "languages": {
+        "endemic": [],
+        "macro": [
+          {
+            "code": "fr",
+            "primary": true
+          }
+        ]
+      }
+    },
+    "BJ": {
+      "total": 1,
+      "endemic": 0,
+      "macro": 1,
+      "languages": {
+        "endemic": [],
+        "macro": [
+          {
+            "code": "fr",
+            "primary": true
+          }
+        ]
+      }
+    },
+    "GA": {
+      "total": 1,
+      "endemic": 0,
+      "macro": 1,
+      "languages": {
+        "endemic": [],
+        "macro": [
+          {
+            "code": "fr",
+            "primary": true
+          }
+        ]
+      }
+    },
+    "CG": {
+      "total": 1,
+      "endemic": 0,
+      "macro": 1,
+      "languages": {
+        "endemic": [],
+        "macro": [
+          {
+            "code": "fr",
+            "primary": true
+          }
+        ]
+      }
+    },
+    "DJ": {
+      "total": 2,
+      "endemic": 0,
+      "macro": 2,
+      "languages": {
+        "endemic": [],
+        "macro": [
+          {
+            "code": "fr",
+            "primary": true
+          },
+          {
+            "code": "ar",
+            "primary": false
+          }
+        ]
+      }
+    },
+    "RW": {
+      "total": 2,
+      "endemic": 0,
+      "macro": 2,
+      "languages": {
+        "endemic": [],
+        "macro": [
+          {
+            "code": "fr",
+            "primary": true
+          },
+          {
+            "code": "sw",
+            "primary": false
+          }
+        ]
+      }
+    },
+    "BI": {
+      "total": 1,
+      "endemic": 0,
+      "macro": 1,
+      "languages": {
+        "endemic": [],
+        "macro": [
+          {
+            "code": "fr",
+            "primary": true
+          }
+        ]
+      }
+    },
+    "HT": {
+      "total": 1,
+      "endemic": 0,
+      "macro": 1,
+      "languages": {
+        "endemic": [],
+        "macro": [
+          {
+            "code": "fr",
+            "primary": true
+          }
+        ]
+      }
+    },
+    "LU": {
+      "total": 2,
+      "endemic": 0,
+      "macro": 2,
+      "languages": {
+        "endemic": [],
+        "macro": [
+          {
+            "code": "fr",
+            "primary": true
+          },
+          {
+            "code": "de",
+            "primary": false
+          }
+        ]
+      }
+    },
+    "MC": {
+      "total": 1,
+      "endemic": 0,
+      "macro": 1,
+      "languages": {
+        "endemic": [],
+        "macro": [
+          {
+            "code": "fr",
+            "primary": true
+          }
+        ]
+      }
+    },
+    "PT": {
+      "total": 1,
+      "endemic": 0,
+      "macro": 1,
+      "languages": {
+        "endemic": [],
+        "macro": [
+          {
+            "code": "pt",
+            "primary": true
+          }
+        ]
+      }
+    },
+    "BR": {
+      "total": 1,
+      "endemic": 0,
+      "macro": 1,
+      "languages": {
+        "endemic": [],
+        "macro": [
+          {
+            "code": "pt",
+            "primary": true
+          }
+        ]
+      }
+    },
+    "AO": {
+      "total": 1,
+      "endemic": 0,
+      "macro": 1,
+      "languages": {
+        "endemic": [],
+        "macro": [
+          {
+            "code": "pt",
+            "primary": true
+          }
+        ]
+      }
+    },
+    "MZ": {
+      "total": 1,
+      "endemic": 0,
+      "macro": 1,
+      "languages": {
+        "endemic": [],
+        "macro": [
+          {
+            "code": "pt",
+            "primary": true
+          }
+        ]
+      }
+    },
+    "GW": {
+      "total": 1,
+      "endemic": 0,
+      "macro": 1,
+      "languages": {
+        "endemic": [],
+        "macro": [
+          {
+            "code": "pt",
+            "primary": true
+          }
+        ]
+      }
+    },
+    "TL": {
+      "total": 1,
+      "endemic": 0,
+      "macro": 1,
+      "languages": {
+        "endemic": [],
+        "macro": [
+          {
+            "code": "pt",
+            "primary": true
+          }
+        ]
+      }
+    },
+    "CV": {
+      "total": 1,
+      "endemic": 0,
+      "macro": 1,
+      "languages": {
+        "endemic": [],
+        "macro": [
+          {
+            "code": "pt",
+            "primary": true
+          }
+        ]
+      }
+    },
+    "ST": {
+      "total": 1,
+      "endemic": 0,
+      "macro": 1,
+      "languages": {
+        "endemic": [],
+        "macro": [
+          {
+            "code": "pt",
+            "primary": true
+          }
+        ]
+      }
+    },
+    "DE": {
+      "total": 1,
+      "endemic": 0,
+      "macro": 1,
+      "languages": {
+        "endemic": [],
+        "macro": [
+          {
+            "code": "de",
+            "primary": true
+          }
+        ]
+      }
+    },
+    "AT": {
+      "total": 1,
+      "endemic": 0,
+      "macro": 1,
+      "languages": {
+        "endemic": [],
+        "macro": [
+          {
+            "code": "de",
+            "primary": true
+          }
+        ]
+      }
+    },
+    "LI": {
+      "total": 1,
+      "endemic": 0,
+      "macro": 1,
+      "languages": {
+        "endemic": [],
+        "macro": [
+          {
+            "code": "de",
+            "primary": true
+          }
+        ]
+      }
+    },
+    "IT": {
+      "total": 2,
+      "endemic": 1,
+      "macro": 1,
+      "languages": {
+        "endemic": [
+          {
+            "code": "ca",
+            "primary": false
+          }
+        ],
+        "macro": [
+          {
+            "code": "it",
+            "primary": true
+          }
+        ]
+      }
+    },
+    "SM": {
+      "total": 1,
+      "endemic": 0,
+      "macro": 1,
+      "languages": {
+        "endemic": [],
+        "macro": [
+          {
+            "code": "it",
+            "primary": true
+          }
+        ]
+      }
+    },
+    "VA": {
+      "total": 1,
+      "endemic": 0,
+      "macro": 1,
+      "languages": {
+        "endemic": [],
+        "macro": [
+          {
+            "code": "it",
+            "primary": true
+          }
+        ]
+      }
+    },
+    "NL": {
+      "total": 1,
+      "endemic": 0,
+      "macro": 1,
+      "languages": {
+        "endemic": [],
+        "macro": [
+          {
+            "code": "nl",
+            "primary": true
+          }
+        ]
+      }
+    },
+    "SR": {
+      "total": 1,
+      "endemic": 0,
+      "macro": 1,
+      "languages": {
+        "endemic": [],
+        "macro": [
+          {
+            "code": "nl",
+            "primary": true
+          }
+        ]
+      }
+    },
+    "RU": {
+      "total": 1,
+      "endemic": 0,
+      "macro": 1,
+      "languages": {
+        "endemic": [],
+        "macro": [
+          {
+            "code": "ru",
+            "primary": true
+          }
+        ]
+      }
+    },
+    "BY": {
+      "total": 1,
+      "endemic": 0,
+      "macro": 1,
+      "languages": {
+        "endemic": [],
+        "macro": [
+          {
+            "code": "ru",
+            "primary": true
+          }
+        ]
+      }
+    },
+    "KZ": {
+      "total": 1,
+      "endemic": 0,
+      "macro": 1,
+      "languages": {
+        "endemic": [],
+        "macro": [
+          {
+            "code": "ru",
+            "primary": false
+          }
+        ]
+      }
+    },
+    "KG": {
+      "total": 1,
+      "endemic": 0,
+      "macro": 1,
+      "languages": {
+        "endemic": [],
+        "macro": [
+          {
+            "code": "ru",
+            "primary": false
+          }
+        ]
+      }
+    },
+    "UA": {
+      "total": 2,
+      "endemic": 0,
+      "macro": 2,
+      "languages": {
+        "endemic": [],
+        "macro": [
+          {
+            "code": "ru",
+            "primary": false
+          },
+          {
+            "code": "uk",
+            "primary": true
+          }
+        ]
+      }
+    },
+    "CN": {
+      "total": 1,
+      "endemic": 0,
+      "macro": 1,
+      "languages": {
+        "endemic": [],
+        "macro": [
+          {
+            "code": "zh",
+            "primary": true
+          }
+        ]
+      }
+    },
+    "TW": {
+      "total": 1,
+      "endemic": 0,
+      "macro": 1,
+      "languages": {
+        "endemic": [],
+        "macro": [
+          {
+            "code": "zh",
+            "primary": true
+          }
+        ]
+      }
+    },
+    "HK": {
+      "total": 1,
+      "endemic": 0,
+      "macro": 1,
+      "languages": {
+        "endemic": [],
+        "macro": [
+          {
+            "code": "zh",
+            "primary": true
+          }
+        ]
+      }
+    },
+    "MO": {
+      "total": 1,
+      "endemic": 0,
+      "macro": 1,
+      "languages": {
+        "endemic": [],
+        "macro": [
+          {
+            "code": "zh",
+            "primary": true
+          }
+        ]
+      }
+    },
+    "JP": {
+      "total": 1,
+      "endemic": 0,
+      "macro": 1,
+      "languages": {
+        "endemic": [],
+        "macro": [
+          {
+            "code": "ja",
+            "primary": true
+          }
+        ]
+      }
+    },
+    "KR": {
+      "total": 1,
+      "endemic": 0,
+      "macro": 1,
+      "languages": {
+        "endemic": [],
+        "macro": [
+          {
+            "code": "ko",
+            "primary": true
+          }
+        ]
+      }
+    },
+    "KP": {
+      "total": 1,
+      "endemic": 0,
+      "macro": 1,
+      "languages": {
+        "endemic": [],
+        "macro": [
+          {
+            "code": "ko",
+            "primary": true
+          }
+        ]
+      }
+    },
+    "SA": {
+      "total": 1,
+      "endemic": 0,
+      "macro": 1,
+      "languages": {
+        "endemic": [],
+        "macro": [
+          {
+            "code": "ar",
+            "primary": true
+          }
+        ]
+      }
+    },
+    "EG": {
+      "total": 1,
+      "endemic": 0,
+      "macro": 1,
+      "languages": {
+        "endemic": [],
+        "macro": [
+          {
+            "code": "ar",
+            "primary": true
+          }
+        ]
+      }
+    },
+    "IQ": {
+      "total": 1,
+      "endemic": 0,
+      "macro": 1,
+      "languages": {
+        "endemic": [],
+        "macro": [
+          {
+            "code": "ar",
+            "primary": true
+          }
+        ]
+      }
+    },
+    "MA": {
+      "total": 1,
+      "endemic": 0,
+      "macro": 1,
+      "languages": {
+        "endemic": [],
+        "macro": [
+          {
+            "code": "ar",
+            "primary": true
+          }
+        ]
+      }
+    },
+    "DZ": {
+      "total": 1,
+      "endemic": 0,
+      "macro": 1,
+      "languages": {
+        "endemic": [],
+        "macro": [
+          {
+            "code": "ar",
+            "primary": true
+          }
+        ]
+      }
+    },
+    "SD": {
+      "total": 1,
+      "endemic": 0,
+      "macro": 1,
+      "languages": {
+        "endemic": [],
+        "macro": [
+          {
+            "code": "ar",
+            "primary": true
+          }
+        ]
+      }
+    },
+    "SY": {
+      "total": 1,
+      "endemic": 0,
+      "macro": 1,
+      "languages": {
+        "endemic": [],
+        "macro": [
+          {
+            "code": "ar",
+            "primary": true
+          }
+        ]
+      }
+    },
+    "TN": {
+      "total": 1,
+      "endemic": 0,
+      "macro": 1,
+      "languages": {
+        "endemic": [],
+        "macro": [
+          {
+            "code": "ar",
+            "primary": true
+          }
+        ]
+      }
+    },
+    "YE": {
+      "total": 1,
+      "endemic": 0,
+      "macro": 1,
+      "languages": {
+        "endemic": [],
+        "macro": [
+          {
+            "code": "ar",
+            "primary": true
+          }
+        ]
+      }
+    },
+    "JO": {
+      "total": 1,
+      "endemic": 0,
+      "macro": 1,
+      "languages": {
+        "endemic": [],
+        "macro": [
+          {
+            "code": "ar",
+            "primary": true
+          }
+        ]
+      }
+    },
+    "AE": {
+      "total": 1,
+      "endemic": 0,
+      "macro": 1,
+      "languages": {
+        "endemic": [],
+        "macro": [
+          {
+            "code": "ar",
+            "primary": true
+          }
+        ]
+      }
+    },
+    "LB": {
+      "total": 1,
+      "endemic": 0,
+      "macro": 1,
+      "languages": {
+        "endemic": [],
+        "macro": [
+          {
+            "code": "ar",
+            "primary": true
+          }
+        ]
+      }
+    },
+    "LY": {
+      "total": 1,
+      "endemic": 0,
+      "macro": 1,
+      "languages": {
+        "endemic": [],
+        "macro": [
+          {
+            "code": "ar",
+            "primary": true
+          }
+        ]
+      }
+    },
+    "KW": {
+      "total": 1,
+      "endemic": 0,
+      "macro": 1,
+      "languages": {
+        "endemic": [],
+        "macro": [
+          {
+            "code": "ar",
+            "primary": true
+          }
+        ]
+      }
+    },
+    "OM": {
+      "total": 1,
+      "endemic": 0,
+      "macro": 1,
+      "languages": {
+        "endemic": [],
+        "macro": [
+          {
+            "code": "ar",
+            "primary": true
+          }
+        ]
+      }
+    },
+    "QA": {
+      "total": 1,
+      "endemic": 0,
+      "macro": 1,
+      "languages": {
+        "endemic": [],
+        "macro": [
+          {
+            "code": "ar",
+            "primary": true
+          }
+        ]
+      }
+    },
+    "BH": {
+      "total": 1,
+      "endemic": 0,
+      "macro": 1,
+      "languages": {
+        "endemic": [],
+        "macro": [
+          {
+            "code": "ar",
+            "primary": true
+          }
+        ]
+      }
+    },
+    "PS": {
+      "total": 1,
+      "endemic": 0,
+      "macro": 1,
+      "languages": {
+        "endemic": [],
+        "macro": [
+          {
+            "code": "ar",
+            "primary": true
+          }
+        ]
+      }
+    },
+    "MR": {
+      "total": 1,
+      "endemic": 0,
+      "macro": 1,
+      "languages": {
+        "endemic": [],
+        "macro": [
+          {
+            "code": "ar",
+            "primary": true
+          }
+        ]
+      }
+    },
+    "SO": {
+      "total": 1,
+      "endemic": 0,
+      "macro": 1,
+      "languages": {
+        "endemic": [],
+        "macro": [
+          {
+            "code": "ar",
+            "primary": true
+          }
+        ]
+      }
+    },
+    "BD": {
+      "total": 1,
+      "endemic": 0,
+      "macro": 1,
+      "languages": {
+        "endemic": [],
+        "macro": [
+          {
+            "code": "bn",
+            "primary": true
+          }
+        ]
+      }
+    },
+    "LK": {
+      "total": 1,
+      "endemic": 0,
+      "macro": 1,
+      "languages": {
+        "endemic": [],
+        "macro": [
+          {
+            "code": "ta",
+            "primary": false
+          }
+        ]
+      }
+    },
+    "PK": {
+      "total": 1,
+      "endemic": 0,
+      "macro": 1,
+      "languages": {
+        "endemic": [],
+        "macro": [
+          {
+            "code": "ur",
+            "primary": true
+          }
+        ]
+      }
+    },
+    "IR": {
+      "total": 1,
+      "endemic": 0,
+      "macro": 1,
+      "languages": {
+        "endemic": [],
+        "macro": [
+          {
+            "code": "fa",
+            "primary": true
+          }
+        ]
+      }
+    },
+    "AF": {
+      "total": 1,
+      "endemic": 0,
+      "macro": 1,
+      "languages": {
+        "endemic": [],
+        "macro": [
+          {
+            "code": "fa",
+            "primary": false
+          }
+        ]
+      }
+    },
+    "TJ": {
+      "total": 1,
+      "endemic": 0,
+      "macro": 1,
+      "languages": {
+        "endemic": [],
+        "macro": [
+          {
+            "code": "fa",
+            "primary": false
+          }
+        ]
+      }
+    },
+    "TR": {
+      "total": 1,
+      "endemic": 0,
+      "macro": 1,
+      "languages": {
+        "endemic": [],
+        "macro": [
+          {
+            "code": "tr",
+            "primary": true
+          }
+        ]
+      }
+    },
+    "CY": {
+      "total": 2,
+      "endemic": 0,
+      "macro": 2,
+      "languages": {
+        "endemic": [],
+        "macro": [
+          {
+            "code": "tr",
+            "primary": false
+          },
+          {
+            "code": "el",
+            "primary": true
+          }
+        ]
+      }
+    },
+    "VN": {
+      "total": 1,
+      "endemic": 0,
+      "macro": 1,
+      "languages": {
+        "endemic": [],
+        "macro": [
+          {
+            "code": "vi",
+            "primary": true
+          }
+        ]
+      }
+    },
+    "TH": {
+      "total": 1,
+      "endemic": 0,
+      "macro": 1,
+      "languages": {
+        "endemic": [],
+        "macro": [
+          {
+            "code": "th",
+            "primary": true
+          }
+        ]
+      }
+    },
+    "ID": {
+      "total": 2,
+      "endemic": 0,
+      "macro": 2,
+      "languages": {
+        "endemic": [],
+        "macro": [
+          {
+            "code": "id",
+            "primary": true
+          },
+          {
+            "code": "ms",
+            "primary": false
+          }
+        ]
+      }
+    },
+    "BN": {
+      "total": 1,
+      "endemic": 0,
+      "macro": 1,
+      "languages": {
+        "endemic": [],
+        "macro": [
+          {
+            "code": "ms",
+            "primary": true
+          }
+        ]
+      }
+    },
+    "TZ": {
+      "total": 1,
+      "endemic": 0,
+      "macro": 1,
+      "languages": {
+        "endemic": [],
+        "macro": [
+          {
+            "code": "sw",
+            "primary": true
+          }
+        ]
+      }
+    },
+    "UG": {
+      "total": 1,
+      "endemic": 0,
+      "macro": 1,
+      "languages": {
+        "endemic": [],
+        "macro": [
+          {
+            "code": "sw",
+            "primary": false
+          }
+        ]
+      }
+    },
+    "PL": {
+      "total": 1,
+      "endemic": 0,
+      "macro": 1,
+      "languages": {
+        "endemic": [],
+        "macro": [
+          {
+            "code": "pl",
+            "primary": true
+          }
+        ]
+      }
+    },
+    "CZ": {
+      "total": 1,
+      "endemic": 0,
+      "macro": 1,
+      "languages": {
+        "endemic": [],
+        "macro": [
+          {
+            "code": "cs",
+            "primary": true
+          }
+        ]
+      }
+    },
+    "HU": {
+      "total": 1,
+      "endemic": 0,
+      "macro": 1,
+      "languages": {
+        "endemic": [],
+        "macro": [
+          {
+            "code": "hu",
+            "primary": true
+          }
+        ]
+      }
+    },
+    "RO": {
+      "total": 2,
+      "endemic": 0,
+      "macro": 2,
+      "languages": {
+        "endemic": [],
+        "macro": [
+          {
+            "code": "hu",
+            "primary": false
+          },
+          {
+            "code": "ro",
+            "primary": true
+          }
+        ]
+      }
+    },
+    "SK": {
+      "total": 1,
+      "endemic": 0,
+      "macro": 1,
+      "languages": {
+        "endemic": [],
+        "macro": [
+          {
+            "code": "hu",
+            "primary": false
+          }
+        ]
+      }
+    },
+    "RS": {
+      "total": 1,
+      "endemic": 0,
+      "macro": 1,
+      "languages": {
+        "endemic": [],
+        "macro": [
+          {
+            "code": "hu",
+            "primary": false
+          }
+        ]
+      }
+    },
+    "MD": {
+      "total": 1,
+      "endemic": 0,
+      "macro": 1,
+      "languages": {
+        "endemic": [],
+        "macro": [
+          {
+            "code": "ro",
+            "primary": true
+          }
+        ]
+      }
+    },
+    "GR": {
+      "total": 1,
+      "endemic": 0,
+      "macro": 1,
+      "languages": {
+        "endemic": [],
+        "macro": [
+          {
+            "code": "el",
+            "primary": true
+          }
+        ]
+      }
+    },
+    "FI": {
+      "total": 2,
+      "endemic": 0,
+      "macro": 2,
+      "languages": {
+        "endemic": [],
+        "macro": [
+          {
+            "code": "fi",
+            "primary": true
+          },
+          {
+            "code": "sv",
+            "primary": false
+          }
+        ]
+      }
+    },
+    "SE": {
+      "total": 1,
+      "endemic": 0,
+      "macro": 1,
+      "languages": {
+        "endemic": [],
+        "macro": [
+          {
+            "code": "sv",
+            "primary": true
+          }
+        ]
+      }
+    },
+    "NO": {
+      "total": 1,
+      "endemic": 0,
+      "macro": 1,
+      "languages": {
+        "endemic": [],
+        "macro": [
+          {
+            "code": "no",
+            "primary": true
+          }
+        ]
+      }
+    },
+    "DK": {
+      "total": 1,
+      "endemic": 0,
+      "macro": 1,
+      "languages": {
+        "endemic": [],
+        "macro": [
+          {
+            "code": "da",
+            "primary": true
+          }
+        ]
+      }
+    },
+    "AD": {
+      "total": 1,
+      "endemic": 1,
+      "macro": 0,
+      "languages": {
+        "endemic": [
+          {
+            "code": "ca",
+            "primary": true
+          }
+        ],
+        "macro": []
+      }
+    },
+    "IL": {
+      "total": 1,
+      "endemic": 0,
+      "macro": 1,
+      "languages": {
+        "endemic": [],
+        "macro": [
+          {
+            "code": "he",
+            "primary": true
+          }
+        ]
+      }
+    }
+  },
+  "available_language_count": 43
+}

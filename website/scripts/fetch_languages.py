@@ -39,12 +39,127 @@ except ImportError:
 from wikilangs import languages_with_metadata
 
 
+# Language name overrides for codes with missing/incorrect names
+LANGUAGE_NAME_OVERRIDES = {
+    # Wikipedia language codes that don't match ISO standards
+    "en": "English",
+    "simple": "Simple English",
+    "cbk-zam": "Chavacano",
+    "map-bms": "Banyumasan",
+    "nds-nl": "Low Saxon",
+    "be-tarask": "Belarusian (Taraškievica)",
+    "roa-tara": "Tarantino",
+    "zh-yue": "Cantonese",
+    "zh-classical": "Classical Chinese",
+    "zh-min-nan": "Min Nan",
+
+    # Short codes that need full names
+    "ak": "Akan",
+    "as": "Assamese",
+    "bh": "Bihari",
+    "en": "English",
+    "ho": "Hiri Motu",
+    "ii": "Sichuan Yi",
+    "na": "Nauruan",
+    "ng": "Ndonga",
+    "nr": "Southern Ndebele",
+    "nah": "Nahuatl",
+    "pi": "Pali",
+    "za": "Zhuang",
+
+    # Languages with incorrect metadata names
+    "ang": "Old English",
+    "arc": "Aramaic",
+    "diq": "Zazaki",
+    "got": "Gothic",
+    "rup": "Aromanian",
+    "cu": "Church Slavonic",
+    "grc": "Ancient Greek",
+
+    # Common name preferences
+    "el": "Greek",
+    "hy": "Armenian",
+    "ka": "Georgian",
+    "ko": "Korean",
+    "ja": "Japanese",
+    "zh": "Chinese",
+    "fa": "Persian",
+    "he": "Hebrew",
+    "yi": "Yiddish",
+    "sq": "Albanian",
+    "eu": "Basque",
+    "cy": "Welsh",
+    "ga": "Irish",
+    "gd": "Scottish Gaelic",
+    "br": "Breton",
+    "kw": "Cornish",
+    "gv": "Manx",
+    "lb": "Luxembourgish",
+
+    # Remove verbose annotations
+    "ia": "Interlingua",
+    "oc": "Occitan",
+    "war": "Waray",
+
+    # Fix capitalized/short codes
+    "eml": "Emilian-Romagnol",
+    "fon": "Fon",
+    "ha": "Hausa",
+    "hu": "Hungarian",
+    "ik": "Inupiaq",
+    "sa": "Sanskrit",
+    "to": "Tongan",
+    "wa": "Walloon",
+}
+
+
+def clean_language_name(name: str, code: str) -> str:
+    """Clean up language name by removing annotations and fixing formatting."""
+    # Use override if available
+    if code in LANGUAGE_NAME_OVERRIDES:
+        return LANGUAGE_NAME_OVERRIDES[code]
+
+    # Remove common annotations in parentheses
+    patterns_to_remove = [
+        r'\s*\(ISO 639-\d+\)',           # (ISO 639-1), (ISO 639-3)
+        r'\s*\(Unknown\)',                # (Unknown)
+        r'\s*\(individual language\)',    # (individual language)
+        r'\s*\(macrolanguage\)',          # (macrolanguage)
+        r'\s*\(ca\.\s*[\d\-]+\)',         # (ca. 450-1100)
+        r'\s*\(\d+[-–]\d+\s*BCE?\)',      # (700-300 BCE)
+        r'\s*\(\d+[-–]\d+\)',             # (1453-)
+        r'\s*\(post \d+\)',               # (post 1500)
+        r'\s*\([^)]*Association[^)]*\)',  # (International Auxiliary Language Association)
+        r'\s*\([^)]*Philippines[^)]*\)',  # (Philippines)
+    ]
+
+    cleaned = name
+    for pattern in patterns_to_remove:
+        cleaned = re.sub(pattern, '', cleaned, flags=re.IGNORECASE)
+
+    # Clean up any double spaces
+    cleaned = re.sub(r'\s+', ' ', cleaned).strip()
+
+    # If the name is all uppercase and longer than 2 chars, title case it
+    if cleaned.isupper() and len(cleaned) > 2:
+        cleaned = cleaned.title()
+
+    # If the name is just the code in uppercase, it's invalid
+    if cleaned.upper() == code.upper() or len(cleaned) <= 2:
+        # Try to find a better name
+        return code.upper()  # Will be fixed by overrides
+
+    return cleaned
+
+
 @dataclass
 class LanguageData:
     """Complete language data for the website."""
     code: str
     name: str
     common_name: Optional[str] = None
+    native_name: Optional[str] = None  # Language name in native script
+    text_direction: str = "ltr"  # ltr or rtl
     alpha_2: Optional[str] = None
     alpha_3: Optional[str] = None
     scope: Optional[str] = None
@@ -59,9 +174,16 @@ class LanguageData:
     has_models: bool = False
     model_card_excerpt: Optional[str] = None
 
+    # Wikipedia samples (pre-fetched)
+    wikipedia_samples: list[str] = None  # type: ignore
+
     # HuggingFace URLs
     hf_url: str = ""
     visualizations_base: str = ""
+
+    def __post_init__(self):
+        if self.wikipedia_samples is None:
+            self.wikipedia_samples = []
 
 
 def parse_yaml_frontmatter(content: str) -> dict[str, Any]:
@@ -143,26 +265,124 @@ async def fetch_model_card(session: aiohttp.ClientSession, lang: str) -> Optiona
         return None
 
 
+# Cache for native language names (fetched once)
+_native_names_cache: dict[str, str] = {}
+
+
+async def fetch_all_native_names(session: aiohttp.ClientSession) -> dict[str, str]:
+    """Fetch all language native names from Wikipedia (cached)."""
+    global _native_names_cache
+    if _native_names_cache:
+        return _native_names_cache
+
+    url = "https://en.wikipedia.org/w/api.php?action=query&meta=siteinfo&siprop=languages&format=json"
+    headers = {"User-Agent": "WikiLangs/1.0 (https://wikilangs.org; wikilangs@omarkama.li)"}
+    try:
+        async with session.get(url, headers=headers, timeout=aiohttp.ClientTimeout(total=30)) as resp:
+            if resp.status == 200:
+                data = await resp.json()
+                languages = data.get('query', {}).get('languages', [])
+                for l in languages:
+                    code = l.get('code')
+                    name = l.get('*')
+                    if code and name:
+                        _native_names_cache[code] = name
+    except Exception as e:
+        print(f"  Warning: Failed to fetch native names: {e}")
+
+    return _native_names_cache
+
+
+async def fetch_text_direction(session: aiohttp.ClientSession, lang: str) -> str:
+    """Fetch text direction from the language's Wikipedia."""
+    url = f"https://{lang}.wikipedia.org/w/api.php?action=query&meta=siteinfo&siprop=general&format=json"
+    headers = {"User-Agent": "WikiLangs/1.0 (https://wikilangs.org; wikilangs@omarkama.li)"}
+
+    try:
+        async with session.get(url, headers=headers, timeout=aiohttp.ClientTimeout(total=10)) as resp:
+            if resp.status == 200:
+                data = await resp.json()
+                general = data.get('query', {}).get('general', {})
+                # 'rtl' key EXISTS (even if empty string) for RTL languages
+                if 'rtl' in general:
+                    return 'rtl'
+    except Exception:
+        pass
+
+    return 'ltr'
+
+
+async def fetch_wikipedia_samples(session: aiohttp.ClientSession, lang: str, num_samples: int = 3) -> list[str]:
+    """Fetch random article excerpts from this language's Wikipedia."""
+    url = f"https://{lang}.wikipedia.org/api/rest_v1/page/random/summary"
+    headers = {"User-Agent": "WikiLangs/1.0 (https://wikilangs.org; wikilangs@omarkama.li)"}
+    samples = []
+
+    for _ in range(num_samples):
+        try:
+            async with session.get(url, headers=headers, timeout=aiohttp.ClientTimeout(total=10), allow_redirects=True) as resp:
+                if resp.status == 200:
+                    data = await resp.json()
+                    extract = data.get('extract', '')
+                    if extract:
+                        # Extract first sentence (handle multiple sentence-ending punctuation)
+                        import re
+                        sentences = re.split(r'(?<=[.!?。！？।؟])\s+', extract)
+                        for sentence in sentences:
+                            if len(sentence.strip()) > 20:
+                                samples.append(sentence.strip())
+                                break
+                elif resp.status == 429:
+                    # Rate limited, wait a bit
+                    await asyncio.sleep(1)
+        except Exception:
+            pass
+
+        # Small delay between requests to avoid rate limiting
+        await asyncio.sleep(0.2)
+
+    return samples
+
+
 async def process_language(
     session: aiohttp.ClientSession,
-    lang_info
+    lang_info,
+    native_names: dict[str, str]
 ) -> LanguageData:
-    """Process a single language: fetch model card and extract data."""
+    """Process a single language: fetch model card, text direction, and Wikipedia samples."""
+
+    # Fetch text direction, model card, and Wikipedia samples in parallel
+    dir_task = fetch_text_direction(session, lang_info.code)
+    model_task = fetch_model_card(session, lang_info.code)
+    samples_task = fetch_wikipedia_samples(session, lang_info.code)
+
+    text_direction = await dir_task
+    content = await model_task
+    wikipedia_samples = await samples_task
+
+    # Get native name from pre-fetched cache
+    native_name = native_names.get(lang_info.code)
+
+    # Clean up language names
+    cleaned_name = clean_language_name(lang_info.name, lang_info.code)
+    cleaned_common_name = None
+    if lang_info.common_name:
+        cleaned_common_name = clean_language_name(lang_info.common_name, lang_info.code)
 
     data = LanguageData(
         code=lang_info.code,
-        name=lang_info.name,
-        common_name=lang_info.common_name,
+        name=cleaned_name,
+        common_name=cleaned_common_name,
+        native_name=native_name,
+        text_direction=text_direction,
         alpha_2=lang_info.alpha_2,
         alpha_3=lang_info.alpha_3,
         scope=lang_info.scope,
         language_type=getattr(lang_info, 'type', None),
+        wikipedia_samples=wikipedia_samples,
         hf_url=f"https://huggingface.co/wikilangs/{lang_info.code}",
         visualizations_base=f"https://huggingface.co/wikilangs/{lang_info.code}/resolve/main/visualizations"
     )
-
-    # Fetch model card
-    content = await fetch_model_card(session, lang_info.code)
 
     if content:
         data.has_models = True
@@ -204,13 +424,18 @@ async def fetch_all_languages(concurrency: int = 25) -> list[LanguageData]:
     results: list[LanguageData] = []
     semaphore = asyncio.Semaphore(concurrency)
 
-    async def fetch_with_semaphore(session, lang_info):
-        async with semaphore:
-            return await process_language(session, lang_info)
-
     connector = aiohttp.TCPConnector(limit=concurrency, limit_per_host=10)
     async with aiohttp.ClientSession(connector=connector) as session:
-        tasks = [fetch_with_semaphore(session, lang) for lang in lang_infos]
+        # Pre-fetch all native language names from Wikipedia (single request)
+        print("  Fetching native language names from Wikipedia...")
+        native_names = await fetch_all_native_names(session)
+        print(f"  Found {len(native_names)} native names")
+
+        async def fetch_with_semaphore(lang_info):
+            async with semaphore:
+                return await process_language(session, lang_info, native_names)
+
+        tasks = [fetch_with_semaphore(lang) for lang in lang_infos]
 
         # Process with progress
         completed = 0
@@ -243,11 +468,15 @@ def generate_output(languages: list[LanguageData], output_path: Path):
     # Print summary stats
     with_models = sum(1 for lang in languages if lang.has_models)
     with_metrics = sum(1 for lang in languages if lang.vocabulary_size)
+    with_samples = sum(1 for lang in languages if lang.wikipedia_samples)
+    with_native = sum(1 for lang in languages if lang.native_name)
 
     print(f"\nSummary:")
     print(f"  Total languages: {len(languages)}")
     print(f"  With model cards: {with_models}")
     print(f"  With full metrics: {with_metrics}")
+    print(f"  With Wikipedia samples: {with_samples}")
+    print(f"  With native names: {with_native}")
 
 
 async def main():

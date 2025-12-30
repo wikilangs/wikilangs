@@ -10,19 +10,147 @@ import BaseLayout from '@layouts/BaseLayout.astro';
     <div class="container">
       <h1>Research & Methodology</h1>
       <p class="hero-subtitle">
-        Understanding the metrics, evaluation methods, and research behind Wikilangs.
+        Understanding the pipeline, metrics, and evaluation methods behind Wikilangs.
       </p>
     </div>
   </section>
 
-  <section class="section">
+  <!-- Navigation -->
+  <nav class="section-nav">
     <div class="container">
-      <div class="research-intro prose">
-        <p>
-          Every language in Wikilangs includes a comprehensive research report with ablation studies,
-          evaluation metrics, and visualizations. This page explains the methodology behind our
-          evaluations and provides guidance for interpreting the metrics.
-        </p>
+      <a href="#pipeline" class="nav-link">
+        <span class="nav-icon">⚙️</span>
+        <span>
+          <strong>Pipeline</strong>
+          <small>How we build models</small>
+        </span>
+      </a>
+      <a href="#evaluation" class="nav-link">
+        <span class="nav-icon">📊</span>
+        <span>
+          <strong>Evaluation</strong>
+          <small>Metrics & interpretation</small>
+        </span>
+      </a>
+    </div>
+  </nav>
+
+  <!-- ====== PART 1: PIPELINE METHODOLOGY ====== -->
+  <section class="section" id="pipeline">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-badge">Part 1</span>
+        <h2>Pipeline Methodology</h2>
+        <p class="section-subtitle">How we transform Wikipedia dumps into trained models and evaluation reports</p>
+      </div>
+
+      <div class="pipeline-flow">
+        <div class="pipeline-step">
+          <div class="step-number">1</div>
+          <div class="step-content">
+            <h3>Data Collection</h3>
+            <p>
+              We use <a href="https://huggingface.co/datasets/omarkamali/wikipedia-monthly" target="_blank" rel="noopener">wikipedia-monthly</a>,
+              a regularly updated dataset containing Wikipedia articles across 340+ languages. Monthly snapshots ensure reproducibility and allow tracking language evolution over time.
+            </p>
+            <div class="step-details">
+              <span class="detail-badge">340+ Languages</span>
+              <span class="detail-badge">Monthly Updates</span>
+              <span class="detail-badge">Reproducible</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="pipeline-step">
+          <div class="step-number">2</div>
+          <div class="step-content">
+            <h3>Text Processing</h3>
+            <p>
+              Raw Wikipedia text undergoes cleaning (removing markup, citations, tables) and normalization.
+              We preserve linguistic features like scripts, diacritics, and punctuation important for each language.
+            </p>
+            <div class="step-details">
+              <span class="detail-badge">Script Preservation</span>
+              <span class="detail-badge">Normalization</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="pipeline-step">
+          <div class="step-number">3</div>
+          <div class="step-content">
+            <h3>Model Training</h3>
+            <p>For each language, we train multiple model types with systematic hyperparameter variations:</p>
+            <ul class="model-list">
+              <li><strong>Tokenizers (BPE)</strong> — 8k, 16k, 32k, 64k vocabulary sizes</li>
+              <li><strong>N-gram models</strong> — 2-gram through 5-gram, word and subword variants</li>
+              <li><strong>Markov chains</strong> — Context depths 1-4, word and subword</li>
+              <li><strong>Word embeddings</strong> — 32, 64, 128 dimensions</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="pipeline-step">
+          <div class="step-number">4</div>
+          <div class="step-content">
+            <h3>Evaluation & Ablation</h3>
+            <p>
+              Every model variant is evaluated on held-out test data. We compute comprehensive metrics
+              and generate ablation studies comparing different configurations to identify optimal settings for each language.
+            </p>
+            <div class="step-details">
+              <span class="detail-badge">Train/Test Split</span>
+              <span class="detail-badge">Ablation Studies</span>
+              <span class="detail-badge">Visualizations</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="pipeline-step">
+          <div class="step-number">5</div>
+          <div class="step-content">
+            <h3>Publishing to HuggingFace</h3>
+            <p>
+              All models, vocabularies, and evaluation reports are published to
+              <a href="https://huggingface.co/wikilangs" target="_blank" rel="noopener">HuggingFace</a>.
+              Each language repository includes model cards with metrics, visualizations, and usage examples.
+            </p>
+            <div class="step-details">
+              <span class="detail-badge">Open Access</span>
+              <span class="detail-badge">Model Cards</span>
+              <span class="detail-badge">Ready to Use</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="resources-box">
+        <h3>Learn More</h3>
+        <div class="resource-links">
+          <a href="https://huggingface.co/wikilangs" target="_blank" rel="noopener" class="resource-link">
+            <span class="resource-icon">🤗</span>
+            <span>HuggingFace Models</span>
+          </a>
+          <a href="https://huggingface.co/datasets/omarkamali/wikipedia-monthly" target="_blank" rel="noopener" class="resource-link">
+            <span class="resource-icon">📚</span>
+            <span>Wikipedia Dataset</span>
+          </a>
+          <a href="https://github.com/wikilangs" target="_blank" rel="noopener" class="resource-link">
+            <span class="resource-icon">💻</span>
+            <span>Source Code</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====== PART 2: EVALUATION METHODOLOGY ====== -->
+  <section class="section section-alt" id="evaluation">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-badge">Part 2</span>
+        <h2>Evaluation Methodology</h2>
+        <p class="section-subtitle">Understanding the metrics we use and how to interpret them</p>
       </div>
     </div>
   </section>
@@ -30,10 +158,10 @@ import BaseLayout from '@layouts/BaseLayout.astro';
   <!-- Metrics Glossary -->
   <section class="section section-alt" id="metrics">
     <div class="container">
-      <h2>Metrics Glossary</h2>
+      <h3 class="metrics-main-header">Metrics Glossary</h3>
 
       <div class="metrics-section">
-        <h3>Tokenizer Metrics</h3>
+        <h4 class="metrics-category">Tokenizer Metrics</h4>
 
         <div class="metric-card">
           <h4>Compression Ratio</h4>
@@ -58,7 +186,7 @@ import BaseLayout from '@layouts/BaseLayout.astro';
       </div>
 
       <div class="metrics-section">
-        <h3>N-gram Model Metrics</h3>
+        <h4 class="metrics-category">N-gram Model Metrics</h4>
 
         <div class="metric-card">
           <h4>Perplexity</h4>
@@ -83,7 +211,7 @@ import BaseLayout from '@layouts/BaseLayout.astro';
       </div>
 
       <div class="metrics-section">
-        <h3>Markov Chain Metrics</h3>
+        <h4 class="metrics-category">Markov Chain Metrics</h4>
 
         <div class="metric-card">
           <h4>Average Entropy</h4>
@@ -108,7 +236,7 @@ import BaseLayout from '@layouts/BaseLayout.astro';
       </div>
 
       <div class="metrics-section">
-        <h3>Vocabulary & Zipf's Law Metrics</h3>
+        <h4 class="metrics-category">Vocabulary & Zipf's Law Metrics</h4>
 
         <div class="metric-card">
           <h4>Zipf's Coefficient</h4>
@@ -126,7 +254,7 @@ import BaseLayout from '@layouts/BaseLayout.astro';
       </div>
 
       <div class="metrics-section">
-        <h3>Word Embedding Metrics</h3>
+        <h4 class="metrics-category">Word Embedding Metrics</h4>
 
         <div class="metric-card">
           <h4>Isotropy</h4>
@@ -201,6 +329,33 @@ import BaseLayout from '@layouts/BaseLayout.astro';
           <li><strong>Language-specific patterns:</strong> Morphologically rich languages (like Arabic) may show different optimal ranges than analytic languages.</li>
         </ol>
       </div>
+
+      <div class="learn-more-box">
+        <h3>Further Reading</h3>
+        <p>Want to dive deeper into NLP evaluation? Here are some resources:</p>
+        <div class="learn-links">
+          <a href="https://en.wikipedia.org/wiki/Perplexity" target="_blank" rel="noopener" class="learn-link">
+            <span>Perplexity</span>
+            <small>Wikipedia</small>
+          </a>
+          <a href="https://en.wikipedia.org/wiki/Byte_pair_encoding" target="_blank" rel="noopener" class="learn-link">
+            <span>BPE Tokenization</span>
+            <small>Wikipedia</small>
+          </a>
+          <a href="https://en.wikipedia.org/wiki/Zipf%27s_law" target="_blank" rel="noopener" class="learn-link">
+            <span>Zipf's Law</span>
+            <small>Wikipedia</small>
+          </a>
+          <a href="https://en.wikipedia.org/wiki/Word_embedding" target="_blank" rel="noopener" class="learn-link">
+            <span>Word Embeddings</span>
+            <small>Wikipedia</small>
+          </a>
+          <a href="https://huggingface.co/learn/nlp-course" target="_blank" rel="noopener" class="learn-link">
+            <span>NLP Course</span>
+            <small>HuggingFace</small>
+          </a>
+        </div>
+      </div>
     </div>
   </section>
 </BaseLayout>
@@ -222,10 +377,190 @@ import BaseLayout from '@layouts/BaseLayout.astro';
     color: var(--color-text-secondary);
   }
 
-  .research-intro {
-    max-width: 800px;
+  /* Section Navigation */
+  .section-nav {
+    background: var(--color-surface);
+    border-bottom: 1px solid var(--color-border);
+    padding: var(--space-4) 0;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+  .section-nav .container {
+    display: flex;
+    gap: var(--space-4);
+    justify-content: center;
+  }
+  .nav-link {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    padding: var(--space-3) var(--space-5);
+    background: var(--color-bg);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    text-decoration: none;
+    transition: all 0.2s;
+  }
+  .nav-link:hover {
+    border-color: var(--color-accent);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    text-decoration: none;
+  }
+  .nav-icon {
+    font-size: 1.25rem;
+  }
+  .nav-link strong {
+    display: block;
+    color: var(--color-text);
+  }
+  .nav-link small {
+    font-size: var(--font-size-sm);
+    color: var(--color-text-muted);
+  }
+
+  /* Section Header */
+  .section-header {
+    text-align: center;
+    margin-bottom: var(--space-10);
+  }
+  .section-badge {
+    display: inline-block;
+    background: var(--color-accent);
+    color: white;
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+    padding: var(--space-1) var(--space-3);
+    border-radius: var(--radius-full);
+    margin-bottom: var(--space-3);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .section-subtitle {
     font-size: var(--font-size-lg);
     color: var(--color-text-secondary);
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  /* Pipeline Flow */
+  .pipeline-flow {
+    max-width: 800px;
+    margin: 0 auto;
+    position: relative;
+  }
+  .pipeline-flow::before {
+    content: '';
+    position: absolute;
+    left: 20px;
+    top: 40px;
+    bottom: 40px;
+    width: 2px;
+    background: linear-gradient(180deg, var(--color-accent) 0%, var(--color-accent-dark, #6366f1) 100%);
+    opacity: 0.3;
+  }
+  .pipeline-step {
+    display: flex;
+    gap: var(--space-5);
+    margin-bottom: var(--space-6);
+    position: relative;
+  }
+  .step-number {
+    width: 42px;
+    height: 42px;
+    background: linear-gradient(135deg, var(--color-accent), var(--color-accent-dark, #6366f1));
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: var(--font-size-lg);
+    flex-shrink: 0;
+    position: relative;
+    z-index: 1;
+  }
+  .step-content {
+    flex: 1;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-5);
+  }
+  .step-content h3 {
+    font-size: var(--font-size-lg);
+    margin-bottom: var(--space-2);
+    color: var(--color-text);
+  }
+  .step-content p {
+    color: var(--color-text-secondary);
+    margin-bottom: var(--space-3);
+  }
+  .step-content a {
+    color: var(--color-accent);
+  }
+  .step-details {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+  }
+  .detail-badge {
+    font-size: var(--font-size-xs);
+    background: var(--color-bg);
+    color: var(--color-text-muted);
+    padding: var(--space-1) var(--space-2);
+    border-radius: var(--radius-sm);
+  }
+  .model-list {
+    margin: var(--space-3) 0 0;
+    padding-left: var(--space-5);
+    color: var(--color-text-secondary);
+  }
+  .model-list li {
+    margin-bottom: var(--space-2);
+  }
+
+  /* Resources Box */
+  .resources-box {
+    max-width: 800px;
+    margin: var(--space-10) auto 0;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    padding: var(--space-6);
+    text-align: center;
+  }
+  .resources-box h3 {
+    font-size: var(--font-size-lg);
+    margin-bottom: var(--space-4);
+  }
+  .resource-links {
+    display: flex;
+    gap: var(--space-4);
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  .resource-link {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding: var(--space-3) var(--space-4);
+    background: var(--color-bg);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    text-decoration: none;
+    color: var(--color-text);
+    transition: all 0.2s;
+  }
+  .resource-link:hover {
+    border-color: var(--color-accent);
+    color: var(--color-accent);
+    text-decoration: none;
+    transform: translateY(-2px);
+  }
+  .resource-icon {
+    font-size: 1.25rem;
   }
 
   h2 {
@@ -233,11 +568,17 @@ import BaseLayout from '@layouts/BaseLayout.astro';
     margin-bottom: var(--space-8);
   }
 
+  .metrics-main-header {
+    font-size: var(--font-size-2xl);
+    margin-bottom: var(--space-8);
+    color: var(--color-text);
+  }
+
   .metrics-section {
     margin-bottom: var(--space-10);
   }
 
-  .metrics-section h3 {
+  .metrics-category {
     font-size: var(--font-size-xl);
     color: var(--color-accent);
     margin-bottom: var(--space-4);
@@ -302,9 +643,58 @@ import BaseLayout from '@layouts/BaseLayout.astro';
     line-height: var(--line-height-relaxed);
   }
 
+  /* Learn More Box */
+  .learn-more-box {
+    margin-top: var(--space-10);
+    background: var(--color-bg);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    padding: var(--space-6);
+  }
+  .learn-more-box h3 {
+    font-size: var(--font-size-lg);
+    margin-bottom: var(--space-2);
+  }
+  .learn-more-box > p {
+    color: var(--color-text-secondary);
+    margin-bottom: var(--space-4);
+  }
+  .learn-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+  }
+  .learn-link {
+    display: flex;
+    flex-direction: column;
+    padding: var(--space-3) var(--space-4);
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    text-decoration: none;
+    transition: all 0.2s;
+    min-width: 120px;
+  }
+  .learn-link:hover {
+    border-color: var(--color-accent);
+    transform: translateY(-2px);
+    text-decoration: none;
+  }
+  .learn-link span {
+    color: var(--color-text);
+    font-weight: 500;
+  }
+  .learn-link small {
+    color: var(--color-text-muted);
+    font-size: var(--font-size-xs);
+  }
+
   @media (max-width: 768px) {
     .method-grid {
       grid-template-columns: 1fr;
+    }
+    .section-nav .container {
+      flex-direction: column;
     }
   }
 </style>

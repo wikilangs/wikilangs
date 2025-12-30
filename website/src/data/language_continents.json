@@ -1,0 +1,1089 @@
+{
+  "aa": [
+    "Africa"
+  ],
+  "ab": [
+    "Asia"
+  ],
+  "ace": [
+    "Asia"
+  ],
+  "ady": [
+    "Asia"
+  ],
+  "af": [
+    "Africa"
+  ],
+  "ak": [
+    "Africa"
+  ],
+  "alt": [
+    "Asia"
+  ],
+  "am": [
+    "Africa"
+  ],
+  "ami": [
+    "Asia"
+  ],
+  "an": [
+    "Europe"
+  ],
+  "ang": [
+    "Europe"
+  ],
+  "ann": [
+    "Africa"
+  ],
+  "anp": [
+    "Asia"
+  ],
+  "ar": [
+    "Africa",
+    "Asia"
+  ],
+  "arc": [
+    "Asia"
+  ],
+  "ary": [
+    "Africa"
+  ],
+  "arz": [
+    "Africa"
+  ],
+  "as": [
+    "Asia"
+  ],
+  "ast": [
+    "Europe"
+  ],
+  "atj": [
+    "North America"
+  ],
+  "av": [
+    "Asia"
+  ],
+  "avk": [
+    "Europe"
+  ],
+  "awa": [
+    "Asia"
+  ],
+  "ay": [
+    "South America"
+  ],
+  "az": [
+    "Asia"
+  ],
+  "azb": [
+    "Asia"
+  ],
+  "ba": [
+    "Asia"
+  ],
+  "ban": [
+    "Asia"
+  ],
+  "bar": [
+    "Europe"
+  ],
+  "bbc": [
+    "Asia"
+  ],
+  "bcl": [
+    "Asia"
+  ],
+  "bdr": [
+    "Asia"
+  ],
+  "be": [
+    "Europe"
+  ],
+  "be-tarask": [
+    "Europe"
+  ],
+  "bew": [
+    "Asia"
+  ],
+  "bg": [
+    "Europe"
+  ],
+  "bh": [
+    "Asia"
+  ],
+  "bi": [
+    "Oceania"
+  ],
+  "bjn": [
+    "Asia"
+  ],
+  "blk": [
+    "Asia"
+  ],
+  "bm": [
+    "Africa"
+  ],
+  "bn": [
+    "Asia"
+  ],
+  "bo": [
+    "Asia"
+  ],
+  "bpy": [
+    "Asia"
+  ],
+  "br": [
+    "Europe"
+  ],
+  "bs": [
+    "Europe"
+  ],
+  "btm": [
+    "Asia"
+  ],
+  "bug": [
+    "Asia"
+  ],
+  "bxr": [
+    "Asia"
+  ],
+  "ca": [
+    "Europe"
+  ],
+  "cbk-zam": [
+    "Asia"
+  ],
+  "cdo": [
+    "Asia"
+  ],
+  "ce": [
+    "Asia"
+  ],
+  "ceb": [
+    "Asia"
+  ],
+  "ch": [
+    "Oceania"
+  ],
+  "cho": [
+    "North America"
+  ],
+  "chr": [
+    "North America"
+  ],
+  "chy": [
+    "North America"
+  ],
+  "ckb": [
+    "Asia"
+  ],
+  "co": [
+    "Europe"
+  ],
+  "cr": [
+    "North America"
+  ],
+  "crh": [
+    "Asia",
+    "Europe"
+  ],
+  "cs": [
+    "Europe"
+  ],
+  "csb": [
+    "Europe"
+  ],
+  "cu": [
+    "Europe"
+  ],
+  "cv": [
+    "Asia"
+  ],
+  "cy": [
+    "Europe"
+  ],
+  "da": [
+    "Europe"
+  ],
+  "dag": [
+    "Africa"
+  ],
+  "de": [
+    "Europe"
+  ],
+  "dga": [
+    "Africa"
+  ],
+  "din": [
+    "Africa"
+  ],
+  "diq": [
+    "Asia"
+  ],
+  "dsb": [
+    "Europe"
+  ],
+  "dtp": [
+    "Asia"
+  ],
+  "dty": [
+    "Asia"
+  ],
+  "dv": [
+    "Asia"
+  ],
+  "dz": [
+    "Asia"
+  ],
+  "ee": [
+    "Africa"
+  ],
+  "el": [
+    "Europe"
+  ],
+  "eml": [
+    "Europe"
+  ],
+  "en": [
+    "Europe",
+    "North America",
+    "Oceania"
+  ],
+  "eo": [
+    "Europe"
+  ],
+  "es": [
+    "Europe",
+    "South America",
+    "North America"
+  ],
+  "et": [
+    "Europe"
+  ],
+  "eu": [
+    "Europe"
+  ],
+  "ext": [
+    "Europe"
+  ],
+  "fa": [
+    "Asia"
+  ],
+  "fat": [
+    "Africa"
+  ],
+  "ff": [
+    "Africa"
+  ],
+  "fi": [
+    "Europe"
+  ],
+  "fj": [
+    "Oceania"
+  ],
+  "fo": [
+    "Europe"
+  ],
+  "fon": [
+    "Africa"
+  ],
+  "fr": [
+    "Europe",
+    "Africa"
+  ],
+  "frp": [
+    "Europe"
+  ],
+  "frr": [
+    "Europe"
+  ],
+  "fur": [
+    "Europe"
+  ],
+  "fy": [
+    "Europe"
+  ],
+  "ga": [
+    "Europe"
+  ],
+  "gag": [
+    "Europe"
+  ],
+  "gan": [
+    "Asia"
+  ],
+  "gcr": [
+    "North America"
+  ],
+  "gd": [
+    "Europe"
+  ],
+  "gl": [
+    "Europe"
+  ],
+  "glk": [
+    "Asia"
+  ],
+  "gn": [
+    "South America"
+  ],
+  "gom": [
+    "Asia"
+  ],
+  "gor": [
+    "Asia"
+  ],
+  "got": [
+    "Europe"
+  ],
+  "gpe": [
+    "Africa"
+  ],
+  "gsw": [
+    "Europe"
+  ],
+  "gu": [
+    "Asia"
+  ],
+  "guc": [
+    "South America"
+  ],
+  "gur": [
+    "Africa"
+  ],
+  "guw": [
+    "Africa"
+  ],
+  "gv": [
+    "Europe"
+  ],
+  "ha": [
+    "Africa"
+  ],
+  "hak": [
+    "Asia"
+  ],
+  "haw": [
+    "Oceania"
+  ],
+  "he": [
+    "Asia"
+  ],
+  "hi": [
+    "Asia"
+  ],
+  "hif": [
+    "Oceania"
+  ],
+  "ho": [
+    "Asia"
+  ],
+  "hr": [
+    "Europe"
+  ],
+  "hsb": [
+    "Europe"
+  ],
+  "ht": [
+    "North America"
+  ],
+  "hu": [
+    "Europe"
+  ],
+  "hy": [
+    "Asia"
+  ],
+  "hyw": [
+    "Asia"
+  ],
+  "hz": [
+    "Africa"
+  ],
+  "ia": [
+    "Europe"
+  ],
+  "iba": [
+    "Asia"
+  ],
+  "id": [
+    "Asia"
+  ],
+  "ie": [
+    "Europe"
+  ],
+  "ig": [
+    "Africa"
+  ],
+  "igl": [
+    "Africa"
+  ],
+  "ii": [
+    "Asia"
+  ],
+  "ik": [
+    "North America"
+  ],
+  "ilo": [
+    "Asia"
+  ],
+  "inh": [
+    "Asia"
+  ],
+  "io": [
+    "Europe"
+  ],
+  "is": [
+    "Europe"
+  ],
+  "it": [
+    "Europe"
+  ],
+  "iu": [
+    "North America"
+  ],
+  "ja": [
+    "Asia"
+  ],
+  "jam": [
+    "North America"
+  ],
+  "jbo": [
+    "Europe"
+  ],
+  "jv": [
+    "Asia"
+  ],
+  "ka": [
+    "Asia"
+  ],
+  "kaa": [
+    "Asia"
+  ],
+  "kab": [
+    "Africa"
+  ],
+  "kbd": [
+    "Asia"
+  ],
+  "kbp": [
+    "Africa"
+  ],
+  "kcg": [
+    "Africa"
+  ],
+  "kg": [
+    "Africa"
+  ],
+  "kge": [
+    "Asia"
+  ],
+  "ki": [
+    "Africa"
+  ],
+  "kj": [
+    "Africa"
+  ],
+  "kk": [
+    "Asia"
+  ],
+  "kl": [
+    "North America"
+  ],
+  "km": [
+    "Asia"
+  ],
+  "kn": [
+    "Asia"
+  ],
+  "knc": [
+    "Africa"
+  ],
+  "ko": [
+    "Asia"
+  ],
+  "koi": [
+    "Asia"
+  ],
+  "kr": [
+    "Africa"
+  ],
+  "krc": [
+    "Asia"
+  ],
+  "ks": [
+    "Asia"
+  ],
+  "ksh": [
+    "Europe"
+  ],
+  "ku": [
+    "Asia"
+  ],
+  "kus": [
+    "Africa"
+  ],
+  "kv": [
+    "Asia"
+  ],
+  "kw": [
+    "Europe"
+  ],
+  "ky": [
+    "Asia"
+  ],
+  "la": [
+    "Europe"
+  ],
+  "lad": [
+    "Europe"
+  ],
+  "lb": [
+    "Europe"
+  ],
+  "lbe": [
+    "Asia"
+  ],
+  "lez": [
+    "Asia"
+  ],
+  "lfn": [
+    "Europe"
+  ],
+  "lg": [
+    "Africa"
+  ],
+  "li": [
+    "Europe"
+  ],
+  "lij": [
+    "Europe"
+  ],
+  "lld": [
+    "Europe"
+  ],
+  "lmo": [
+    "Europe"
+  ],
+  "ln": [
+    "Africa"
+  ],
+  "lo": [
+    "Asia"
+  ],
+  "lrc": [
+    "Asia"
+  ],
+  "lt": [
+    "Europe"
+  ],
+  "ltg": [
+    "Europe"
+  ],
+  "lv": [
+    "Europe"
+  ],
+  "lzh": [
+    "Asia"
+  ],
+  "mad": [
+    "Asia"
+  ],
+  "mai": [
+    "Asia"
+  ],
+  "map-bms": [
+    "Asia"
+  ],
+  "mdf": [
+    "Asia"
+  ],
+  "mg": [
+    "Africa"
+  ],
+  "mh": [
+    "Oceania"
+  ],
+  "mhr": [
+    "Asia"
+  ],
+  "mi": [
+    "Oceania"
+  ],
+  "min": [
+    "Asia"
+  ],
+  "mk": [
+    "Europe"
+  ],
+  "ml": [
+    "Asia"
+  ],
+  "mn": [
+    "Asia"
+  ],
+  "mni": [
+    "Asia"
+  ],
+  "mnw": [
+    "Asia"
+  ],
+  "mos": [
+    "Africa"
+  ],
+  "mr": [
+    "Asia"
+  ],
+  "mrj": [
+    "Asia"
+  ],
+  "ms": [
+    "Asia"
+  ],
+  "mt": [
+    "Europe"
+  ],
+  "mus": [
+    "North America"
+  ],
+  "mwl": [
+    "Europe"
+  ],
+  "my": [
+    "Asia"
+  ],
+  "myv": [
+    "Asia"
+  ],
+  "mzn": [
+    "Asia"
+  ],
+  "na": [
+    "Oceania"
+  ],
+  "nah": [
+    "North America"
+  ],
+  "nan": [
+    "Asia"
+  ],
+  "nap": [
+    "Europe"
+  ],
+  "nds": [
+    "Europe"
+  ],
+  "nds-nl": [
+    "Europe"
+  ],
+  "ne": [
+    "Asia"
+  ],
+  "new": [
+    "Asia"
+  ],
+  "ng": [
+    "Africa"
+  ],
+  "nia": [
+    "Asia"
+  ],
+  "nl": [
+    "Europe"
+  ],
+  "nn": [
+    "Europe"
+  ],
+  "no": [
+    "Europe"
+  ],
+  "nov": [
+    "Europe"
+  ],
+  "nqo": [
+    "Africa"
+  ],
+  "nr": [
+    "Africa"
+  ],
+  "nrm": [
+    "Europe"
+  ],
+  "nso": [
+    "Africa"
+  ],
+  "nup": [
+    "Africa"
+  ],
+  "nv": [
+    "North America"
+  ],
+  "ny": [
+    "Africa"
+  ],
+  "oc": [
+    "Europe"
+  ],
+  "olo": [
+    "Europe"
+  ],
+  "om": [
+    "Africa"
+  ],
+  "or": [
+    "Asia"
+  ],
+  "os": [
+    "Asia"
+  ],
+  "pa": [
+    "Asia"
+  ],
+  "pag": [
+    "Asia"
+  ],
+  "pam": [
+    "Asia"
+  ],
+  "pap": [
+    "North America"
+  ],
+  "pcd": [
+    "Europe"
+  ],
+  "pcm": [
+    "Africa"
+  ],
+  "pdc": [
+    "Europe"
+  ],
+  "pfl": [
+    "Europe"
+  ],
+  "pi": [
+    "Asia"
+  ],
+  "pih": [
+    "Oceania"
+  ],
+  "pl": [
+    "Europe"
+  ],
+  "pms": [
+    "Europe"
+  ],
+  "pnb": [
+    "Asia"
+  ],
+  "pnt": [
+    "Asia",
+    "Europe"
+  ],
+  "ps": [
+    "Asia"
+  ],
+  "pt": [
+    "Europe",
+    "South America",
+    "Africa"
+  ],
+  "pwn": [
+    "Asia"
+  ],
+  "qu": [
+    "South America"
+  ],
+  "rki": [
+    "Asia"
+  ],
+  "rm": [
+    "Europe"
+  ],
+  "rmy": [
+    "Europe"
+  ],
+  "rn": [
+    "Africa"
+  ],
+  "ro": [
+    "Europe"
+  ],
+  "roa-tara": [
+    "Europe"
+  ],
+  "rsk": [
+    "Europe"
+  ],
+  "ru": [
+    "Europe",
+    "Asia"
+  ],
+  "rue": [
+    "Europe"
+  ],
+  "rup": [
+    "Europe"
+  ],
+  "rw": [
+    "Africa"
+  ],
+  "sa": [
+    "Asia"
+  ],
+  "sah": [
+    "Asia"
+  ],
+  "sat": [
+    "Asia"
+  ],
+  "sc": [
+    "Europe"
+  ],
+  "scn": [
+    "Europe"
+  ],
+  "sco": [
+    "Europe"
+  ],
+  "sd": [
+    "Asia"
+  ],
+  "se": [
+    "Europe"
+  ],
+  "sg": [
+    "Africa"
+  ],
+  "sgs": [
+    "Europe"
+  ],
+  "sh": [
+    "Europe"
+  ],
+  "shi": [
+    "Africa"
+  ],
+  "shn": [
+    "Asia"
+  ],
+  "si": [
+    "Asia"
+  ],
+  "simple": [
+    "Europe",
+    "North America"
+  ],
+  "sk": [
+    "Europe"
+  ],
+  "skr": [
+    "Asia"
+  ],
+  "sl": [
+    "Europe"
+  ],
+  "sm": [
+    "Oceania"
+  ],
+  "smn": [
+    "Europe"
+  ],
+  "sn": [
+    "Africa"
+  ],
+  "so": [
+    "Africa"
+  ],
+  "sq": [
+    "Europe"
+  ],
+  "sr": [
+    "Europe"
+  ],
+  "srn": [
+    "North America"
+  ],
+  "ss": [
+    "Africa"
+  ],
+  "st": [
+    "Africa"
+  ],
+  "stq": [
+    "Europe"
+  ],
+  "su": [
+    "Asia"
+  ],
+  "sv": [
+    "Europe"
+  ],
+  "sw": [
+    "Africa"
+  ],
+  "syl": [
+    "Asia"
+  ],
+  "szl": [
+    "Europe"
+  ],
+  "szy": [
+    "Asia"
+  ],
+  "ta": [
+    "Asia"
+  ],
+  "tay": [
+    "Asia"
+  ],
+  "tcy": [
+    "Asia"
+  ],
+  "tdd": [
+    "Asia"
+  ],
+  "te": [
+    "Asia"
+  ],
+  "tet": [
+    "Oceania"
+  ],
+  "tg": [
+    "Asia"
+  ],
+  "th": [
+    "Asia"
+  ],
+  "ti": [
+    "Africa"
+  ],
+  "tig": [
+    "Africa"
+  ],
+  "tk": [
+    "Asia"
+  ],
+  "tl": [
+    "Asia"
+  ],
+  "tly": [
+    "Asia"
+  ],
+  "tn": [
+    "Africa"
+  ],
+  "to": [
+    "Oceania"
+  ],
+  "tok": [
+    "Europe"
+  ],
+  "tpi": [
+    "Oceania"
+  ],
+  "tr": [
+    "Europe",
+    "Asia"
+  ],
+  "trv": [
+    "Asia"
+  ],
+  "ts": [
+    "Africa"
+  ],
+  "tt": [
+    "Asia"
+  ],
+  "tum": [
+    "Africa"
+  ],
+  "tw": [
+    "Africa"
+  ],
+  "ty": [
+    "Oceania"
+  ],
+  "tyv": [
+    "Asia"
+  ],
+  "udm": [
+    "Asia"
+  ],
+  "ug": [
+    "Asia"
+  ],
+  "uk": [
+    "Europe"
+  ],
+  "ur": [
+    "Asia"
+  ],
+  "uz": [
+    "Asia"
+  ],
+  "ve": [
+    "Africa"
+  ],
+  "vec": [
+    "Europe"
+  ],
+  "vep": [
+    "Europe"
+  ],
+  "vi": [
+    "Asia"
+  ],
+  "vls": [
+    "Europe"
+  ],
+  "vo": [
+    "Europe"
+  ],
+  "vro": [
+    "Europe"
+  ],
+  "wa": [
+    "Europe"
+  ],
+  "war": [
+    "Asia"
+  ],
+  "wo": [
+    "Africa"
+  ],
+  "wuu": [
+    "Asia"
+  ],
+  "xal": [
+    "Asia"
+  ],
+  "xh": [
+    "Africa"
+  ],
+  "xmf": [
+    "Asia"
+  ],
+  "yi": [
+    "Europe"
+  ],
+  "yo": [
+    "Africa"
+  ],
+  "yue": [
+    "Asia"
+  ],
+  "za": [
+    "Asia"
+  ],
+  "zea": [
+    "Europe"
+  ],
+  "zgh": [
+    "Africa"
+  ],
+  "zh": [
+    "Asia"
+  ],
+  "zu": [
+    "Africa"
+  ]
+}

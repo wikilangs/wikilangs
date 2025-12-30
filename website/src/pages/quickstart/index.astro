@@ -19,6 +19,29 @@ import CodeBlock from '@components/CodeBlock.astro';
   <section class="section">
     <div class="container">
       <div class="quickstart-content">
+        <!-- Non-developer intro -->
+        <div class="explore-intro">
+          <h2>Just Want to Explore?</h2>
+          <p>No coding required! You can explore Wikilangs right in your browser:</p>
+          <div class="explore-options">
+            <a href="/playground/" class="explore-card">
+              <span class="explore-icon">&#x25B6;</span>
+              <div>
+                <strong>Interactive Playground</strong>
+                <span>Try tokenization, text generation, and more in real-time</span>
+              </div>
+            </a>
+            <a href="/languages/" class="explore-card">
+              <span class="explore-icon">&#x1F30D;</span>
+              <div>
+                <strong>Browse Languages</strong>
+                <span>Explore statistics, metrics, and Wikipedia samples for 340+ languages</span>
+              </div>
+            </a>
+          </div>
+          <p class="explore-hint">Continue below if you want to use Wikilangs in your own Python projects.</p>
+        </div>
+
         <!-- Installation -->
         <div class="qs-section">
           <h2>Installation</h2>
@@ -222,6 +245,86 @@ ng_subword = ngram('latest', 'en', gram_size=3, variant='subword')`} />
 
   .quickstart-content {
     max-width: 800px;
+  }
+
+  .explore-intro {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    padding: var(--space-6);
+    margin-bottom: var(--space-10);
+  }
+
+  .explore-intro h2 {
+    font-size: var(--font-size-xl);
+    color: var(--color-accent);
+    margin: 0 0 var(--space-2);
+  }
+
+  .explore-intro > p {
+    color: var(--color-text-secondary);
+    margin-bottom: var(--space-4);
+  }
+
+  .explore-options {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    margin-bottom: var(--space-4);
+  }
+
+  .explore-card {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+    background: var(--color-bg);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-4);
+    text-decoration: none;
+    transition: all var(--transition-base);
+  }
+
+  .explore-card:hover {
+    border-color: var(--color-accent);
+    box-shadow: var(--shadow-sm);
+    transform: translateX(4px);
+    text-decoration: none;
+  }
+
+  .explore-icon {
+    font-size: 1.5rem;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--color-accent-light, #f5eef3);
+    border-radius: var(--radius-md);
+    flex-shrink: 0;
+  }
+
+  .explore-card div {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .explore-card strong {
+    color: var(--color-text);
+    font-size: var(--font-size-base);
+  }
+
+  .explore-card span:not(.explore-icon) {
+    color: var(--color-text-muted);
+    font-size: var(--font-size-sm);
+  }
+
+  .explore-hint {
+    font-size: var(--font-size-sm);
+    color: var(--color-text-muted);
+    margin: 0;
+    font-style: italic;
   }
 
   .qs-section {

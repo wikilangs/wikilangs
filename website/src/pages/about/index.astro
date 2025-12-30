@@ -158,21 +158,32 @@ const stats = getGlobalStats();
 
   <!-- Citation -->
   <section class="section" id="citation">
-    <div class="container">
+    <div class="container text-center">
       <h2>Citation</h2>
       <p class="section-intro">
         If you use Wikilangs in your research, please cite:
       </p>
-      <div class="citation-block">
-        <CodeBlock code={`@misc{wikilangs2025,
-  title = {Wikilangs: Open NLP Models for Wikipedia Languages},
-  author = {Kamali, Omar},
-  year = {2025},
-  publisher = {HuggingFace},
-  url = {https://huggingface.co/wikilangs},
-  institution = {Omneity Labs}
+
+      <div class="doi-badge-row">
+        <a href="https://doi.org/10.5281/zenodo.18073152" target="_blank" rel="noopener">
+          <img src="https://zenodo.org/badge/DOI/10.5281/zenodo.18073152.svg" alt="DOI" />
+        </a>
+      </div>
+
+      <div class="citation-block-centered">
+        <CodeBlock code={`@software{wikilangs2025,
+  author       = {Kamali, Omar},
+  title        = {WikiLangs: Pre-trained NLP Models for 340+ Languages},
+  year         = {2025},
+  publisher    = {Zenodo},
+  doi          = {10.5281/zenodo.18073152},
+  url          = {https://doi.org/10.5281/zenodo.18073152}
 }`} lang="bibtex" />
       </div>
+
+      <p class="cite-more">
+        <a href="/cite/">View all citation formats</a> (APA, MLA, Chicago)
+      </p>
     </div>
   </section>
 
@@ -360,6 +371,31 @@ const stats = getGlobalStats();
     display: flex;
     gap: var(--space-4);
     justify-content: center;
+  }
+
+  .doi-badge-row {
+    text-align: center;
+    margin-bottom: var(--space-6);
+  }
+
+  .doi-badge-row img {
+    height: 22px;
+  }
+
+  .citation-block-centered {
+    max-width: 600px;
+    margin: 0 auto;
+    text-align: left;
+  }
+
+  .cite-more {
+    text-align: center;
+    margin-top: var(--space-4);
+    font-size: var(--font-size-sm);
+  }
+
+  .cite-more a {
+    color: var(--color-accent);
   }
 
   @media (max-width: 1024px) {

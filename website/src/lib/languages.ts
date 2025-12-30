@@ -11,6 +11,8 @@ export interface LanguageData {
   code: string;
   name: string;
   common_name: string | null;
+  native_name: string | null;  // Language name in its own script
+  text_direction: 'ltr' | 'rtl';  // Text direction from Wikipedia
   alpha_2: string | null;
   alpha_3: string | null;
   scope: string | null;
@@ -24,6 +26,7 @@ export interface LanguageData {
   // Content
   has_models: boolean;
   model_card_excerpt: string | null;
+  wikipedia_samples: string[];  // Pre-fetched samples from Wikipedia
 
   // URLs
   hf_url: string;

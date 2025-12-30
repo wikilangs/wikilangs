@@ -1,0 +1,266 @@
+---
+import BaseLayout from '@layouts/BaseLayout.astro';
+import CodeBlock from '@components/CodeBlock.astro';
+
+const doi = '10.5281/zenodo.18073152';
+const doiUrl = `https://doi.org/${doi}`;
+const year = '2025';
+
+const bibtex = `@software{wikilangs${year},
+  author       = {Kamali, Omar},
+  title        = {WikiLangs: Pre-trained NLP Models for 340+ Languages},
+  year         = {${year}},
+  publisher    = {Zenodo},
+  doi          = {${doi}},
+  url          = {${doiUrl}}
+}`;
+
+const apa = `Kamali, O. (${year}). WikiLangs: Pre-trained NLP Models for 340+ Languages. Zenodo. https://doi.org/${doi}`;
+
+const mla = `Kamali, Omar. "WikiLangs: Pre-trained NLP Models for 340+ Languages." Zenodo, ${year}, doi:${doi}.`;
+
+const chicago = `Kamali, Omar. "WikiLangs: Pre-trained NLP Models for 340+ Languages." Zenodo, ${year}. https://doi.org/${doi}.`;
+---
+
+<BaseLayout
+  title="Cite WikiLangs"
+  description="How to cite WikiLangs in your research. DOI, BibTeX, APA, MLA, and Chicago citation formats."
+>
+  <section class="cite-hero">
+    <div class="container">
+      <h1>Cite WikiLangs</h1>
+      <p class="hero-subtitle">
+        If you use WikiLangs in your research, please cite using one of the formats below.
+      </p>
+
+      <div class="doi-badge">
+        <a href={doiUrl} target="_blank" rel="noopener">
+          <img src={`https://zenodo.org/badge/DOI/${doi}.svg`} alt="DOI" />
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="cite-section">
+    <div class="container">
+      <!-- BibTeX -->
+      <div class="cite-block">
+        <div class="cite-header">
+          <h2>BibTeX</h2>
+          <button class="copy-btn" data-text={bibtex}>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18">
+              <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
+              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+            </svg>
+            Copy
+          </button>
+        </div>
+        <div class="cite-code-wrapper">
+          <CodeBlock code={bibtex} lang="bibtex" />
+        </div>
+      </div>
+
+      <!-- APA -->
+      <div class="cite-block">
+        <div class="cite-header">
+          <h2>APA (7th Edition)</h2>
+          <button class="copy-btn" data-text={apa}>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18">
+              <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
+              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+            </svg>
+            Copy
+          </button>
+        </div>
+        <div class="cite-code-wrapper">
+          <CodeBlock code={apa} lang="text" />
+        </div>
+      </div>
+
+      <!-- MLA -->
+      <div class="cite-block">
+        <div class="cite-header">
+          <h2>MLA (9th Edition)</h2>
+          <button class="copy-btn" data-text={mla}>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18">
+              <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
+              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+            </svg>
+            Copy
+          </button>
+        </div>
+        <div class="cite-code-wrapper">
+          <CodeBlock code={mla} lang="text" />
+        </div>
+      </div>
+
+      <!-- Chicago -->
+      <div class="cite-block">
+        <div class="cite-header">
+          <h2>Chicago</h2>
+          <button class="copy-btn" data-text={chicago}>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18">
+              <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
+              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+            </svg>
+            Copy
+          </button>
+        </div>
+        <div class="cite-code-wrapper">
+          <CodeBlock code={chicago} lang="text" />
+        </div>
+      </div>
+
+      <!-- DOI Link -->
+      <div class="doi-section">
+        <h2>Direct DOI Link</h2>
+        <p>
+          <a href={doiUrl} target="_blank" rel="noopener" class="doi-link">{doiUrl}</a>
+        </p>
+        <p class="doi-note">
+          The DOI provides a permanent link to this project's metadata and citation information on Zenodo.
+        </p>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<script>
+  document.querySelectorAll('.copy-btn').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      const text = btn.dataset.text || '';
+
+      try {
+        await navigator.clipboard.writeText(text);
+        btn.innerHTML = `
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18">
+            <polyline points="20 6 9 17 4 12"/>
+          </svg>
+          Copied!
+        `;
+        setTimeout(() => {
+          btn.innerHTML = `
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18">
+              <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
+              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+            </svg>
+            Copy
+          `;
+        }, 2000);
+      } catch (e) {
+        console.error('Failed to copy:', e);
+      }
+    });
+  });
+</script>
+
+<style>
+  .cite-hero {
+    padding: var(--space-12) 0;
+    background: var(--color-surface);
+    border-bottom: 1px solid var(--color-border);
+    text-align: center;
+  }
+
+  .cite-hero h1 {
+    font-size: var(--font-size-4xl);
+    margin-bottom: var(--space-4);
+  }
+
+  .hero-subtitle {
+    font-size: var(--font-size-lg);
+    color: var(--color-text-secondary);
+    max-width: 600px;
+    margin: 0 auto var(--space-6);
+  }
+
+  .doi-badge {
+    margin-top: var(--space-4);
+  }
+
+  .doi-badge img {
+    height: 24px;
+  }
+
+  .cite-section {
+    padding: var(--space-12) 0;
+  }
+
+  .cite-block {
+    margin-bottom: var(--space-8);
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+  }
+
+  .cite-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--space-4) var(--space-5);
+    background: var(--color-bg);
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .cite-header h2 {
+    font-size: var(--font-size-lg);
+    margin: 0;
+  }
+
+  .copy-btn {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding: var(--space-2) var(--space-3);
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    color: var(--color-text-secondary);
+    cursor: pointer;
+    font-size: var(--font-size-sm);
+    transition: all 0.15s;
+  }
+
+  .copy-btn:hover {
+    border-color: var(--color-accent);
+    color: var(--color-accent);
+  }
+
+  .cite-code-wrapper {
+    margin: 0;
+  }
+
+  .cite-code-wrapper :global(.code-block) {
+    border-radius: 0;
+    border: none;
+    margin: 0;
+  }
+
+  .cite-code-wrapper :global(pre) {
+    border-radius: 0;
+    margin: 0;
+  }
+
+  .doi-section {
+    margin-top: var(--space-12);
+    text-align: center;
+  }
+
+  .doi-section h2 {
+    font-size: var(--font-size-xl);
+    margin-bottom: var(--space-4);
+  }
+
+  .doi-link {
+    font-size: var(--font-size-lg);
+    color: var(--color-accent);
+    font-family: var(--font-mono);
+  }
+
+  .doi-note {
+    margin-top: var(--space-4);
+    color: var(--color-text-muted);
+    font-size: var(--font-size-sm);
+  }
+</style>

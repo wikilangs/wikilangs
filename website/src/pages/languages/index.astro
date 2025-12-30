@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '@layouts/BaseLayout.astro';
 import LanguageCard from '@components/LanguageCard.astro';
+import WorldMap from '@components/WorldMap.astro';
 import { getAllLanguages, getLanguagesByLetter, getGlobalStats } from '@lib/languages';
 
 const allLanguages = getAllLanguages();
@@ -31,6 +32,17 @@ const sortedLetters = Array.from(languagesByLetter.keys()).sort();
         <div class="quick-stat">
           <strong>{stats.averageCompressionRatio.toFixed(2)}x</strong> avg compression
         </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- World Map -->
+  <section class="map-section">
+    <div class="container">
+      <h2>Language Coverage</h2>
+      <p class="map-description">Explore languages by geographic region. Hover over countries to see available models.</p>
+      <div class="map-container">
+        <WorldMap mode="display" />
       </div>
     </div>
   </section>
@@ -169,6 +181,64 @@ const sortedLetters = Array.from(languagesByLetter.keys()).sort();
 
   .quick-stat strong {
     color: var(--color-accent);
+  }
+
+  /* Map section */
+  .map-section {
+    padding: var(--space-8) 0;
+    background: var(--color-bg);
+    border-bottom: 1px solid var(--color-border-light);
+  }
+
+  .map-section h2 {
+    font-size: var(--font-size-2xl);
+    margin-bottom: var(--space-2);
+  }
+
+  .map-description {
+    color: var(--color-text-secondary);
+    margin-bottom: var(--space-6);
+  }
+
+  .map-container {
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  .map-legend-inline {
+    display: flex;
+    justify-content: center;
+    gap: var(--space-6);
+    margin-top: var(--space-4);
+    flex-wrap: wrap;
+  }
+
+  .map-legend-inline .legend-item {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-size: var(--font-size-sm);
+    color: var(--color-text-secondary);
+  }
+
+  .map-legend-inline .legend-swatch {
+    width: 20px;
+    height: 12px;
+    border-radius: 2px;
+    border: 1px solid var(--color-border);
+  }
+
+  .map-legend-inline .legend-swatch.endemic {
+    background: hsl(262, 70%, 65%);
+  }
+
+  .map-legend-inline .legend-swatch.macro {
+    background: repeating-linear-gradient(45deg, hsl(262, 75%, 50%), hsl(262, 75%, 50%) 2px, transparent 2px, transparent 4px);
+  }
+
+  .map-legend-inline .legend-swatch.mixed {
+    background: hsl(262, 70%, 65%);
+    background-image: repeating-linear-gradient(45deg, transparent, transparent 2px, rgba(99, 102, 241, 0.5) 2px, rgba(99, 102, 241, 0.5) 4px);
   }
 
   /* Filter section */

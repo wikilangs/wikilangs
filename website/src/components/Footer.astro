@@ -16,8 +16,8 @@ const links = {
   ],
   about: [
     { href: '/about/', label: 'About' },
-    { href: '/about/citation/', label: 'Citation' },
-    { href: '/about/license/', label: 'License' },
+    { href: '/cite/', label: 'Citation' },
+    { href: '/license/', label: 'License' },
     { href: 'https://github.com/wikilangs/wikilangs', label: 'GitHub', external: true },
   ],
 };
@@ -31,6 +31,11 @@ const links = {
         <p class="footer-tagline">
           Open NLP models for every Wikipedia language.
           Making multilingual NLP accessible to everyone.
+        </p>
+        <p class="footer-citation">
+          Cite us: <a href="https://doi.org/10.5281/zenodo.18073152">
+            <img src="https://zenodo.org/badge/1123873515.svg" />
+          </a>
         </p>
         <p class="footer-credit">
           A project by <a href="https://omarkamali.com" target="_blank" rel="noopener">Omar Kamali</a>
@@ -132,6 +137,18 @@ const links = {
     color: var(--color-text-secondary);
     font-size: var(--font-size-sm);
     max-width: 280px;
+  }
+  
+  .footer-citation {
+    margin-top: var(--space-3);
+    color: var(--color-text-secondary);
+    font-size: var(--font-size-sm);
+    max-width: 280px;
+    vertical-align: top;
+  }
+  
+  .footer-citation > a {
+    vertical-align: top;
   }
 
   .footer-credit {
