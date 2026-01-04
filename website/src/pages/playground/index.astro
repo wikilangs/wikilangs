@@ -168,18 +168,22 @@ import languageCountries from '@data/language_countries.json';
           <button class="demo-btn" data-action="dna">Analyze DNA</button>
         </div>
 
-        <!-- Word Galaxy -->
-        <div class="demo-card" data-demo="galaxy">
-          <div class="demo-icon galaxy-illustration">
-            <span class="galaxy-center">mind</span>
-            <span class="galaxy-orbit o1">thought</span>
-            <span class="galaxy-orbit o2">idea</span>
-            <span class="galaxy-orbit o3">brain</span>
-            <span class="galaxy-orbit o4">think</span>
+        <!-- Word Flow -->
+        <div class="demo-card" data-demo="flow">
+          <div class="demo-icon flow-illustration">
+            <span class="flow-node">word</span>
+            <svg class="flow-arrow" viewBox="0 0 24 12" width="20" height="10">
+              <path d="M0 6h18M14 2l6 4-6 4" fill="none" stroke="currentColor" stroke-width="1.5"/>
+            </svg>
+            <span class="flow-node seed">seed</span>
+            <svg class="flow-arrow" viewBox="0 0 24 12" width="20" height="10">
+              <path d="M0 6h18M14 2l6 4-6 4" fill="none" stroke="currentColor" stroke-width="1.5"/>
+            </svg>
+            <span class="flow-node">word</span>
           </div>
-          <h3>Word Galaxy</h3>
-          <p>Watch words orbit around their meanings. See how concepts cluster and connect in semantic space.</p>
-          <button class="demo-btn" data-action="galaxy">Launch Galaxy</button>
+          <h3>Word Flow</h3>
+          <p>Explore word sequences as a directed flow. See what comes before and after, and discover sentence paths.</p>
+          <button class="demo-btn" data-action="flow">Explore Flow</button>
         </div>
 
         <!-- Text Weaver -->
@@ -584,7 +588,7 @@ async function loadNgram() {
 // Define which models each demo needs
 const demoRequirements = {
   dna: ['vocab'],
-  galaxy: ['ngram'],
+  flow: ['ngram', 'vocab'],
   weaver: ['markov'],
   zipf: ['vocab'],
   museum: ['vocab'],
@@ -638,7 +642,7 @@ async function runDemo(action) {
 
     switch (action) {
       case 'dna': await showDNA(); break;
-      case 'galaxy': await showGalaxy(); break;
+      case 'flow': await showFlow(); break;
       case 'weaver': await showWeaver(); break;
       case 'zipf': await showZipf(); break;
       case 'museum': await showMuseum(); break;
@@ -755,273 +759,566 @@ json.dumps(get_dna_data())
   `;
 }
 
-// ========== GALAXY DEMO ==========
-async function showGalaxy() {
-  // Graph state
-  const nodes = new Map(); // word -> {x, y, expanded, strength, depth}
-  const edges = []; // {from, to, strength}
-  const width = 700, height = 550;
-  let dragging = null;
-  let offsetX = 0, offsetY = 0;
+// ========== FLOW DEMO ==========
+async function showFlow() {
+  // Use text_direction from language data
+  const isRTL = currentLang.text_direction === 'rtl';
+
+  // Flow visualization state
+  let graphData = null;
+  let nodePositions = {};
+  let selectedNodes = new Set();
+  let hoveredNode = null;
+  let sentences = [];
+  let suggestions = [];
+  const width = 850, height = 420;
+  const padding = { left: 60, right: 60, top: 50, bottom: 50 };
 
   demoContent.innerHTML = `
-    <div class="galaxy-demo">
+    <div class="flow-demo${isRTL ? ' rtl' : ''}">
       <header class="demo-header">
-        <h2>Word Galaxy</h2>
-        <p class="demo-subtitle">Explore word connections in ${currentLang.name}</p>
+        <h2>Word Flow</h2>
+        <p class="demo-subtitle">Explore word sequences in ${currentLang.name}</p>
       </header>
 
-      <div class="galaxy-input">
-        <input type="text" id="galaxy-word" placeholder="Enter a word to explore..." />
-        <button id="galaxy-go" class="primary-btn">Explore</button>
+      <div class="flow-input-wrapper">
+        <div class="flow-input">
+          <input type="text" id="flow-word" placeholder="Enter a word to explore..." autocomplete="off" ${isRTL ? 'dir="rtl"' : ''} />
+          <button id="flow-go" class="primary-btn">Explore</button>
+        </div>
+        <div class="flow-suggestions" id="flow-suggestions"></div>
       </div>
 
-      <div class="galaxy-instructions">
-        <span class="instruction-item"><span class="dot expanded"></span> Click to expand</span>
-        <span class="instruction-item"><span class="dot"></span> Already expanded</span>
-        <span class="instruction-item">Drag to reposition</span>
+      <div class="flow-instructions">
+        <span class="instruction-item"><span class="dot selected"></span> Click to select</span>
+        <span class="instruction-item"><span class="dot"></span> Hover to preview</span>
       </div>
 
-      <div class="galaxy-container" id="galaxy-container">
-        <p class="galaxy-hint">Enter a word above to see its connections</p>
+      <div class="flow-container" id="flow-container">
+        <p class="flow-hint">Enter a word above to see its flow</p>
+      </div>
+
+      <div class="sentence-panel" id="sentence-panel">
+        <div class="sentence-empty">Select words to generate sentence combinations</div>
       </div>
     </div>
   `;
 
-  async function getNeighbors(word) {
+  async function buildGraph(word) {
     const result = await pyodide.runPythonAsync(`
 import json
-json.dumps(get_word_neighbors("${word.replace(/"/g, '\\"')}"))
+json.dumps(build_word_flow_graph("${word.replace(/"/g, '\\"')}", depth=2, top_k=8))
     `);
     return JSON.parse(result);
   }
 
-  function renderGraph() {
-    const container = document.getElementById('galaxy-container');
-    if (!container) return;
-
-    // Render edges
-    const edgesSvg = edges.map(e => {
-      const from = nodes.get(e.from);
-      const to = nodes.get(e.to);
-      if (!from || !to) return '';
-      const opacity = 0.1 + (e.strength * 0.3);
-      return `<line x1="${from.x}" y1="${from.y}" x2="${to.x}" y2="${to.y}"
-        stroke="var(--color-accent)" stroke-opacity="${opacity}" stroke-width="1.5"/>`;
-    }).join('');
-
-    // Render nodes
-    const nodesSvg = Array.from(nodes.entries()).map(([word, node]) => {
-      const radius = node.depth === 0 ? 35 : (node.expanded ? 25 : 18);
-      const fontSize = node.depth === 0 ? 13 : (node.expanded ? 11 : 10);
-      const fill = node.depth === 0 ? 'var(--color-accent)' :
-                   (node.expanded ? 'var(--color-accent-dark)' : 'var(--color-surface)');
-      const stroke = node.expanded ? 'none' : 'var(--color-accent)';
-      const textFill = (node.depth === 0 || node.expanded) ? 'white' : 'var(--color-text)';
-      const cursor = node.expanded ? 'grab' : 'pointer';
-
-      // Truncate long words
-      const displayWord = word.length > 12 ? word.slice(0, 10) + '...' : word;
-
-      return `
-        <g class="galaxy-node ${node.expanded ? 'expanded' : 'expandable'}"
-           data-word="${word}" style="cursor: ${cursor}">
-          <circle cx="${node.x}" cy="${node.y}" r="${radius}"
-            fill="${fill}" stroke="${stroke}" stroke-width="2"/>
-          <text x="${node.x}" y="${node.y}" fill="${textFill}"
-            text-anchor="middle" dominant-baseline="middle"
-            font-size="${fontSize}" font-weight="${node.depth === 0 ? 'bold' : 'normal'}"
-            style="pointer-events: none; user-select: none;">${displayWord}</text>
-        </g>
-      `;
-    }).join('');
-
-    container.innerHTML = `
-      <svg viewBox="0 0 ${width} ${height}" class="galaxy-svg interactive">
-        <defs>
-          <radialGradient id="galaxy-bg">
-            <stop offset="0%" stop-color="var(--color-accent)" stop-opacity="0.03"/>
-            <stop offset="100%" stop-color="var(--color-accent)" stop-opacity="0"/>
-          </radialGradient>
-        </defs>
-        <circle cx="${width/2}" cy="${height/2}" r="250" fill="url(#galaxy-bg)"/>
-        <g class="edges">${edgesSvg}</g>
-        <g class="nodes">${nodesSvg}</g>
-      </svg>
-    `;
-
-    // Add click handlers for expanding nodes
-    container.querySelectorAll('.galaxy-node.expandable').forEach(el => {
-      el.addEventListener('click', async (e) => {
-        if (dragging) return;
-        const word = el.dataset.word;
-        await expandNode(word);
-      });
-    });
-
-    // Add drag handlers for all nodes
-    const svg = container.querySelector('svg');
-    container.querySelectorAll('.galaxy-node').forEach(el => {
-      el.addEventListener('mousedown', (e) => {
-        e.preventDefault();
-        const word = el.dataset.word;
-        const node = nodes.get(word);
-        if (!node) return;
-        dragging = word;
-        const rect = svg.getBoundingClientRect();
-        const scaleX = width / rect.width;
-        const scaleY = height / rect.height;
-        offsetX = (e.clientX - rect.left) * scaleX - node.x;
-        offsetY = (e.clientY - rect.top) * scaleY - node.y;
-        svg.style.cursor = 'grabbing';
-      });
-    });
-
-    svg.addEventListener('mousemove', (e) => {
-      if (!dragging) return;
-      const node = nodes.get(dragging);
-      if (!node) return;
-      const rect = svg.getBoundingClientRect();
-      const scaleX = width / rect.width;
-      const scaleY = height / rect.height;
-      node.x = Math.max(40, Math.min(width - 40, (e.clientX - rect.left) * scaleX - offsetX));
-      node.y = Math.max(40, Math.min(height - 40, (e.clientY - rect.top) * scaleY - offsetY));
-      renderGraph();
-    });
-
-    svg.addEventListener('mouseup', () => {
-      dragging = null;
-      svg.style.cursor = '';
-    });
-
-    svg.addEventListener('mouseleave', () => {
-      dragging = null;
-      svg.style.cursor = '';
-    });
+  async function findPaths(selected) {
+    if (!graphData || selected.length === 0) return [];
+    const selectedJson = JSON.stringify(selected);
+    const graphJson = JSON.stringify(graphData);
+    const result = await pyodide.runPythonAsync(`
+import json
+_graph = json.loads('''${graphJson.replace(/'/g, "\\'")}''')
+_selected = json.loads('${selectedJson}')
+json.dumps(find_flow_paths(_graph, _selected, max_paths=8))
+    `);
+    return JSON.parse(result);
   }
 
-  async function expandNode(word) {
-    const node = nodes.get(word);
-    if (!node || node.expanded) return;
+  async function getSuggestions(prefix) {
+    const result = await pyodide.runPythonAsync(`
+import json
+json.dumps(get_word_suggestions("${prefix.replace(/"/g, '\\"')}", limit=8))
+    `);
+    return JSON.parse(result);
+  }
 
-    // Show loading state
-    node.expanded = true;
-    renderGraph();
+  function calculateLayout(data, visibleNodeIds) {
+    if (!data || !data.columns) return {};
+    const positions = {};
+    const columns = data.columns;
+    let columnKeys = Object.keys(columns).map(Number).sort((a, b) => a - b);
 
-    const neighbors = await getNeighbors(word);
-    if (!neighbors.length) return;
-
-    const maxStr = neighbors[0].strength;
-    const angleStep = (Math.PI * 2) / neighbors.length;
-    const baseAngle = Math.random() * Math.PI * 2; // Random starting angle
-
-    neighbors.slice(0, 8).forEach((n, i) => {
-      if (nodes.has(n.word)) {
-        // Just add edge if node exists
-        if (!edges.some(e => (e.from === word && e.to === n.word) || (e.from === n.word && e.to === word))) {
-          edges.push({ from: word, to: n.word, strength: n.strength / maxStr });
-        }
-        return;
-      }
-
-      // Position new node around parent
-      const angle = baseAngle + angleStep * i;
-      const dist = 90 + (1 - n.strength / maxStr) * 60;
-      const x = Math.max(50, Math.min(width - 50, node.x + Math.cos(angle) * dist));
-      const y = Math.max(50, Math.min(height - 50, node.y + Math.sin(angle) * dist));
-
-      nodes.set(n.word, {
-        x, y,
-        expanded: false,
-        strength: n.strength / maxStr,
-        depth: node.depth + 1
-      });
-
-      edges.push({ from: word, to: n.word, strength: n.strength / maxStr });
-    });
-
-    // Apply simple force-directed layout to avoid overlaps
-    for (let iter = 0; iter < 50; iter++) {
-      Array.from(nodes.entries()).forEach(([w1, n1]) => {
-        Array.from(nodes.entries()).forEach(([w2, n2]) => {
-          if (w1 >= w2) return;
-          const dx = n2.x - n1.x;
-          const dy = n2.y - n1.y;
-          const dist = Math.sqrt(dx * dx + dy * dy) || 1;
-          const minDist = 70;
-          if (dist < minDist) {
-            const force = (minDist - dist) / dist * 0.3;
-            const fx = dx * force;
-            const fy = dy * force;
-            if (n1.depth > 0) { n1.x -= fx; n1.y -= fy; }
-            if (n2.depth > 0) { n2.x += fx; n2.y += fy; }
-          }
-        });
-      });
-
-      // Keep nodes in bounds
-      nodes.forEach((n) => {
-        n.x = Math.max(50, Math.min(width - 50, n.x));
-        n.y = Math.max(50, Math.min(height - 50, n.y));
-      });
+    // Reverse for RTL languages (flow goes right to left)
+    if (isRTL) {
+      columnKeys = columnKeys.reverse();
     }
 
-    renderGraph();
+    const numColumns = columnKeys.length;
+    if (numColumns === 0) return {};
+
+    const usableWidth = width - padding.left - padding.right;
+    const usableHeight = height - padding.top - padding.bottom;
+    const columnWidth = usableWidth / numColumns;
+
+    columnKeys.forEach((colIndex, colPosition) => {
+      // Only include nodes that are in the visible set
+      const nodeIds = columns[colIndex].filter(id => visibleNodeIds.has(id));
+      const numNodes = Math.min(nodeIds.length, 8);
+      if (numNodes === 0) return;
+
+      const nodeSpacing = usableHeight / (numNodes + 1);
+      const x = padding.left + columnWidth * colPosition + columnWidth / 2;
+
+      nodeIds.slice(0, 8).forEach((nodeId, nodeIndex) => {
+        const y = padding.top + nodeSpacing * (nodeIndex + 1);
+        positions[nodeId] = { x, y };
+      });
+    });
+
+    return positions;
   }
 
-  async function initGraph(startWord) {
-    nodes.clear();
-    edges.length = 0;
+  function getVisibleEdges() {
+    if (!graphData) return [];
+    const edges = graphData.edges;
 
-    const container = document.getElementById('galaxy-container');
-    container.innerHTML = '<div class="demo-loading"><div class="spinner"></div></div>';
+    // Count edges per source node for crowd management
+    const edgesBySource = {};
+    edges.forEach(e => {
+      if (!edgesBySource[e.from_id]) edgesBySource[e.from_id] = [];
+      edgesBySource[e.from_id].push(e);
+    });
 
-    const neighbors = await getNeighbors(startWord);
+    // Sort edges by probability and take top 4 per source (crowd management)
+    const visibleEdges = [];
+    Object.values(edgesBySource).forEach(sourceEdges => {
+      sourceEdges.sort((a, b) => b.probability - a.probability);
+      visibleEdges.push(...sourceEdges.slice(0, 4));
+    });
 
-    if (!neighbors.length) {
-      container.innerHTML = `<p class="no-results">No connections found for "${startWord}". Try a more common word.</p>`;
+    return visibleEdges;
+  }
+
+  // Get the set of node IDs that should be visible (have at least one visible edge)
+  function getVisibleNodeIds(visibleEdges) {
+    const ids = new Set();
+    visibleEdges.forEach(e => {
+      ids.add(e.from_id);
+      ids.add(e.to_id);
+    });
+    // Always include seed node
+    if (graphData) {
+      graphData.nodes.forEach(n => { if (n.is_seed) ids.add(n.id); });
+    }
+    return ids;
+  }
+
+  // Separate function for updating visual state without recreating SVG
+  function updateVisuals() {
+    if (!graphData || typeof d3 === 'undefined') return;
+
+    const svg = d3.select('#flow-container svg');
+    if (svg.empty()) return;
+
+    const visibleEdges = getVisibleEdges();
+
+    // Update edges
+    svg.select('.edges-layer').selectAll('path')
+      .data(visibleEdges, e => `${e.from_id}-${e.to_id}`)
+      .attr('stroke', e => {
+        const isHighlighted = hoveredNode && (e.from_id === hoveredNode || e.to_id === hoveredNode);
+        const isSelected = selectedNodes.has(e.from_id) && selectedNodes.has(e.to_id);
+        if (isSelected) return 'var(--color-accent)';
+        if (isHighlighted) return 'var(--color-accent)';
+        return 'var(--color-text-muted)';
+      })
+      .attr('stroke-opacity', e => {
+        const isHighlighted = hoveredNode && (e.from_id === hoveredNode || e.to_id === hoveredNode);
+        const isSelected = selectedNodes.has(e.from_id) && selectedNodes.has(e.to_id);
+        if (isSelected) return 0.9;
+        if (isHighlighted) return 0.7;
+        return 0.15 + e.probability * 0.35;
+      })
+      .attr('stroke-width', e => {
+        const isHighlighted = hoveredNode && (e.from_id === hoveredNode || e.to_id === hoveredNode);
+        const isSelected = selectedNodes.has(e.from_id) && selectedNodes.has(e.to_id);
+        if (isSelected) return 3;
+        if (isHighlighted) return 2.5;
+        return 1 + e.probability * 1.5;
+      })
+      .attr('stroke-dasharray', e => {
+        const isHighlighted = hoveredNode && (e.from_id === hoveredNode || e.to_id === hoveredNode);
+        return isHighlighted ? '6 3' : 'none';
+      });
+
+    // Update nodes
+    svg.select('.nodes-layer').selectAll('g.node')
+      .attr('class', d => {
+        let cls = 'node';
+        if (d.is_seed) cls += ' seed';
+        if (selectedNodes.has(d.id)) cls += ' selected';
+        if (hoveredNode === d.id) cls += ' hovered';
+        return cls;
+      })
+      .attr('filter', d => selectedNodes.has(d.id) || d.is_seed ? 'url(#glow)' : null)
+      .each(function(d) {
+        const g = d3.select(this);
+        g.select('rect')
+          .attr('fill', () => {
+            if (d.is_seed) return 'var(--color-accent)';
+            if (selectedNodes.has(d.id)) return 'var(--color-accent-dark)';
+            return 'var(--color-surface)';
+          })
+          .attr('stroke', () => {
+            if (d.is_seed || selectedNodes.has(d.id)) return 'var(--color-accent)';
+            if (hoveredNode === d.id) return 'var(--color-accent)';
+            return 'var(--color-border)';
+          })
+          .attr('stroke-width', () => {
+            if (d.is_seed || selectedNodes.has(d.id) || hoveredNode === d.id) return 2;
+            return 1;
+          });
+        g.select('text')
+          .attr('fill', () => {
+            if (d.is_seed || selectedNodes.has(d.id)) return 'white';
+            return 'var(--color-text)';
+          });
+      });
+  }
+
+  function render() {
+    const container = document.getElementById('flow-container');
+    if (!container || !graphData) return;
+
+    // Check if D3 is loaded
+    if (typeof d3 === 'undefined') {
+      container.innerHTML = '<p class="error">Loading visualization library...</p>';
+      setTimeout(render, 100);
       return;
     }
 
-    // Add center node
-    nodes.set(startWord, {
-      x: width / 2,
-      y: height / 2,
-      expanded: true,
-      strength: 1,
-      depth: 0
-    });
+    // Clear and create SVG
+    container.innerHTML = '';
+    const svg = d3.select(container)
+      .append('svg')
+      .attr('viewBox', `0 0 ${width} ${height}`)
+      .attr('class', 'flow-svg');
 
-    // Add initial neighbors
-    const maxStr = neighbors[0].strength;
-    neighbors.slice(0, 10).forEach((n, i) => {
-      const angle = (i / Math.min(10, neighbors.length)) * Math.PI * 2 - Math.PI / 2;
-      const dist = 100 + (1 - n.strength / maxStr) * 80;
-      nodes.set(n.word, {
-        x: width / 2 + Math.cos(angle) * dist,
-        y: height / 2 + Math.sin(angle) * dist,
-        expanded: false,
-        strength: n.strength / maxStr,
-        depth: 1
+    // Add defs for glow filter
+    const defs = svg.append('defs');
+
+    // Glow filter for selected nodes
+    const filter = defs.append('filter')
+      .attr('id', 'glow')
+      .attr('x', '-50%')
+      .attr('y', '-50%')
+      .attr('width', '200%')
+      .attr('height', '200%');
+    filter.append('feGaussianBlur')
+      .attr('stdDeviation', '4')
+      .attr('result', 'coloredBlur');
+    const feMerge = filter.append('feMerge');
+    feMerge.append('feMergeNode').attr('in', 'coloredBlur');
+    feMerge.append('feMergeNode').attr('in', 'SourceGraphic');
+
+    // Background
+    svg.append('rect')
+      .attr('width', width)
+      .attr('height', height)
+      .attr('fill', 'var(--color-bg)')
+      .attr('rx', 12);
+
+    // Get visible edges
+    const visibleEdges = getVisibleEdges();
+
+    // Edge layer
+    const edgeGroup = svg.append('g').attr('class', 'edges-layer');
+
+    // Create link generator
+    const linkGen = d3.linkHorizontal()
+      .x(d => d.x)
+      .y(d => d.y);
+
+    // Draw edges
+    edgeGroup.selectAll('path')
+      .data(visibleEdges, e => `${e.from_id}-${e.to_id}`)
+      .join('path')
+      .attr('d', e => {
+        const from = nodePositions[e.from_id];
+        const to = nodePositions[e.to_id];
+        if (!from || !to) return '';
+        return linkGen({ source: from, target: to });
+      })
+      .attr('fill', 'none')
+      .attr('stroke', 'var(--color-text-muted)')
+      .attr('stroke-opacity', e => 0.15 + e.probability * 0.35)
+      .attr('stroke-width', e => 1 + e.probability * 1.5);
+
+    // Node layer
+    const nodeGroup = svg.append('g').attr('class', 'nodes-layer');
+
+    // Only show nodes that have positions (calculated only for visible nodes)
+    const nodesData = graphData.nodes.filter(n => nodePositions[n.id]);
+
+    // Draw nodes
+    const nodeWidth = 72, nodeHeight = 28, nodeRadius = 6;
+
+    const nodeElements = nodeGroup.selectAll('g.node')
+      .data(nodesData, d => d.id)
+      .join('g')
+      .attr('class', d => {
+        let cls = 'node';
+        if (d.is_seed) cls += ' seed';
+        if (selectedNodes.has(d.id)) cls += ' selected';
+        return cls;
+      })
+      .attr('transform', d => {
+        const pos = nodePositions[d.id];
+        return `translate(${pos.x}, ${pos.y})`;
+      })
+      .style('cursor', 'pointer')
+      .attr('filter', d => selectedNodes.has(d.id) || d.is_seed ? 'url(#glow)' : null);
+
+    // Node rectangles
+    nodeElements.append('rect')
+      .attr('x', -nodeWidth / 2)
+      .attr('y', -nodeHeight / 2)
+      .attr('width', nodeWidth)
+      .attr('height', nodeHeight)
+      .attr('rx', nodeRadius)
+      .attr('fill', d => {
+        if (d.is_seed) return 'var(--color-accent)';
+        if (selectedNodes.has(d.id)) return 'var(--color-accent-dark)';
+        return 'var(--color-surface)';
+      })
+      .attr('stroke', d => {
+        if (d.is_seed || selectedNodes.has(d.id)) return 'var(--color-accent)';
+        return 'var(--color-border)';
+      })
+      .attr('stroke-width', d => {
+        if (d.is_seed || selectedNodes.has(d.id)) return 2;
+        return 1;
       });
-      edges.push({ from: startWord, to: n.word, strength: n.strength / maxStr });
-    });
 
-    renderGraph();
+    // Node text
+    nodeElements.append('text')
+      .attr('text-anchor', 'middle')
+      .attr('dominant-baseline', 'middle')
+      .attr('fill', d => {
+        if (d.is_seed || selectedNodes.has(d.id)) return 'white';
+        return 'var(--color-text)';
+      })
+      .attr('font-size', '11px')
+      .attr('font-weight', d => d.is_seed ? '600' : '500')
+      .style('pointer-events', 'none')
+      .style('user-select', 'none')
+      .text(d => d.word.length > 8 ? d.word.slice(0, 7) + '…' : d.word);
+
+    // Add interactions - using function references to avoid recreation issues
+    nodeElements.on('click', handleNodeClick);
+    nodeElements.on('mouseenter', handleNodeEnter);
+    nodeElements.on('mouseleave', handleNodeLeave);
+
+    // Column labels
+    let columnKeys = Object.keys(graphData.columns).map(Number).sort((a, b) => a - b);
+    if (isRTL) columnKeys = columnKeys.reverse();
+
+    const usableWidth = width - padding.left - padding.right;
+    const colWidth = usableWidth / columnKeys.length;
+
+    svg.append('g').attr('class', 'column-labels')
+      .selectAll('text')
+      .data(columnKeys)
+      .join('text')
+      .attr('x', (col, i) => padding.left + colWidth * i + colWidth / 2)
+      .attr('y', 25)
+      .attr('text-anchor', 'middle')
+      .attr('fill', col => col === 0 ? 'var(--color-accent)' : 'var(--color-text-muted)')
+      .attr('font-size', '10px')
+      .attr('font-weight', col => col === 0 ? '600' : '400')
+      .text(col => {
+        if (col === 0) return isRTL ? 'הזרע' : 'seed';
+        if (isRTL) {
+          // For RTL: negative columns are "after", positive are "before"
+          if (col < 0) return `+${Math.abs(col)}`;
+          if (col > 0) return `−${col}`;
+        } else {
+          if (col < 0) return `−${Math.abs(col)}`;
+          if (col > 0) return `+${col}`;
+        }
+        return '';
+      });
   }
 
-  document.getElementById('galaxy-go').addEventListener('click', async () => {
-    const word = document.getElementById('galaxy-word').value.trim();
+  async function handleNodeClick(event, d) {
+    event.stopPropagation();
+    if (d.is_seed) return; // Can't deselect seed
+
+    if (selectedNodes.has(d.id)) {
+      selectedNodes.delete(d.id);
+    } else {
+      selectedNodes.add(d.id);
+    }
+    updateVisuals();
+    await updateSentences();
+  }
+
+  function handleNodeEnter(event, d) {
+    hoveredNode = d.id;
+    updateVisuals();
+  }
+
+  function handleNodeLeave() {
+    hoveredNode = null;
+    updateVisuals();
+  }
+
+  async function updateSentences() {
+    const panel = document.getElementById('sentence-panel');
+    if (!panel) return;
+
+    const selected = Array.from(selectedNodes);
+    if (selected.length === 0) {
+      panel.innerHTML = '<div class="sentence-empty">Select words to generate sentence combinations</div>';
+      return;
+    }
+
+    panel.innerHTML = '<div class="sentence-loading"><div class="spinner small"></div></div>';
+
+    try {
+      sentences = await findPaths(selected);
+
+      if (sentences.length === 0) {
+        panel.innerHTML = '<div class="sentence-empty">No valid paths found through selected words</div>';
+        return;
+      }
+
+      panel.innerHTML = `
+        <h4>Possible Sequences <span class="sentence-hint">(sorted by perplexity, lower is better)</span></h4>
+        <div class="sentence-list">
+          ${sentences.slice(0, 8).map((s, i) => {
+            return `
+              <div class="sentence-item" ${isRTL ? 'dir="rtl"' : ''}>
+                <span class="sentence-rank">${i + 1}</span>
+                <span class="sentence-text">${s.words.join(' ')}</span>
+                <span class="sentence-perplexity" title="Perplexity">⟂ ${s.perplexity}</span>
+              </div>
+            `;
+          }).join('')}
+        </div>
+      `;
+    } catch (e) {
+      console.error('Path finding error:', e);
+      panel.innerHTML = '<div class="sentence-empty">Could not find paths</div>';
+    }
+  }
+
+  function showSuggestions(items) {
+    const suggestionsEl = document.getElementById('flow-suggestions');
+    if (!suggestionsEl) return;
+
+    if (!items || items.length === 0) {
+      suggestionsEl.innerHTML = '';
+      suggestionsEl.classList.remove('visible');
+      return;
+    }
+
+    suggestionsEl.innerHTML = items.map(s =>
+      `<button class="suggestion-item" data-word="${s.word}">${s.word}</button>`
+    ).join('');
+    suggestionsEl.classList.add('visible');
+
+    // Add click handlers
+    suggestionsEl.querySelectorAll('.suggestion-item').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        const word = btn.dataset.word;
+        document.getElementById('flow-word').value = word;
+        suggestionsEl.classList.remove('visible');
+        await initFlow(word);
+      });
+    });
+  }
+
+  async function initFlow(word) {
+    const container = document.getElementById('flow-container');
+    container.innerHTML = '<div class="demo-loading"><div class="spinner"></div></div>';
+    selectedNodes.clear();
+    document.getElementById('flow-suggestions').classList.remove('visible');
+
+    try {
+      graphData = await buildGraph(word);
+
+      if (!graphData.nodes || graphData.nodes.length === 0) {
+        container.innerHTML = `<p class="no-results">No connections found for "${word}". Try a more common word.</p>`;
+        return;
+      }
+
+      // Auto-select seed node
+      const seedNode = graphData.nodes.find(n => n.is_seed);
+      if (seedNode) {
+        selectedNodes.add(seedNode.id);
+      }
+
+      // Calculate visible edges and nodes BEFORE layout
+      const visibleEdges = getVisibleEdges();
+      const visibleNodeIds = getVisibleNodeIds(visibleEdges);
+      nodePositions = calculateLayout(graphData, visibleNodeIds);
+      render();
+      await updateSentences();
+    } catch (e) {
+      console.error('Graph build error:', e);
+      container.innerHTML = `<p class="error">Error building graph: ${e.message}</p>`;
+    }
+  }
+
+  // Load initial suggestions
+  async function loadInitialSuggestions() {
+    try {
+      suggestions = await getSuggestions('');
+      if (suggestions.length > 0) {
+        showSuggestions(suggestions.slice(0, 8));
+      }
+    } catch (e) {
+      console.error('Failed to load suggestions:', e);
+    }
+  }
+
+  // Event listeners
+  document.getElementById('flow-go').addEventListener('click', async () => {
+    const word = document.getElementById('flow-word').value.trim();
     if (!word) return;
-    await initGraph(word);
+    await initFlow(word);
   });
 
-  document.getElementById('galaxy-word').addEventListener('keydown', async (e) => {
+  const flowInput = document.getElementById('flow-word');
+  flowInput.addEventListener('keydown', async (e) => {
     if (e.key === 'Enter') {
       const word = e.target.value.trim();
-      if (word) await initGraph(word);
+      if (word) await initFlow(word);
     }
   });
+
+  // Autocomplete on input
+  let debounceTimer;
+  flowInput.addEventListener('input', async (e) => {
+    const prefix = e.target.value.trim();
+    clearTimeout(debounceTimer);
+    debounceTimer = setTimeout(async () => {
+      try {
+        const results = await getSuggestions(prefix);
+        showSuggestions(results);
+      } catch (err) {
+        console.error('Suggestion error:', err);
+      }
+    }, 150);
+  });
+
+  flowInput.addEventListener('focus', () => {
+    if (suggestions.length > 0) {
+      showSuggestions(suggestions.slice(0, 8));
+    }
+  });
+
+  // Hide suggestions when clicking outside
+  document.addEventListener('click', (e) => {
+    if (!e.target.closest('.flow-input-wrapper')) {
+      document.getElementById('flow-suggestions')?.classList.remove('visible');
+    }
+  });
+
+  // Load initial suggestions
+  loadInitialSuggestions();
 }
 
 // ========== WEAVER DEMO ==========
@@ -1525,6 +1822,273 @@ def get_word_neighbors(word, limit=20):
                         neighbors[c] += freq
     return [{'word': w, 'strength': s} for w, s in sorted(neighbors.items(), key=lambda x: -x[1])[:limit]]
 
+def is_valid_word(w):
+    """Check if a token is a valid word (not just numbers/punctuation)."""
+    if not w or not isinstance(w, str):
+        return False
+    # Must have at least one letter
+    return any(c.isalpha() for c in w)
+
+def build_word_flow_graph(seed_word, depth=2, top_k=8):
+    """Build a directed graph for Word Flow visualization."""
+    if not store.ngram_idx:
+        return {'nodes': [], 'edges': [], 'columns': {}}
+
+    nodes = {}  # id -> node data
+    edges_set = set()  # (from_id, to_id) to avoid duplicates
+    edges = []  # list of edge data
+    columns = defaultdict(list)
+
+    # Add seed word at column 0
+    seed_id = f"0:{seed_word}"
+    nodes[seed_id] = {
+        'id': seed_id,
+        'word': seed_word,
+        'column': 0,
+        'frequency': 0,
+        'is_seed': True
+    }
+    columns[0].append(seed_id)
+
+    # Track which words are at which column for proper edge creation
+    word_at_col = {(0, seed_word): seed_id}
+
+    def add_edge(from_id, to_id, freq):
+        """Add edge only if both nodes exist and edge doesn't exist."""
+        if from_id in nodes and to_id in nodes:
+            edge_key = (from_id, to_id)
+            if edge_key not in edges_set:
+                edges_set.add(edge_key)
+                edges.append({
+                    'from_id': from_id,
+                    'to_id': to_id,
+                    'frequency': freq,
+                    'probability': 0
+                })
+
+    def get_predecessors(word):
+        """Find words that come immediately before this word."""
+        preds = defaultdict(int)
+        for ctx, trans in store.ngram_idx.items():
+            # ctx is (w1, w2), trans is [(w3, freq), ...]
+            # If word is w3 (result), w2 is predecessor
+            for nxt, freq in trans:
+                if nxt == word and len(ctx) >= 1:
+                    prev = ctx[-1]
+                    if is_valid_word(prev) and prev != word:
+                        preds[prev] += freq
+            # If word is w2 (last context), w1 is predecessor
+            if len(ctx) >= 2 and ctx[-1] == word:
+                prev = ctx[-2] if len(ctx) > 1 else ctx[0]
+                if is_valid_word(prev) and prev != word:
+                    preds[prev] += sum(f for _, f in trans)
+        return preds
+
+    def get_successors(word):
+        """Find words that come immediately after this word."""
+        succs = defaultdict(int)
+        for ctx, trans in store.ngram_idx.items():
+            # If word is in context, look at what follows
+            if word in ctx:
+                for nxt, freq in trans:
+                    if is_valid_word(nxt) and nxt != word:
+                        succs[nxt] += freq
+        return succs
+
+    # Build predecessors (left side, negative columns)
+    def build_predecessors(word, col, remaining, k):
+        if remaining <= 0:
+            return
+        preds = get_predecessors(word)
+        top_preds = sorted(preds.items(), key=lambda x: -x[1])[:k]
+
+        target_key = (col + 1, word)
+        target_id = word_at_col.get(target_key)
+
+        for pred_word, freq in top_preds:
+            node_id = f"{col}:{pred_word}"
+            node_key = (col, pred_word)
+
+            if node_key not in word_at_col:
+                nodes[node_id] = {
+                    'id': node_id,
+                    'word': pred_word,
+                    'column': col,
+                    'frequency': freq,
+                    'is_seed': False
+                }
+                columns[col].append(node_id)
+                word_at_col[node_key] = node_id
+
+            # Add edge from predecessor to current word
+            if target_id:
+                add_edge(word_at_col[node_key], target_id, freq)
+
+            # Recurse
+            build_predecessors(pred_word, col - 1, remaining - 1, max(4, k // 2))
+
+    # Build successors (right side, positive columns)
+    def build_successors(word, col, remaining, k):
+        if remaining <= 0:
+            return
+        succs = get_successors(word)
+        top_succs = sorted(succs.items(), key=lambda x: -x[1])[:k]
+
+        source_key = (col - 1, word)
+        source_id = word_at_col.get(source_key)
+
+        for succ_word, freq in top_succs:
+            node_id = f"{col}:{succ_word}"
+            node_key = (col, succ_word)
+
+            if node_key not in word_at_col:
+                nodes[node_id] = {
+                    'id': node_id,
+                    'word': succ_word,
+                    'column': col,
+                    'frequency': freq,
+                    'is_seed': False
+                }
+                columns[col].append(node_id)
+                word_at_col[node_key] = node_id
+
+            # Add edge from current word to successor
+            if source_id:
+                add_edge(source_id, word_at_col[node_key], freq)
+
+            # Recurse
+            build_successors(succ_word, col + 1, remaining - 1, max(4, k // 2))
+
+    # Build graph in both directions from seed
+    build_predecessors(seed_word, -1, depth, top_k)
+    build_successors(seed_word, 1, depth, top_k)
+
+    # Remove nodes without any edges (disconnected)
+    connected_nodes = set()
+    for e in edges:
+        connected_nodes.add(e['from_id'])
+        connected_nodes.add(e['to_id'])
+    connected_nodes.add(seed_id)  # Always keep seed
+
+    # Filter nodes and columns to only connected ones
+    nodes = {k: v for k, v in nodes.items() if k in connected_nodes}
+    for col in columns:
+        columns[col] = [nid for nid in columns[col] if nid in connected_nodes]
+
+    # Normalize edge probabilities per source node
+    source_totals = defaultdict(int)
+    for e in edges:
+        source_totals[e['from_id']] += e['frequency']
+    for e in edges:
+        total = source_totals[e['from_id']]
+        e['probability'] = e['frequency'] / total if total > 0 else 0
+
+    # Sort columns by frequency (seed first)
+    for col in columns:
+        columns[col] = sorted(columns[col],
+            key=lambda x: -nodes[x]['frequency'] if not nodes[x]['is_seed'] else float('inf'))
+
+    return {
+        'nodes': list(nodes.values()),
+        'edges': edges,
+        'columns': {k: v for k, v in sorted(columns.items())}
+    }
+
+def find_flow_paths(graph_data, selected_ids, max_paths=10):
+    """Find valid paths through the graph that include all selected nodes."""
+    import math
+
+    if not selected_ids or not graph_data.get('nodes'):
+        return []
+
+    nodes_map = {n['id']: n for n in graph_data['nodes']}
+    adj = defaultdict(list)
+    edge_probs = {}
+
+    for e in graph_data['edges']:
+        adj[e['from_id']].append(e['to_id'])
+        edge_probs[(e['from_id'], e['to_id'])] = e['probability']
+
+    selected_set = set(selected_ids)
+
+    # Get column range
+    all_cols = sorted(int(k) for k in graph_data['columns'].keys())
+    if not all_cols:
+        return []
+
+    start_col = all_cols[0]
+    end_col = all_cols[-1]
+
+    paths = []
+    max_search = max_paths * 10  # Search limit
+
+    def dfs(current_id, path, visited_selected, log_prob, visited):
+        if len(paths) >= max_search:
+            return
+
+        if current_id not in nodes_map:
+            return
+
+        current_col = nodes_map[current_id]['column']
+
+        # Check if current node is selected
+        new_visited = visited_selected | ({current_id} if current_id in selected_set else set())
+
+        # If we've reached the end column
+        if current_col == end_col:
+            if new_visited >= selected_set:  # All selected nodes visited
+                prob = math.exp(log_prob) if log_prob > -30 else 0
+                # Calculate perplexity: exp(-log_prob / n)
+                n = len(path)
+                perplexity = math.exp(-log_prob / n) if n > 0 and log_prob < 0 else float('inf')
+                paths.append({
+                    'path': list(path),
+                    'words': [nodes_map[nid]['word'] for nid in path],
+                    'probability': prob,
+                    'perplexity': round(perplexity, 2)
+                })
+            return
+
+        # Continue forward
+        for next_id in adj.get(current_id, []):
+            if next_id in visited:  # Avoid cycles
+                continue
+            edge_prob = edge_probs.get((current_id, next_id), 0.001)
+            new_log_prob = log_prob + math.log(max(edge_prob, 0.0001))
+            dfs(next_id, path + [next_id], new_visited, new_log_prob, visited | {next_id})
+
+    # Start from all leftmost column nodes
+    start_nodes = graph_data['columns'].get(str(start_col), graph_data['columns'].get(start_col, []))
+    for start_id in start_nodes[:8]:
+        if start_id in nodes_map:
+            dfs(start_id, [start_id], set(), 0.0, {start_id})
+
+    # Sort by perplexity (lower is better)
+    paths.sort(key=lambda x: x['perplexity'])
+    return paths[:max_paths]
+
+def get_word_suggestions(prefix='', limit=20):
+    """Get word suggestions from vocabulary."""
+    if store.vocab_df is None:
+        return []
+
+    tokens = store.vocab_df['token'].tolist()
+    freqs = store.vocab_df['frequency'].tolist()
+
+    suggestions = []
+    prefix_lower = prefix.lower().strip()
+
+    for t, f in zip(tokens[:5000], freqs[:5000]):
+        word = str(t)
+        # Filter: must be valid word, match prefix if given
+        if is_valid_word(word):
+            if not prefix_lower or word.lower().startswith(prefix_lower):
+                suggestions.append({'word': word, 'freq': f})
+                if len(suggestions) >= limit:
+                    break
+
+    return suggestions
+
 async def fetch_target_vocab(lang):
     url = f"https://huggingface.co/wikilangs/{lang}/resolve/main/models/vocabulary/{lang}_vocabulary.parquet"
     df = await fetch_parquet(url)
@@ -1565,7 +2129,7 @@ async function handleDeepLink() {
       updateLangDisplay();
 
       // If a specific demo was requested, wait for Pyodide and launch it
-      if (demo && ['dna', 'galaxy', 'weaver', 'zipf', 'museum', 'bridge'].includes(demo)) {
+      if (demo && ['dna', 'flow', 'weaver', 'zipf', 'museum', 'bridge'].includes(demo)) {
         // Wait for Pyodide to be ready
         const waitForPyodide = () => {
           if (pyodideReady) {
@@ -1616,6 +2180,11 @@ document.addEventListener('visibilitychange', () => {
 });
 
 // ========== INIT ==========
+// Load D3.js for Word Flow visualization
+const d3Script = document.createElement('script');
+d3Script.src = 'https://cdn.jsdelivr.net/npm/d3@7';
+document.head.appendChild(d3Script);
+
 const script = document.createElement('script');
 script.src = 'https://cdn.jsdelivr.net/pyodide/v0.27.0/full/pyodide.js';
 script.onload = () => {
@@ -1975,35 +2544,29 @@ document.head.appendChild(script);
   100% { transform: rotateY(360deg); }
 }
 
-/* Word Galaxy Illustration */
-.galaxy-illustration {
-  position: relative;
-  width: 60px;
-  height: 60px;
+/* Word Flow Illustration */
+.flow-illustration {
   display: flex;
   align-items: center;
-  justify-content: center;
+  gap: 4px;
 }
-.galaxy-center {
-  font-size: 0.8rem;
-  font-weight: 700;
-  color: var(--color-accent);
-  z-index: 2;
-}
-.galaxy-orbit {
-  position: absolute;
-  font-size: 0.55rem;
+.flow-node {
+  font-size: 0.6rem;
+  padding: 3px 6px;
+  background: rgba(var(--color-accent-rgb, 139, 92, 246), 0.1);
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
   color: var(--color-text-secondary);
-  opacity: 0.8;
-  animation: orbit 8s linear infinite;
 }
-.galaxy-orbit.o1 { animation-delay: 0s; }
-.galaxy-orbit.o2 { animation-delay: -2s; }
-.galaxy-orbit.o3 { animation-delay: -4s; }
-.galaxy-orbit.o4 { animation-delay: -6s; }
-@keyframes orbit {
-  0% { transform: rotate(0deg) translateX(28px) rotate(0deg); }
-  100% { transform: rotate(360deg) translateX(28px) rotate(-360deg); }
+.flow-node.seed {
+  background: var(--color-accent);
+  border-color: var(--color-accent);
+  color: white;
+  font-weight: 600;
+}
+.flow-arrow {
+  color: var(--color-accent);
+  opacity: 0.6;
 }
 
 /* Text Weaver Illustration */
@@ -2138,14 +2701,50 @@ document.head.appendChild(script);
 .char-grid { display: flex; flex-wrap: wrap; gap: 6px; }
 .char-cell { padding: 8px 12px; background: var(--color-surface); border-radius: 4px; font-family: var(--font-mono); font-size: 1rem; }
 
-/* ========== GALAXY DEMO ========== */
-.galaxy-demo { }
-.galaxy-input { display: flex; gap: 12px; margin-bottom: 16px; }
-.galaxy-input input { flex: 1; padding: 12px 16px; border: 2px solid var(--color-border); border-radius: 8px; background: var(--color-bg); color: var(--color-text); font-size: 1rem; }
-.galaxy-input input:focus { outline: none; border-color: var(--color-accent); }
+/* ========== FLOW DEMO ========== */
+.flow-demo { }
+.flow-demo.rtl { direction: rtl; }
+.flow-input-wrapper { position: relative; margin-bottom: 16px; }
+.flow-input { display: flex; gap: 12px; }
+.flow-input input { flex: 1; padding: 12px 16px; border: 2px solid var(--color-border); border-radius: 8px; background: var(--color-bg); color: var(--color-text); font-size: 1rem; }
+.flow-input input:focus { outline: none; border-color: var(--color-accent); }
+
+/* Suggestions dropdown */
+.flow-suggestions {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 80px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  margin-top: 4px;
+  padding: 8px;
+  display: none;
+  flex-wrap: wrap;
+  gap: 8px;
+  z-index: 10;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+.flow-suggestions.visible { display: flex; }
+.suggestion-item {
+  padding: 6px 12px;
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: 16px;
+  color: var(--color-text);
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.suggestion-item:hover {
+  background: var(--color-accent);
+  color: white;
+  border-color: var(--color-accent);
+}
 .primary-btn { padding: 12px 24px; background: var(--color-accent); color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; white-space: nowrap; }
 .primary-btn:hover { opacity: 0.9; }
-.galaxy-instructions {
+.flow-instructions {
   display: flex;
   gap: 20px;
   justify-content: center;
@@ -2165,20 +2764,122 @@ document.head.appendChild(script);
   border: 2px solid var(--color-accent);
   background: var(--color-surface);
 }
-.instruction-item .dot.expanded {
+.instruction-item .dot.selected {
   background: var(--color-accent);
   border-color: var(--color-accent);
 }
-.galaxy-container { background: var(--color-bg); border-radius: 12px; min-height: 550px; display: flex; align-items: center; justify-content: center; overflow: hidden; border: 1px solid var(--color-border); }
-.galaxy-hint { color: var(--color-text-muted); }
-.galaxy-svg { width: 100%; height: auto; }
-.galaxy-svg.interactive { cursor: default; }
-.galaxy-node { transition: transform 0.15s ease; }
-.galaxy-node.expandable:hover circle { transform-origin: center; transform: scale(1.1); }
-.galaxy-node.expandable:hover { filter: drop-shadow(0 0 8px var(--color-accent)); }
-.galaxy-node circle { transition: transform 0.15s ease, fill 0.15s ease; }
-.orbit-word { animation: orbit-fade 0.5s ease-out forwards; opacity: 0; }
-@keyframes orbit-fade { to { opacity: 1; } }
+.flow-container {
+  background: var(--color-bg);
+  border-radius: 12px;
+  min-height: 420px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+}
+.flow-hint { color: var(--color-text-muted); }
+.flow-svg { width: 100%; height: auto; }
+
+/* Flow nodes - smooth transitions, no scale on hover */
+.flow-svg .node rect { transition: fill 0.15s ease, stroke 0.15s ease, stroke-width 0.15s ease; }
+.flow-svg .node text { transition: fill 0.15s ease; }
+.flow-svg .node.selected rect { filter: drop-shadow(0 0 8px var(--color-accent)); }
+.flow-svg .node.seed rect { filter: drop-shadow(0 0 6px var(--color-accent)); }
+.flow-svg .edges-layer path { transition: stroke 0.15s ease, stroke-opacity 0.15s ease, stroke-width 0.15s ease; }
+
+/* Sentence Panel */
+.sentence-panel {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  padding: 16px 20px;
+  margin-top: 16px;
+  min-height: 80px;
+}
+.sentence-panel h4 {
+  font-size: 0.875rem;
+  color: var(--color-text-secondary);
+  margin: 0 0 12px 0;
+  font-weight: 500;
+}
+.sentence-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-text-muted);
+  font-size: 0.9rem;
+  min-height: 48px;
+}
+.sentence-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 48px;
+}
+.spinner.small {
+  width: 24px;
+  height: 24px;
+  border-width: 2px;
+}
+.sentence-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.sentence-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  background: var(--color-bg);
+  border-radius: 8px;
+  transition: background 0.15s ease;
+}
+.sentence-item:hover {
+  background: var(--color-surface-alt);
+}
+.sentence-rank {
+  width: 22px;
+  height: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-accent);
+  color: white;
+  border-radius: 50%;
+  font-size: 0.7rem;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+.sentence-text {
+  flex: 1;
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  color: var(--color-text);
+  word-break: break-word;
+}
+.sentence-prob {
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+  font-family: var(--font-mono);
+  flex-shrink: 0;
+}
+.sentence-perplexity {
+  font-size: 0.75rem;
+  color: var(--color-accent);
+  font-family: var(--font-mono);
+  flex-shrink: 0;
+  background: var(--color-accent-light);
+  padding: 2px 8px;
+  border-radius: 10px;
+}
+.sentence-hint {
+  font-weight: 400;
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+  margin-left: 8px;
+}
 
 /* ========== WEAVER DEMO ========== */
 .weaver-controls { display: flex; flex-direction: column; gap: 16px; margin-bottom: 24px; max-width: 500px; }
@@ -2252,6 +2953,6 @@ document.head.appendChild(script);
   .dna-grid { grid-template-columns: 1fr; }
   .stats-row { flex-direction: column; }
   .bridge-selector { flex-direction: column; align-items: stretch; }
-  .galaxy-input { flex-direction: column; }
+  .flow-input { flex-direction: column; }
 }
 </style>
