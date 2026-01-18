@@ -59,7 +59,7 @@ import languageCountries from '@data/language_countries.json';
         </div>
         <div class="lang-grid" id="lang-grid">
           {languages.map(lang => (
-            <button class="lang-card" data-code={lang.code} data-name={lang.name.toLowerCase()} data-vocab={lang.vocabulary_size}>
+            <button class="lang-card" data-code={lang.code} data-name={lang.name.toLowerCase()} data-vocab={lang.vocabulary_size} data-dir={lang.text_direction || 'ltr'}>
               <span class="lang-code">{lang.code}</span>
               <span class="lang-name">{lang.name}</span>
               <span class="lang-vocab">{(lang.vocabulary_size / 1000).toFixed(0)}k words</span>
@@ -334,7 +334,11 @@ worldMapContainer?.addEventListener('languageSelect', async (e) => {
     loadedModels = {};
   }
 
-  currentLang = { code, name };
+  // Look up text_direction from lang-card data attribute
+  const langCard = langGrid.querySelector(`.lang-card[data-code="${code}"]`);
+  const textDirection = langCard?.dataset.dir || 'ltr';
+
+  currentLang = { code, name, text_direction: textDirection };
   updateLangDisplay();
   closeModal();
   await runPendingAction();
@@ -369,7 +373,11 @@ document.querySelectorAll('.filter-btn').forEach(btn => {
 langGrid.addEventListener('click', async e => {
   const card = e.target.closest('.lang-card');
   if (!card) return;
-  const newLang = { code: card.dataset.code, name: card.querySelector('.lang-name').textContent };
+  const newLang = {
+    code: card.dataset.code,
+    name: card.querySelector('.lang-name').textContent,
+    text_direction: card.dataset.dir || 'ltr'
+  };
 
   // If language changed, reset loaded models
   if (currentLang && currentLang.code !== newLang.code) {
@@ -767,6 +775,7 @@ async function showFlow() {
   // Flow visualization state
   let graphData = null;
   let nodePositions = {};
+  let visibleEdges = [];
   let selectedNodes = new Set();
   let hoveredNode = null;
   let sentences = [];
@@ -775,7 +784,7 @@ async function showFlow() {
   const padding = { left: 60, right: 60, top: 50, bottom: 50 };
 
   demoContent.innerHTML = `
-    <div class="flow-demo${isRTL ? ' rtl' : ''}">
+    <div class="flow-demo">
       <header class="demo-header">
         <h2>Word Flow</h2>
         <p class="demo-subtitle">Explore word sequences in ${currentLang.name}</p>
@@ -783,7 +792,7 @@ async function showFlow() {
 
       <div class="flow-input-wrapper">
         <div class="flow-input">
-          <input type="text" id="flow-word" placeholder="Enter a word to explore..." autocomplete="off" ${isRTL ? 'dir="rtl"' : ''} />
+          <input type="text" id="flow-word" placeholder="Enter a word to explore..." autocomplete="off" ${isRTL ? 'dir="rtl" style="text-align:right"' : ''} />
           <button id="flow-go" class="primary-btn">Explore</button>
         </div>
         <div class="flow-suggestions" id="flow-suggestions"></div>
@@ -869,39 +878,74 @@ json.dumps(get_word_suggestions("${prefix.replace(/"/g, '\\"')}", limit=8))
     return positions;
   }
 
-  function getVisibleEdges() {
-    if (!graphData) return [];
+  // BFS from seed in both directions to find all connected nodes and their edges
+  function getVisibleNodesAndEdges() {
+    if (!graphData) return { edges: [], nodeIds: new Set() };
+
     const edges = graphData.edges;
 
-    // Count edges per source node for crowd management
+    // Group edges by source and by target
     const edgesBySource = {};
+    const edgesByTarget = {};
     edges.forEach(e => {
       if (!edgesBySource[e.from_id]) edgesBySource[e.from_id] = [];
       edgesBySource[e.from_id].push(e);
+      if (!edgesByTarget[e.to_id]) edgesByTarget[e.to_id] = [];
+      edgesByTarget[e.to_id].push(e);
     });
 
-    // Sort edges by probability and take top 4 per source (crowd management)
-    const visibleEdges = [];
-    Object.values(edgesBySource).forEach(sourceEdges => {
-      sourceEdges.sort((a, b) => b.probability - a.probability);
-      visibleEdges.push(...sourceEdges.slice(0, 4));
-    });
+    // Sort each group by probability
+    Object.values(edgesBySource).forEach(arr => arr.sort((a, b) => b.probability - a.probability));
+    Object.values(edgesByTarget).forEach(arr => arr.sort((a, b) => b.probability - a.probability));
 
-    return visibleEdges;
-  }
+    const seedNode = graphData.nodes.find(n => n.is_seed);
+    if (!seedNode) return { edges: [], nodeIds: new Set() };
 
-  // Get the set of node IDs that should be visible (have at least one visible edge)
-  function getVisibleNodeIds(visibleEdges) {
-    const ids = new Set();
-    visibleEdges.forEach(e => {
-      ids.add(e.from_id);
-      ids.add(e.to_id);
-    });
-    // Always include seed node
-    if (graphData) {
-      graphData.nodes.forEach(n => { if (n.is_seed) ids.add(n.id); });
+    const visited = new Set([seedNode.id]);
+    const resultEdges = [];
+    const seenEdgeKeys = new Set();
+
+    function addEdge(e) {
+      const key = `${e.from_id}-${e.to_id}`;
+      if (!seenEdgeKeys.has(key)) {
+        seenEdgeKeys.add(key);
+        resultEdges.push(e);
+      }
     }
-    return ids;
+
+    // BFS forward: seed → col+1 → col+2 (following from_id → to_id)
+    const forwardQueue = [seedNode.id];
+    const forwardVisited = new Set([seedNode.id]);
+    while (forwardQueue.length > 0) {
+      const nodeId = forwardQueue.shift();
+      const nodeEdges = (edgesBySource[nodeId] || []).slice(0, 4);
+      for (const e of nodeEdges) {
+        addEdge(e);
+        visited.add(e.to_id);
+        if (!forwardVisited.has(e.to_id)) {
+          forwardVisited.add(e.to_id);
+          forwardQueue.push(e.to_id);
+        }
+      }
+    }
+
+    // BFS backward: seed ← col-1 ← col-2 (following to_id ← from_id)
+    const backwardQueue = [seedNode.id];
+    const backwardVisited = new Set([seedNode.id]);
+    while (backwardQueue.length > 0) {
+      const nodeId = backwardQueue.shift();
+      const incomingEdges = (edgesByTarget[nodeId] || []).slice(0, 4);
+      for (const e of incomingEdges) {
+        addEdge(e);
+        visited.add(e.from_id);
+        if (!backwardVisited.has(e.from_id)) {
+          backwardVisited.add(e.from_id);
+          backwardQueue.push(e.from_id);
+        }
+      }
+    }
+
+    return { edges: resultEdges, nodeIds: visited };
   }
 
   // Separate function for updating visual state without recreating SVG
@@ -911,9 +955,7 @@ json.dumps(get_word_suggestions("${prefix.replace(/"/g, '\\"')}", limit=8))
     const svg = d3.select('#flow-container svg');
     if (svg.empty()) return;
 
-    const visibleEdges = getVisibleEdges();
-
-    // Update edges
+    // Update edges (uses pre-computed visibleEdges)
     svg.select('.edges-layer').selectAll('path')
       .data(visibleEdges, e => `${e.from_id}-${e.to_id}`)
       .attr('stroke', e => {
@@ -1019,10 +1061,7 @@ json.dumps(get_word_suggestions("${prefix.replace(/"/g, '\\"')}", limit=8))
       .attr('fill', 'var(--color-bg)')
       .attr('rx', 12);
 
-    // Get visible edges
-    const visibleEdges = getVisibleEdges();
-
-    // Edge layer
+    // Edge layer (uses pre-computed visibleEdges)
     const edgeGroup = svg.append('g').attr('class', 'edges-layer');
 
     // Create link generator
@@ -1250,10 +1289,10 @@ json.dumps(get_word_suggestions("${prefix.replace(/"/g, '\\"')}", limit=8))
         selectedNodes.add(seedNode.id);
       }
 
-      // Calculate visible edges and nodes BEFORE layout
-      const visibleEdges = getVisibleEdges();
-      const visibleNodeIds = getVisibleNodeIds(visibleEdges);
-      nodePositions = calculateLayout(graphData, visibleNodeIds);
+      // Calculate visible edges and nodes BEFORE layout using BFS from seed
+      const { edges: visEdges, nodeIds: visNodeIds } = getVisibleNodesAndEdges();
+      visibleEdges = visEdges;
+      nodePositions = calculateLayout(graphData, visNodeIds);
       render();
       await updateSentences();
     } catch (e) {
@@ -2703,7 +2742,7 @@ document.head.appendChild(script);
 
 /* ========== FLOW DEMO ========== */
 .flow-demo { }
-.flow-demo.rtl { direction: rtl; }
+/* RTL is handled per-element (input, sentences) not on container */
 .flow-input-wrapper { position: relative; margin-bottom: 16px; }
 .flow-input { display: flex; gap: 12px; }
 .flow-input input { flex: 1; padding: 12px 16px; border: 2px solid var(--color-border); border-radius: 8px; background: var(--color-bg); color: var(--color-text); font-size: 1rem; }
