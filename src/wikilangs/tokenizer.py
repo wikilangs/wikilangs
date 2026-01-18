@@ -4,6 +4,7 @@ This module provides functionality to load and use BPE tokenizers
 trained on Wikipedia data for different languages and dates.
 """
 
+from __future__ import annotations
 import os
 from typing import Optional, Union, List, Literal
 try:

@@ -3,7 +3,7 @@
 This module provides utilities for integrating Wikilangs tokenizers with 
 language models, including embedding freezing and language token addition.
 """
-
+from __future__ import annotations
 import os
 from typing import List, Optional
 try:

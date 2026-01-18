@@ -4,6 +4,7 @@ This module provides functionality to load and use word and sentence embeddings
 trained on Wikipedia data using BabelVec.
 """
 
+from __future__ import annotations
 import os
 import json
 from typing import Optional, Tuple, Union, Dict, Any, List
