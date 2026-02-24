@@ -389,12 +389,50 @@ async def process_language(
 
         # Parse frontmatter
         frontmatter = parse_yaml_frontmatter(content)
-        metrics = extract_metrics(frontmatter)
+        # metrics = extract_metrics(frontmatter)
+        metrics = {}
 
         # Extract known metrics
         data.vocabulary_size = metrics.get('vocabulary_size')
         data.best_compression_ratio = metrics.get('best_compression_ratio')
         data.best_isotropy = metrics.get('best_isotropy')
+
+        # Fallback for missing/zero metrics from README body
+        if not data.vocabulary_size or data.vocabulary_size == 0:
+            # Look for "Vocabulary Size" in Section 4 Statistics table
+            vocab_match = re.search(r'\|\s*Vocabulary Size\s*\|\s*([\d,]+)\s*\|', content)
+            if vocab_match:
+                try:
+                    data.vocabulary_size = int(vocab_match.group(1).replace(',', ''))
+                except (ValueError, AttributeError):
+                    pass
+
+        if not data.best_compression_ratio or data.best_compression_ratio == 0:
+            # Look for🏆 in Section 1 Results table: | **64k** | 4.674x 🏆 |
+            comp_match = re.search(r'\|\s*[^|]*?\s*\|\s*([\d.]+)(?:x)?\s*🏆', content)
+            if comp_match:
+                try:
+                    data.best_compression_ratio = float(comp_match.group(1))
+                except (ValueError, AttributeError):
+                    pass
+
+        if not data.best_isotropy or data.best_isotropy == 0:
+            # Look for🏆 in Section 5.2 Model Comparison table: | **mono_64d** | 64 | 0.7711 🏆 |
+            iso_match = re.search(r'\|\s*[^|]*?\s*\|\s*[\d]+\s*\|\s*([\d.]+)\s*🏆', content)
+            if iso_match:
+                try:
+                    data.best_isotropy = float(iso_match.group(1))
+                except (ValueError, AttributeError):
+                    pass
+
+        # Fallback for samples from README body
+        # Look for "**Sample N:** `...`"
+        sample_matches = re.findall(r'\*\*Sample \d+:\*\*\s*`(.*?)`', content)
+        if sample_matches:
+            # Filter out very short samples or just generic labels
+            valid_samples = [s.strip() for s in sample_matches if len(s.strip()) > 10]
+            if valid_samples:
+                data.wikipedia_samples = valid_samples
 
         # Extract excerpt
         data.model_card_excerpt = extract_excerpt(content)
