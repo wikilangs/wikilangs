@@ -18,121 +18,219 @@ function isActive(href: string): boolean {
 ---
 
 <header class="header">
-  <div class="container">
-    <nav class="nav">
-      <a href="/" class="logo">
-        <img src="/wikilangs.png" alt="Wikilangs" class="logo-img" />
-        <span class="logo-text">Wikilangs</span>
+  <nav class="header-inner container">
+    <a href="/" class="wordmark">
+      <img src="/wikilangs.png" alt="" class="wordmark-icon" />
+      <span class="wordmark-text">Wikilangs</span>
+    </a>
+
+    <ul class="nav-links" role="list">
+      {navItems.map(item => (
+        <li>
+          <a
+            href={item.href}
+            class:list={['nav-link', { 'is-active': isActive(item.href) }]}
+          >
+            {item.label}
+          </a>
+        </li>
+      ))}
+    </ul>
+
+    <div class="nav-right">
+      <ThemeToggle />
+      <a
+        href="https://github.com/wikilangs/wikilangs"
+        class="nav-icon-link"
+        target="_blank"
+        rel="noopener"
+        aria-label="GitHub"
+      >
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+      </a>
+      <a href="https://huggingface.co/wikilangs" class="btn btn-sm btn-secondary" target="_blank" rel="noopener">
+        Models ↗
       </a>
 
-      <ul class="nav-links">
-        {navItems.map(item => (
-          <li>
-            <a
-              href={item.href}
-              class:list={['nav-link', { active: isActive(item.href) }]}
-            >
-              {item.label}
-            </a>
-          </li>
-        ))}
-      </ul>
+      <!-- Mobile menu trigger -->
+      <button class="mobile-menu-btn" aria-label="Open menu" aria-expanded="false">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="4" y1="7" x2="20" y2="7"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="17" x2="20" y2="17"/></svg>
+      </button>
+    </div>
+  </nav>
 
-      <div class="nav-actions">
-        <ThemeToggle />
-        <a
-          href="https://github.com/wikilangs/wikilangs"
-          class="btn btn-ghost"
-          target="_blank"
-          rel="noopener"
-        >
-          GitHub
-        </a>
-        <a href="https://huggingface.co/wikilangs" class="btn btn-secondary" target="_blank" rel="noopener">
-          Models
-        </a>
-      </div>
-    </nav>
+  <!-- Mobile nav drawer -->
+  <div class="mobile-nav" hidden>
+    <ul role="list">
+      {navItems.map(item => (
+        <li>
+          <a href={item.href} class:list={['mobile-link', { 'is-active': isActive(item.href) }]}>
+            {item.label}
+          </a>
+        </li>
+      ))}
+      <li>
+        <a href="https://github.com/wikilangs/wikilangs" class="mobile-link" target="_blank" rel="noopener">GitHub ↗</a>
+      </li>
+    </ul>
   </div>
 </header>
+
+<script>
+  const menuBtn = document.querySelector('.mobile-menu-btn');
+  const mobileNav = document.querySelector('.mobile-nav');
+  menuBtn?.addEventListener('click', () => {
+    const open = mobileNav?.hasAttribute('hidden');
+    if (open) { mobileNav?.removeAttribute('hidden'); menuBtn?.setAttribute('aria-expanded', 'true'); }
+    else { mobileNav?.setAttribute('hidden', ''); menuBtn?.setAttribute('aria-expanded', 'false'); }
+  });
+</script>
 
 <style>
   .header {
     position: sticky;
     top: 0;
     z-index: 50;
-    background: var(--color-surface);
-    border-bottom: 1px solid var(--color-border);
-    backdrop-filter: blur(8px);
-    transition: background-color var(--transition-base), border-color var(--transition-base);
+    background: var(--atlas-surface);
+    border-bottom: 1px solid var(--atlas-border);
+    backdrop-filter: blur(12px);
+    background: color-mix(in srgb, var(--atlas-surface) 85%, transparent);
   }
 
-  .nav {
+  .header-inner {
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    height: 64px;
+    height: 56px;
+    gap: var(--sp-8);
   }
 
-  .logo {
+  /* Wordmark */
+  .wordmark {
     display: flex;
     align-items: center;
-    gap: var(--space-2);
+    gap: var(--sp-2);
     text-decoration: none;
+    flex-shrink: 0;
   }
 
-  .logo-img {
-    height: 64px;
+  .wordmark-icon {
+    height: 28px;
     width: auto;
   }
 
-  .logo-text {
-    font-size: var(--font-size-xl);
+  .wordmark-text {
+    font-family: var(--font-serif);
+    font-size: var(--text-lg);
     font-weight: 700;
-    color: var(--color-text);
+    color: var(--atlas-ink);
     letter-spacing: -0.02em;
   }
 
+  /* Nav links */
   .nav-links {
     display: flex;
-    gap: var(--space-1);
+    gap: 2px;
     list-style: none;
+    padding: 0;
+    margin: 0;
   }
 
   .nav-link {
-    padding: var(--space-2) var(--space-3);
-    font-size: var(--font-size-sm);
+    padding: 6px 12px;
+    font-size: var(--text-sm);
     font-weight: 500;
-    color: var(--color-text-secondary);
+    color: var(--atlas-ink-tertiary);
     text-decoration: none;
     border-radius: var(--radius-md);
-    transition: all var(--transition-fast);
+    transition: color var(--duration-fast) var(--ease-out),
+                background var(--duration-fast) var(--ease-out);
   }
 
   .nav-link:hover {
-    color: var(--color-text);
-    background: var(--color-surface-alt);
+    color: var(--atlas-ink);
+    background: var(--atlas-surface-inset);
     text-decoration: none;
   }
 
-  .nav-link.active {
-    color: var(--color-accent-dark);
-    background: var(--color-accent-light);
+  .nav-link.is-active {
+    color: var(--atlas-accent);
+    background: var(--atlas-accent-subtle);
   }
 
-  .nav-actions {
+  /* Right section */
+  .nav-right {
+    margin-left: auto;
     display: flex;
     align-items: center;
-    gap: var(--space-3);
+    gap: var(--sp-3);
+  }
+
+  .nav-icon-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: var(--radius-md);
+    color: var(--atlas-ink-tertiary);
+    transition: color var(--duration-fast), background var(--duration-fast);
+  }
+
+  .nav-icon-link:hover {
+    color: var(--atlas-ink);
+    background: var(--atlas-surface-inset);
+  }
+
+  /* Mobile */
+  .mobile-menu-btn {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border: none;
+    background: none;
+    color: var(--atlas-ink-secondary);
+    cursor: pointer;
+    border-radius: var(--radius-md);
+  }
+
+  .mobile-menu-btn:hover {
+    background: var(--atlas-surface-inset);
+  }
+
+  .mobile-nav {
+    border-top: 1px solid var(--atlas-border);
+    padding: var(--sp-4) var(--sp-6);
+    background: var(--atlas-surface);
+  }
+
+  .mobile-nav[hidden] { display: none; }
+
+  .mobile-nav ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .mobile-link {
+    display: block;
+    padding: var(--sp-3) 0;
+    font-size: var(--text-base);
+    font-weight: 500;
+    color: var(--atlas-ink-secondary);
+    text-decoration: none;
+    border-bottom: 1px solid var(--atlas-border-subtle);
+  }
+
+  .mobile-link.is-active {
+    color: var(--atlas-accent);
   }
 
   @media (max-width: 768px) {
-    .nav-links {
-      display: none;
-    }
-
-    .nav-actions .btn-ghost {
-      display: none;
-    }
+    .nav-links { display: none; }
+    .nav-right .btn { display: none; }
+    .nav-right .nav-icon-link { display: none; }
+    .mobile-menu-btn { display: flex; }
   }
 </style>

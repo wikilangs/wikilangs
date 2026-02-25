@@ -4,128 +4,107 @@ import { formatNumber, formatCompression } from '@lib/languages';
 
 interface Props {
   lang: LanguageData;
-  showMetrics?: boolean;
 }
 
-const { lang, showMetrics = true } = Astro.props;
-
+const { lang } = Astro.props;
 const displayName = lang.common_name || lang.name;
 ---
 
-<a href={`/languages/${lang.code}/`} class="language-card">
-  <div class="card-header">
-    <span class="lang-code">{lang.code}</span>
-    {lang.has_models && <span class="badge badge-accent">Models</span>}
+<a href={`/languages/${lang.code}/`} class="lang-card">
+  <div class="card-top">
+    <span class="code-tag">{lang.code}</span>
+    {lang.has_models ? (
+      <span class="badge badge-accent">Models</span>
+    ) : (
+      <span class="badge badge-muted">Soon</span>
+    )}
   </div>
 
-  <h3 class="lang-name">{displayName}</h3>
+  <h3 class="card-name">{displayName}</h3>
 
   {lang.name !== displayName && (
-    <p class="lang-alt-name">{lang.name}</p>
+    <p class="card-alt">{lang.name}</p>
   )}
 
-  {showMetrics && lang.has_models && (
-    <div class="card-metrics">
-      {lang.vocabulary_size && (
-        <div class="metric">
-          <span class="metric-value">{formatNumber(lang.vocabulary_size)}</span>
-          <span class="metric-label">words</span>
-        </div>
-      )}
-      {lang.best_compression_ratio && (
-        <div class="metric">
-          <span class="metric-value">{formatCompression(lang.best_compression_ratio)}</span>
-          <span class="metric-label">compression</span>
-        </div>
-      )}
+  {lang.has_models && lang.best_compression_ratio && (
+    <div class="card-stat">
+      <span class="card-stat-val">{formatCompression(lang.best_compression_ratio)}</span>
+      <span class="card-stat-lbl">compression</span>
     </div>
-  )}
-
-  {!lang.has_models && (
-    <p class="no-models">Coming soon</p>
   )}
 </a>
 
 <style>
-  .language-card {
-    display: block;
-    background: var(--color-surface);
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-md);
-    padding: var(--space-4);
+  .lang-card {
+    display: flex;
+    flex-direction: column;
+    background: var(--atlas-surface);
+    border: 1px solid var(--atlas-border);
+    border-radius: var(--radius-lg);
+    padding: var(--sp-4);
     text-decoration: none;
-    transition: all var(--transition-base);
+    transition: border-color var(--duration-base) var(--ease-out),
+                box-shadow var(--duration-base) var(--ease-out);
+    min-height: 120px;
   }
 
-  .language-card:hover {
-    border-color: var(--color-accent-light);
-    box-shadow: var(--shadow-md);
-    transform: translateY(-2px);
+  .lang-card:hover {
+    border-color: var(--atlas-border-strong);
+    box-shadow: var(--atlas-shadow-md);
     text-decoration: none;
   }
 
-  .card-header {
+  .card-top {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: var(--space-2);
+    margin-bottom: var(--sp-3);
   }
 
-  .lang-code {
+  .code-tag {
     font-family: var(--font-mono);
-    font-size: var(--font-size-sm);
-    font-weight: 600;
-    color: var(--color-accent-dark);
-    background: var(--color-accent-light);
-    padding: var(--space-1) var(--space-2);
+    font-size: var(--text-xs);
+    font-weight: 500;
+    color: var(--atlas-accent);
+    background: var(--atlas-accent-subtle);
+    padding: 2px 8px;
     border-radius: var(--radius-sm);
+    letter-spacing: 0.02em;
   }
 
-  .lang-name {
-    font-size: var(--font-size-lg);
+  .card-name {
+    font-family: var(--font-serif);
+    font-size: var(--text-base);
     font-weight: 600;
-    color: var(--color-text);
+    color: var(--atlas-ink);
     margin: 0;
+    line-height: var(--leading-snug);
   }
 
-  .lang-alt-name {
-    font-size: var(--font-size-sm);
-    color: var(--color-text-muted);
-    margin: var(--space-1) 0 0;
+  .card-alt {
+    font-size: var(--text-xs);
+    color: var(--atlas-ink-muted);
+    margin: 2px 0 0;
   }
 
-  .card-metrics {
+  .card-stat {
+    margin-top: auto;
+    padding-top: var(--sp-3);
     display: flex;
-    gap: var(--space-4);
-    margin-top: var(--space-3);
-    padding-top: var(--space-3);
-    border-top: 1px solid var(--color-border-light);
+    align-items: baseline;
+    gap: var(--sp-1);
   }
 
-  .metric {
-    display: flex;
-    flex-direction: column;
-  }
-
-  .metric-value {
-    font-size: var(--font-size-sm);
+  .card-stat-val {
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
     font-weight: 600;
-    color: var(--color-text);
+    color: var(--atlas-ink);
+    font-variant-numeric: tabular-nums;
   }
 
-  .metric-label {
-    font-size: var(--font-size-xs);
-    color: var(--color-text-muted);
-  }
-
-  .no-models {
-    margin-top: var(--space-3);
-    font-size: var(--font-size-sm);
-    color: var(--color-text-muted);
-    font-style: italic;
-  }
-
-  .badge {
-    font-size: var(--font-size-xs);
+  .card-stat-lbl {
+    font-size: var(--text-xs);
+    color: var(--atlas-ink-muted);
   }
 </style>

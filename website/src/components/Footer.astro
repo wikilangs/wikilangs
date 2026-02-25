@@ -1,7 +1,7 @@
 ---
 const currentYear = new Date().getFullYear();
 
-const links = {
+const sections = {
   project: [
     { href: '/languages/', label: 'Languages' },
     { href: '/quickstart/', label: 'Quick Start' },
@@ -9,81 +9,71 @@ const links = {
     { href: '/research/', label: 'Research' },
   ],
   resources: [
-    { href: 'https://huggingface.co/wikilangs', label: 'HuggingFace Models', external: true },
-    { href: 'https://huggingface.co/datasets/omarkamali/wikipedia-monthly', label: 'Wikipedia Dataset', external: true },
-    { href: 'https://github.com/omarkamali/babelvec', label: 'BabelVec', external: true },
-    { href: 'https://pypi.org/project/wikilangs/', label: 'PyPI Package', external: true },
+    { href: 'https://huggingface.co/wikilangs', label: 'HuggingFace Models', ext: true },
+    { href: 'https://huggingface.co/datasets/omarkamali/wikipedia-monthly', label: 'Wikipedia Dataset', ext: true },
+    { href: 'https://github.com/omarkamali/babelvec', label: 'BabelVec', ext: true },
+    { href: 'https://pypi.org/project/wikilangs/', label: 'PyPI Package', ext: true },
   ],
   about: [
     { href: '/about/', label: 'About' },
     { href: '/cite/', label: 'Citation' },
     { href: '/license/', label: 'License' },
-    { href: 'https://github.com/wikilangs/wikilangs', label: 'GitHub', external: true },
+    { href: 'https://github.com/wikilangs/wikilangs', label: 'GitHub', ext: true },
   ],
 };
 ---
 
 <footer class="footer">
   <div class="container">
-    <div class="footer-grid">
+    <div class="footer-top">
       <div class="footer-brand">
-        <a href="/" class="footer-logo">Wikilangs</a>
-        <p class="footer-tagline">
-          Open NLP models for every Wikipedia language.
+        <a href="/" class="footer-wordmark">Wikilangs</a>
+        <p class="footer-desc">
+          Open NLP models for every Wikipedia language.<br />
           Making multilingual NLP accessible to everyone.
         </p>
-        <p class="footer-citation">
-          Cite us: <a href="https://doi.org/10.5281/zenodo.18073152">
-            <img src="https://zenodo.org/badge/1123873515.svg" />
-          </a>
-        </p>
-        <p class="footer-credit">
-          A project by <a href="https://omarkamali.com" target="_blank" rel="noopener">Omar Kamali</a>
-          at <a href="https://omneitylabs.com" target="_blank" rel="noopener">
-            <img src="https://www.google.com/s2/favicons?sz=64&domain_url=omneitylabs.com" alt="" class="inline-logo" />
-            Omneity Labs
-          </a>
-        </p>
-        <p class="footer-sponsor">
-          Sponsored by <a href="https://featherless.ai" target="_blank" rel="noopener">
-            <img src="https://www.google.com/s2/favicons?sz=64&domain_url=featherless.ai" alt="" class="inline-logo" />
-            Featherless.ai
-          </a>
-        </p>
+        <div class="footer-meta">
+          <p>
+            By <a href="https://omarkamali.com" target="_blank" rel="noopener">Omar Kamali</a>
+            at <a href="https://omneitylabs.com" target="_blank" rel="noopener">Omneity Labs</a>
+          </p>
+          <p>
+            Sponsored by <a href="https://featherless.ai" target="_blank" rel="noopener">Featherless.ai</a>
+          </p>
+        </div>
+        <a href="https://doi.org/10.5281/zenodo.18073152" target="_blank" rel="noopener" class="doi-link">
+          <img src="https://zenodo.org/badge/DOI/10.5281/zenodo.18073152.svg" alt="DOI" loading="lazy" />
+        </a>
       </div>
 
-      <div class="footer-links">
-        <div class="footer-section">
+      <div class="footer-nav">
+        <div class="footer-col">
           <h4>Project</h4>
           <ul>
-            {links.project.map(link => (
+            {sections.project.map(link => (
               <li><a href={link.href}>{link.label}</a></li>
             ))}
           </ul>
         </div>
-
-        <div class="footer-section">
+        <div class="footer-col">
           <h4>Resources</h4>
           <ul>
-            {links.resources.map(link => (
+            {sections.resources.map(link => (
               <li>
-                <a href={link.href} target={link.external ? '_blank' : undefined} rel={link.external ? 'noopener' : undefined}>
-                  {link.label}
-                  {link.external && <span class="external-icon" aria-hidden="true">↗</span>}
+                <a href={link.href} target={link.ext ? '_blank' : undefined} rel={link.ext ? 'noopener' : undefined}>
+                  {link.label}{link.ext && <span class="ext-arrow"> ↗</span>}
                 </a>
               </li>
             ))}
           </ul>
         </div>
-
-        <div class="footer-section">
+        <div class="footer-col">
           <h4>About</h4>
           <ul>
-            {links.about.map(link => (
+            {sections.about.map(link => (
               <li>
-                <a href={link.href} target={link.external ? '_blank' : undefined} rel={link.external ? 'noopener' : undefined}>
-                  {link.label}
-                  {link.external && <span class="external-icon" aria-hidden="true">↗</span>}
+                <a href={link.href} target={link.ext ? '_blank' : undefined} rel={link.ext ? 'noopener' : undefined}>
+                  {link.label}{link.ext && <span class="ext-arrow"> ↗</span>}
                 </a>
               </li>
             ))}
@@ -93,149 +83,138 @@ const links = {
     </div>
 
     <div class="footer-bottom">
-      <p>&copy; {currentYear} Wikilangs. MIT License.</p>
-      <p class="footer-data">
-        Data sourced from <a href="https://wikipedia.org" target="_blank" rel="noopener">Wikipedia</a>
-        under <a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noopener">CC BY-SA 4.0</a>.
-      </p>
+      <span>&copy; {currentYear} Wikilangs · MIT License</span>
+      <span>
+        Data from <a href="https://wikipedia.org" target="_blank" rel="noopener">Wikipedia</a> under
+        <a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noopener">CC BY-SA 4.0</a>
+      </span>
     </div>
   </div>
 </footer>
 
 <style>
   .footer {
-    background: var(--color-surface);
-    border-top: 1px solid var(--color-border);
-    padding: var(--space-16) 0 var(--space-8);
-    margin-top: var(--space-20);
+    margin-top: var(--sp-20);
+    border-top: 1px solid var(--atlas-border);
+    background: var(--atlas-surface);
+    padding: var(--sp-12) 0 var(--sp-8);
   }
 
-  .footer-grid {
+  .footer-top {
     display: grid;
-    grid-template-columns: 1.5fr 2fr;
-    gap: var(--space-12);
+    grid-template-columns: 1fr 2fr;
+    gap: var(--sp-16);
   }
 
-  .footer-logo {
-    font-size: var(--font-size-xl);
+  .footer-wordmark {
+    font-family: var(--font-serif);
+    font-size: var(--text-xl);
     font-weight: 700;
-    color: var(--color-text);
+    color: var(--atlas-ink);
     text-decoration: none;
   }
 
-  .inline-logo {
-    width: 16px;
-    height: 16px;
-    vertical-align: text-top;
-    margin-right: 4px;
-    border-radius: 2px;
-    display: inline-block;
+  .footer-desc {
+    margin-top: var(--sp-3);
+    font-size: var(--text-sm);
+    color: var(--atlas-ink-secondary);
+    line-height: var(--leading-relaxed);
+    max-width: 260px;
   }
 
-  .footer-tagline {
-    margin-top: var(--space-3);
-    color: var(--color-text-secondary);
-    font-size: var(--font-size-sm);
-    max-width: 280px;
-  }
-  
-  .footer-citation {
-    margin-top: var(--space-3);
-    color: var(--color-text-secondary);
-    font-size: var(--font-size-sm);
-    max-width: 280px;
-    vertical-align: top;
-  }
-  
-  .footer-citation > a {
-    vertical-align: top;
+  .footer-meta {
+    margin-top: var(--sp-4);
   }
 
-  .footer-credit {
-    margin-top: var(--space-4);
-    font-size: var(--font-size-sm);
-    color: var(--color-text-muted);
+  .footer-meta p {
+    font-size: var(--text-xs);
+    color: var(--atlas-ink-tertiary);
+    margin-bottom: var(--sp-1);
   }
 
-  .footer-sponsor {
-    margin-top: var(--space-2);
-    font-size: var(--font-size-sm);
-    color: var(--color-text-muted);
-  }
-
-  .footer-sponsor a {
-    color: var(--color-accent);
+  .footer-meta a {
+    color: var(--atlas-ink-secondary);
     font-weight: 500;
   }
 
-  .footer-links {
+  .doi-link {
+    display: inline-block;
+    margin-top: var(--sp-4);
+  }
+
+  .doi-link img {
+    height: 20px;
+  }
+
+  /* Nav columns */
+  .footer-nav {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: var(--space-8);
+    gap: var(--sp-8);
   }
 
-  .footer-section h4 {
-    font-size: var(--font-size-sm);
+  .footer-col h4 {
+    font-size: var(--text-xs);
     font-weight: 600;
-    color: var(--color-text);
-    margin-bottom: var(--space-4);
+    color: var(--atlas-ink-tertiary);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: var(--sp-4);
   }
 
-  .footer-section ul {
+  .footer-col ul {
     list-style: none;
+    padding: 0;
   }
 
-  .footer-section li {
-    margin-bottom: var(--space-2);
+  .footer-col li {
+    margin-bottom: var(--sp-2);
   }
 
-  .footer-section a {
-    font-size: var(--font-size-sm);
-    color: var(--color-text-secondary);
+  .footer-col a {
+    font-size: var(--text-sm);
+    color: var(--atlas-ink-secondary);
     text-decoration: none;
-    display: inline-flex;
-    align-items: center;
-    gap: var(--space-1);
+    transition: color var(--duration-fast);
   }
 
-  .footer-section a:hover {
-    color: var(--color-accent);
+  .footer-col a:hover {
+    color: var(--atlas-accent);
   }
 
-  .external-icon {
-    font-size: var(--font-size-xs);
-    opacity: 0.6;
+  .ext-arrow {
+    font-size: var(--text-xs);
+    opacity: 0.5;
   }
 
+  /* Bottom bar */
   .footer-bottom {
-    margin-top: var(--space-12);
-    padding-top: var(--space-6);
-    border-top: 1px solid var(--color-border-light);
+    margin-top: var(--sp-10);
+    padding-top: var(--sp-6);
+    border-top: 1px solid var(--atlas-border-subtle);
     display: flex;
     justify-content: space-between;
-    align-items: center;
-    font-size: var(--font-size-sm);
-    color: var(--color-text-muted);
+    font-size: var(--text-xs);
+    color: var(--atlas-ink-muted);
   }
 
-  .footer-data a {
-    color: var(--color-text-secondary);
+  .footer-bottom a {
+    color: var(--atlas-ink-tertiary);
   }
 
   @media (max-width: 768px) {
-    .footer-grid {
+    .footer-top {
       grid-template-columns: 1fr;
-      gap: var(--space-8);
+      gap: var(--sp-10);
     }
 
-    .footer-links {
+    .footer-nav {
       grid-template-columns: repeat(2, 1fr);
     }
 
     .footer-bottom {
       flex-direction: column;
-      gap: var(--space-2);
-      text-align: center;
+      gap: var(--sp-2);
     }
   }
 </style>

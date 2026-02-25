@@ -7,87 +7,79 @@ import { getAllLanguages, getLanguagesByLetter, getGlobalStats } from '@lib/lang
 const allLanguages = getAllLanguages();
 const languagesByLetter = getLanguagesByLetter();
 const stats = getGlobalStats();
-
-// Sort letters alphabetically
 const sortedLetters = Array.from(languagesByLetter.keys()).sort();
 ---
 
 <BaseLayout
   title="Languages"
-  description={`Browse all ${stats.totalLanguages}+ languages with pre-trained NLP models. Tokenizers, n-grams, Markov chains, vocabularies, and embeddings for every Wikipedia language.`}
+  description={`Browse all ${stats.totalLanguages}+ languages with pre-trained NLP models.`}
 >
-  <section class="hero-compact">
+  <!-- Header -->
+  <section class="page-header">
     <div class="container">
       <h1>Languages</h1>
-      <p class="hero-subtitle">
+      <p class="page-lead">
         Pre-trained NLP models for {stats.totalLanguages}+ Wikipedia languages.
-        Each language includes tokenizers, n-gram models, Markov chains, vocabularies, and embeddings.
+        Tokenizers, n-gram models, Markov chains, vocabularies, and embeddings.
       </p>
-
-      <!-- Quick stats -->
-      <div class="quick-stats">
-        <div class="quick-stat">
-          <strong>{stats.languagesWithModels}</strong> with models
-        </div>
-        <div class="quick-stat">
-          <strong>{stats.averageCompressionRatio.toFixed(2)}x</strong> avg compression
-        </div>
+      <div class="header-stats">
+        <span class="hs"><strong>{stats.languagesWithModels}</strong> with models</span>
+        <span class="hs-dot">·</span>
+        <span class="hs"><strong>{stats.averageCompressionRatio.toFixed(2)}x</strong> avg compression</span>
       </div>
     </div>
   </section>
 
-  <!-- World Map -->
-  <section class="map-section">
+  <!-- Map -->
+  <section class="map-area">
     <div class="container">
-      <h2>Language Coverage</h2>
-      <p class="map-description">Explore languages by geographic region. Hover over countries to see available models.</p>
-      <div class="map-container">
-        <WorldMap mode="display" />
+      <div class="map-intro">
+        <h2>Language coverage</h2>
+        <p>Explore languages by geographic region. Click a continent to see its languages.</p>
       </div>
+      <WorldMap mode="display" height={340} />
     </div>
   </section>
 
-  <!-- Search and Filter -->
-  <section class="filter-section">
-    <div class="container">
-      <div class="filter-bar">
-        <div class="search-box">
-          <input
-            type="search"
-            id="language-search"
-            placeholder="Search languages..."
-            autocomplete="off"
-          />
-        </div>
-        <div class="filter-options">
-          <label class="filter-checkbox">
-            <input type="checkbox" id="filter-models" checked />
-            <span>With models only</span>
-          </label>
-        </div>
+  <!-- Search & Filter — sticky -->
+  <section class="filter-bar" id="filter-bar">
+    <div class="container filter-inner">
+      <div class="search-wrap">
+        <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input
+          type="search"
+          id="language-search"
+          placeholder="Search languages…"
+          autocomplete="off"
+        />
       </div>
+      <label class="filter-toggle">
+        <input type="checkbox" id="filter-models" checked />
+        <span>With models only</span>
+      </label>
+    </div>
 
-      <!-- Alphabet navigation -->
-      <nav class="alphabet-nav" aria-label="Jump to letter">
+    <div class="container">
+      <nav class="alphabet" aria-label="Jump to letter">
         {sortedLetters.map(letter => (
-          <a href={`#letter-${letter}`} class="letter-link">{letter}</a>
+          <a href={`#letter-${letter}`} class="alpha-link">{letter}</a>
         ))}
       </nav>
     </div>
   </section>
 
-  <!-- Languages Grid by Letter -->
-  <section class="languages-section">
+  <!-- Language grid by letter -->
+  <section class="lang-list">
     <div class="container">
       <div id="languages-container">
         {sortedLetters.map(letter => {
           const langs = languagesByLetter.get(letter) || [];
           return (
             <div class="letter-group" id={`letter-${letter}`}>
-              <h2 class="letter-heading">{letter}</h2>
-              <div class="languages-grid">
+              <h2 class="letter-mark">{letter}</h2>
+              <div class="lang-grid">
                 {langs.map(lang => (
-                  <div class="language-item" data-code={lang.code} data-name={lang.name.toLowerCase()} data-has-models={lang.has_models}>
+                  <div class="lang-slot" data-code={lang.code} data-name={lang.name.toLowerCase()} data-has-models={lang.has_models}>
                     <LanguageCard lang={lang} />
                   </div>
                 ))}
@@ -97,300 +89,244 @@ const sortedLetters = Array.from(languagesByLetter.keys()).sort();
         })}
       </div>
 
-      <!-- No results message -->
-      <div id="no-results" class="no-results" hidden>
+      <div id="no-results" class="empty-state" hidden>
         <p>No languages found matching your search.</p>
       </div>
     </div>
   </section>
 
-  <!-- Client-side search script -->
   <script>
     const searchInput = document.getElementById('language-search') as HTMLInputElement;
     const filterModels = document.getElementById('filter-models') as HTMLInputElement;
-    const languageItems = document.querySelectorAll('.language-item');
+    const langSlots = document.querySelectorAll('.lang-slot');
     const letterGroups = document.querySelectorAll('.letter-group');
     const noResults = document.getElementById('no-results');
 
     function filterLanguages() {
-      const query = searchInput.value.toLowerCase().trim();
+      const q = searchInput.value.toLowerCase().trim();
       const modelsOnly = filterModels.checked;
-      let visibleCount = 0;
+      let visible = 0;
 
-      languageItems.forEach(item => {
-        const code = item.getAttribute('data-code') || '';
-        const name = item.getAttribute('data-name') || '';
-        const hasModels = item.getAttribute('data-has-models') === 'true';
-
-        const matchesSearch = !query || code.includes(query) || name.includes(query);
-        const matchesFilter = !modelsOnly || hasModels;
-        const visible = matchesSearch && matchesFilter;
-
-        (item as HTMLElement).hidden = !visible;
-        if (visible) visibleCount++;
+      langSlots.forEach(el => {
+        const code = el.getAttribute('data-code') || '';
+        const name = el.getAttribute('data-name') || '';
+        const hasModels = el.getAttribute('data-has-models') === 'true';
+        const show = (!q || code.includes(q) || name.includes(q)) && (!modelsOnly || hasModels);
+        (el as HTMLElement).hidden = !show;
+        if (show) visible++;
       });
 
-      // Hide empty letter groups
-      letterGroups.forEach(group => {
-        const visibleItems = group.querySelectorAll('.language-item:not([hidden])');
-        (group as HTMLElement).hidden = visibleItems.length === 0;
+      letterGroups.forEach(g => {
+        const any = g.querySelectorAll('.lang-slot:not([hidden])');
+        (g as HTMLElement).hidden = any.length === 0;
       });
 
-      // Show/hide no results
-      if (noResults) {
-        noResults.hidden = visibleCount > 0;
-      }
+      if (noResults) noResults.hidden = visible > 0;
     }
 
     searchInput?.addEventListener('input', filterLanguages);
     filterModels?.addEventListener('change', filterLanguages);
-
-    // Initial filter
     filterLanguages();
   </script>
 </BaseLayout>
 
 <style>
-  .hero-compact {
-    padding: var(--space-12) 0;
-    background: var(--color-surface);
-    border-bottom: 1px solid var(--color-border);
+  /* Page header */
+  .page-header {
+    padding: var(--sp-12) 0 var(--sp-10);
+    border-bottom: 1px solid var(--atlas-border);
+    background: var(--atlas-surface);
   }
 
-  .hero-compact h1 {
-    font-size: var(--font-size-4xl);
-    margin-bottom: var(--space-4);
+  .page-header h1 {
+    margin-bottom: var(--sp-3);
   }
 
-  .hero-subtitle {
-    font-size: var(--font-size-lg);
-    color: var(--color-text-secondary);
-    max-width: 700px;
+  .page-lead {
+    font-size: var(--text-lg);
+    color: var(--atlas-ink-secondary);
+    max-width: 640px;
+    margin-bottom: var(--sp-4);
   }
 
-  .quick-stats {
+  .header-stats {
     display: flex;
-    gap: var(--space-6);
-    margin-top: var(--space-6);
-  }
-
-  .quick-stat {
-    font-size: var(--font-size-sm);
-    color: var(--color-text-secondary);
-  }
-
-  .quick-stat strong {
-    color: var(--color-accent);
-  }
-
-  /* Map section */
-  .map-section {
-    padding: var(--space-8) 0;
-    background: var(--color-bg);
-    border-bottom: 1px solid var(--color-border-light);
-  }
-
-  .map-section h2 {
-    font-size: var(--font-size-2xl);
-    margin-bottom: var(--space-2);
-  }
-
-  .map-description {
-    color: var(--color-text-secondary);
-    margin-bottom: var(--space-6);
-  }
-
-  .map-container {
-    max-width: 900px;
-    margin: 0 auto;
-  }
-
-  .map-legend-inline {
-    display: flex;
-    justify-content: center;
-    gap: var(--space-6);
-    margin-top: var(--space-4);
-    flex-wrap: wrap;
-  }
-
-  .map-legend-inline .legend-item {
-    display: flex;
+    gap: var(--sp-3);
     align-items: center;
-    gap: var(--space-2);
-    font-size: var(--font-size-sm);
-    color: var(--color-text-secondary);
+    font-size: var(--text-sm);
+    color: var(--atlas-ink-tertiary);
   }
 
-  .map-legend-inline .legend-swatch {
-    width: 20px;
-    height: 12px;
-    border-radius: 2px;
-    border: 1px solid var(--color-border);
+  .header-stats strong {
+    color: var(--atlas-accent);
+    font-weight: 600;
+    font-family: var(--font-mono);
   }
 
-  .map-legend-inline .legend-swatch.endemic {
-    background: hsl(262, 70%, 65%);
+  .hs-dot {
+    color: var(--atlas-ink-muted);
   }
 
-  .map-legend-inline .legend-swatch.macro {
-    background: repeating-linear-gradient(45deg, hsl(262, 75%, 50%), hsl(262, 75%, 50%) 2px, transparent 2px, transparent 4px);
+  /* Map */
+  .map-area {
+    padding: var(--sp-10) 0;
+    border-bottom: 1px solid var(--atlas-border-subtle);
   }
 
-  .map-legend-inline .legend-swatch.mixed {
-    background: hsl(262, 70%, 65%);
-    background-image: repeating-linear-gradient(45deg, transparent, transparent 2px, rgba(99, 102, 241, 0.5) 2px, rgba(99, 102, 241, 0.5) 4px);
+  .map-intro {
+    margin-bottom: var(--sp-6);
   }
 
-  /* Filter section */
-  .filter-section {
-    padding: var(--space-6) 0;
-    background: var(--color-bg);
-    border-bottom: 1px solid var(--color-border-light);
-    position: sticky;
-    top: 64px;
-    z-index: 10;
+  .map-intro h2 {
+    font-size: var(--text-xl);
+    margin-bottom: var(--sp-1);
   }
 
+  .map-intro p {
+    font-size: var(--text-sm);
+    color: var(--atlas-ink-tertiary);
+    margin: 0;
+  }
+
+  /* Filter bar — sticky */
   .filter-bar {
-    display: flex;
-    gap: var(--space-4);
-    align-items: center;
-    margin-bottom: var(--space-4);
+    position: sticky;
+    top: 56px; /* header height */
+    z-index: 10;
+    background: var(--atlas-bg);
+    border-bottom: 1px solid var(--atlas-border);
+    padding: var(--sp-4) 0 var(--sp-3);
   }
 
-  .search-box {
+  .filter-inner {
+    display: flex;
+    gap: var(--sp-4);
+    align-items: center;
+    margin-bottom: var(--sp-3);
+  }
+
+  .search-wrap {
+    position: relative;
     flex: 1;
-    max-width: 400px;
+    max-width: 360px;
   }
 
-  .search-box input {
+  .search-icon {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--atlas-ink-muted);
+    pointer-events: none;
+  }
+
+  .search-wrap input {
     width: 100%;
-    padding: var(--space-3) var(--space-4);
-    font-size: var(--font-size-base);
-    border: 1px solid var(--color-border);
+    padding: var(--sp-2) var(--sp-4) var(--sp-2) 36px;
+    font-family: var(--font-sans);
+    font-size: var(--text-sm);
+    border: 1px solid var(--atlas-border);
     border-radius: var(--radius-md);
-    background: var(--color-surface);
-  }
-
-  .search-box input:focus {
+    background: var(--atlas-surface);
+    color: var(--atlas-ink);
     outline: none;
-    border-color: var(--color-accent);
+    transition: border-color var(--duration-fast);
   }
 
-  .filter-options {
-    display: flex;
-    gap: var(--space-4);
+  .search-wrap input:focus {
+    border-color: var(--atlas-accent);
+    box-shadow: 0 0 0 3px var(--atlas-accent-subtle);
   }
 
-  .filter-checkbox {
+  .filter-toggle {
     display: flex;
     align-items: center;
-    gap: var(--space-2);
-    font-size: var(--font-size-sm);
-    color: var(--color-text-secondary);
+    gap: var(--sp-2);
+    font-size: var(--text-sm);
+    color: var(--atlas-ink-secondary);
     cursor: pointer;
+    white-space: nowrap;
   }
 
-  .filter-checkbox input {
-    accent-color: var(--color-accent);
+  .filter-toggle input {
+    accent-color: var(--atlas-accent);
   }
 
-  /* Alphabet nav */
-  .alphabet-nav {
+  /* Alphabet */
+  .alphabet {
     display: flex;
     flex-wrap: wrap;
-    gap: var(--space-1);
+    gap: 2px;
   }
 
-  .letter-link {
+  .alpha-link {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 32px;
-    height: 32px;
-    font-size: var(--font-size-sm);
+    width: 28px;
+    height: 28px;
+    font-size: var(--text-xs);
     font-weight: 500;
-    color: var(--color-text-secondary);
+    color: var(--atlas-ink-tertiary);
     border-radius: var(--radius-sm);
     text-decoration: none;
-    transition: all var(--transition-fast);
+    transition: all var(--duration-fast);
   }
 
-  .letter-link:hover {
-    background: var(--color-accent);
-    color: white;
+  .alpha-link:hover {
+    background: var(--atlas-accent);
+    color: #fff;
     text-decoration: none;
   }
 
-  /* Languages section */
-  .languages-section {
-    padding: var(--space-8) 0 var(--space-16);
+  /* Language list */
+  .lang-list {
+    padding: var(--sp-8) 0 var(--sp-16);
   }
 
   .letter-group {
-    margin-bottom: var(--space-10);
+    margin-bottom: var(--sp-10);
   }
 
-  .letter-group[hidden] {
-    display: none;
+  .letter-group[hidden] { display: none; }
+
+  .letter-mark {
+    font-family: var(--font-serif);
+    font-size: var(--text-xl);
+    color: var(--atlas-ink-tertiary);
+    padding-bottom: var(--sp-3);
+    border-bottom: 1px solid var(--atlas-border);
+    margin-bottom: var(--sp-4);
   }
 
-  .letter-heading {
-    font-size: var(--font-size-2xl);
-    color: var(--color-accent);
-    padding-bottom: var(--space-3);
-    border-bottom: 2px solid var(--color-accent);
-    margin-bottom: var(--space-4);
-  }
-
-  .languages-grid {
+  .lang-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: var(--space-4);
+    gap: var(--sp-4);
   }
 
-  .language-item[hidden] {
-    display: none;
-  }
+  .lang-slot[hidden] { display: none; }
 
-  .no-results {
+  .empty-state {
     text-align: center;
-    padding: var(--space-16) 0;
-    color: var(--color-text-muted);
+    padding: var(--sp-16) 0;
+    color: var(--atlas-ink-muted);
   }
 
-  .no-results[hidden] {
-    display: none;
-  }
+  .empty-state[hidden] { display: none; }
 
   @media (max-width: 1024px) {
-    .languages-grid {
-      grid-template-columns: repeat(3, 1fr);
-    }
+    .lang-grid { grid-template-columns: repeat(3, 1fr); }
   }
 
   @media (max-width: 768px) {
-    .filter-bar {
-      flex-direction: column;
-      align-items: stretch;
-    }
-
-    .search-box {
-      max-width: none;
-    }
-
-    .languages-grid {
-      grid-template-columns: repeat(2, 1fr);
-    }
-
-    .alphabet-nav {
-      display: none;
-    }
+    .filter-inner { flex-direction: column; align-items: stretch; }
+    .search-wrap { max-width: none; }
+    .lang-grid { grid-template-columns: repeat(2, 1fr); }
+    .alphabet { display: none; }
   }
 
   @media (max-width: 480px) {
-    .languages-grid {
-      grid-template-columns: 1fr;
-    }
+    .lang-grid { grid-template-columns: 1fr; }
   }
 </style>

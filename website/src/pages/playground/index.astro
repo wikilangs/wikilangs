@@ -70,189 +70,103 @@ import languageCountries from '@data/language_countries.json';
     </div>
   </div>
 
-  <section class="hero-playground">
+  <!-- Lab Header -->
+  <header class="lab-header">
     <div class="container">
-      <h1>Language Playground</h1>
-      <p class="hero-subtitle">Dive into the linguistic universe. Every language tells a story.</p>
-
-      <!-- Unified Status Bar - 3 sections, fixed layout -->
-      <div class="status-bar">
-        <!-- Section 1: Language Selector -->
-        <button id="select-lang-btn" class="status-section status-selector">
-          <div class="status-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-              <circle cx="12" cy="12" r="10"/>
-              <path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
-            </svg>
-          </div>
-          <span class="status-label">Language</span>
-          <svg class="status-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <div class="lab-bar">
+        <button id="select-lang-btn" class="lang-pill">
+          <svg class="pill-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="20" height="20">
+            <circle cx="12" cy="12" r="10"/>
+            <path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+          </svg>
+          <span id="lang-empty" class="pill-placeholder">Choose a language</span>
+          <span id="lang-active" class="pill-active hidden">
+            <span class="pill-badge" id="current-flag">EN</span>
+            <span id="current-label">English</span>
+          </span>
+          <svg class="pill-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
             <path d="M6 9l6 6 6-6"/>
           </svg>
         </button>
 
-        <!-- Section 2: Selected Language Display -->
-        <div id="lang-display" class="status-section status-display">
-          <div id="lang-empty" class="lang-state lang-state-empty">
-            <span class="empty-dot"></span>
-            <span>No language selected</span>
-          </div>
-          <div id="lang-active" class="lang-state lang-state-active hidden">
-            <span class="lang-badge" id="current-flag">EN</span>
-            <span class="lang-name" id="current-label">English</span>
-          </div>
-        </div>
-
-        <!-- Section 3: Environment Status -->
-        <div id="env-status" class="status-section status-env">
-          <div id="env-loading" class="env-state env-state-loading">
-            <div class="env-spinner">
-              <svg viewBox="0 0 24 24">
-                <circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="2" opacity="0.2"/>
-                <path d="M12 2a10 10 0 0 1 10 10" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-              </svg>
+        <div class="lab-env" id="env-status">
+          <div id="env-loading" class="env-ind env-ind-loading">
+            <svg class="env-spin" viewBox="0 0 24 24" width="18" height="18">
+              <circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="2" opacity="0.2"/>
+              <path d="M12 2a10 10 0 0 1 10 10" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+            <span id="progress-status" class="env-label">Setting up...</span>
+            <div class="env-track">
+              <div class="env-fill" id="progress-fill"></div>
             </div>
-            <div class="env-info">
-              <span class="env-label" id="progress-status">Setting up environment...</span>
-              <div class="env-progress">
-                <div class="env-progress-track">
-                  <div class="env-progress-fill" id="progress-fill"></div>
-                </div>
-                <span class="env-pct" id="progress-pct">0%</span>
-              </div>
-            </div>
+            <span id="progress-pct" class="env-pct">0%</span>
           </div>
-          <div id="env-ready" class="env-state env-state-ready hidden">
-            <div class="env-check">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                <path d="M20 6L9 17l-5-5"/>
-              </svg>
-            </div>
-            <span class="env-ready-label">Ready</span>
+          <div id="env-ready" class="env-ind env-ind-ready hidden">
+            <span class="env-dot-ok">✓</span>
+            <span>Ready</span>
           </div>
         </div>
       </div>
     </div>
-  </section>
+  </header>
 
-  <!-- Main Playground -->
-  <section class="playground-main">
+  <!-- Demo Tabs -->
+  <nav class="lab-tabs">
     <div class="container">
-      <div class="demo-grid" id="demo-grid">
-        <!-- Language DNA -->
-        <div class="demo-card" data-demo="dna">
-          <div class="demo-icon dna-icon-wrapper">
-            <svg viewBox="0 0 60 80" class="dna-card-icon">
-              <!-- Left backbone -->
-              <path class="dna-strand-left" d="M15,5 Q30,15 15,25 Q0,35 15,45 Q30,55 15,65 Q0,75 15,80" fill="none" stroke="currentColor" stroke-width="2.5"/>
-              <!-- Right backbone -->
-              <path class="dna-strand-right" d="M45,5 Q30,15 45,25 Q60,35 45,45 Q30,55 45,65 Q60,75 45,80" fill="none" stroke="currentColor" stroke-width="2.5"/>
-              <!-- Base pairs -->
-              <line class="dna-base" x1="15" y1="5" x2="45" y2="5" stroke="currentColor" stroke-width="1.5" opacity="0.4"/>
-              <line class="dna-base" x1="15" y1="25" x2="45" y2="25" stroke="currentColor" stroke-width="1.5" opacity="0.4"/>
-              <line class="dna-base" x1="15" y1="45" x2="45" y2="45" stroke="currentColor" stroke-width="1.5" opacity="0.4"/>
-              <line class="dna-base" x1="15" y1="65" x2="45" y2="65" stroke="currentColor" stroke-width="1.5" opacity="0.4"/>
-              <!-- Nucleotides -->
-              <circle cx="15" cy="5" r="3" fill="currentColor"/>
-              <circle cx="45" cy="5" r="3" fill="currentColor" opacity="0.7"/>
-              <circle cx="15" cy="25" r="3" fill="currentColor"/>
-              <circle cx="45" cy="25" r="3" fill="currentColor" opacity="0.7"/>
-              <circle cx="15" cy="45" r="3" fill="currentColor"/>
-              <circle cx="45" cy="45" r="3" fill="currentColor" opacity="0.7"/>
-              <circle cx="15" cy="65" r="3" fill="currentColor"/>
-              <circle cx="45" cy="65" r="3" fill="currentColor" opacity="0.7"/>
-            </svg>
-          </div>
-          <h3>Language DNA</h3>
-          <p>Discover what makes this language unique - character frequencies, word patterns, and linguistic fingerprints.</p>
-          <button class="demo-btn" data-action="dna">Analyze DNA</button>
-        </div>
-
-        <!-- Word Flow -->
-        <div class="demo-card" data-demo="flow">
-          <div class="demo-icon flow-illustration">
-            <span class="flow-node">word</span>
-            <svg class="flow-arrow" viewBox="0 0 24 12" width="20" height="10">
-              <path d="M0 6h18M14 2l6 4-6 4" fill="none" stroke="currentColor" stroke-width="1.5"/>
-            </svg>
-            <span class="flow-node seed">seed</span>
-            <svg class="flow-arrow" viewBox="0 0 24 12" width="20" height="10">
-              <path d="M0 6h18M14 2l6 4-6 4" fill="none" stroke="currentColor" stroke-width="1.5"/>
-            </svg>
-            <span class="flow-node">word</span>
-          </div>
-          <h3>Word Flow</h3>
-          <p>Explore word sequences as a directed flow. See what comes before and after, and discover sentence paths.</p>
-          <button class="demo-btn" data-action="flow">Explore Flow</button>
-        </div>
-
-        <!-- Text Weaver -->
-        <div class="demo-card" data-demo="weaver">
-          <div class="demo-icon weaver-illustration">
-            <span class="weave-node">the</span>
-            <span class="weave-arrow">→</span>
-            <span class="weave-node">quick</span>
-            <span class="weave-arrow">→</span>
-            <span class="weave-node">fox</span>
-          </div>
-          <h3>Text Weaver</h3>
-          <p>Watch the Markov chain weave words together, creating text that emerges from statistical patterns.</p>
-          <button class="demo-btn" data-action="weaver">Start Weaving</button>
-        </div>
-
-        <!-- Zipf's Law -->
-        <div class="demo-card" data-demo="zipf">
-          <div class="demo-icon zipf-illustration">
-            <span class="zipf-bar b1"></span>
-            <span class="zipf-bar b2"></span>
-            <span class="zipf-bar b3"></span>
-            <span class="zipf-bar b4"></span>
-            <span class="zipf-bar b5"></span>
-            <span class="zipf-bar b6"></span>
-            <span class="zipf-bar b7"></span>
-          </div>
-          <h3>Zipf's Law</h3>
-          <p>Witness one of nature's most beautiful patterns - how word frequencies follow a perfect power law.</p>
-          <button class="demo-btn" data-action="zipf">Reveal Pattern</button>
-        </div>
-
-        <!-- Rare Words Museum -->
-        <div class="demo-card" data-demo="museum">
-          <div class="demo-icon museum-illustration">
-            <span class="museum-word w1">ephemeral</span>
-            <span class="museum-word w2">serendipity</span>
-            <span class="museum-word w3">luminescence</span>
-          </div>
-          <h3>Rare Words Museum</h3>
-          <p>Discover the longest, rarest, and most unusual words. Every language has hidden treasures.</p>
-          <button class="demo-btn" data-action="museum">Enter Museum</button>
-        </div>
-
-        <!-- Language Bridge -->
-        <div class="demo-card" data-demo="bridge">
-          <div class="demo-icon bridge-illustration">
-            <span class="bridge-word left">hello</span>
-            <span class="bridge-connector"></span>
-            <span class="bridge-word right">hola</span>
-          </div>
-          <h3>Language Bridge</h3>
-          <p>Find words that transcend borders. Discover cognates, loanwords, and universal concepts.</p>
-          <button class="demo-btn" data-action="bridge">Build Bridge</button>
-        </div>
-      </div>
-
-      <!-- Demo Display Area -->
-      <div id="demo-display" class="demo-display hidden">
-        <button class="back-btn" id="back-btn">
-          <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-            <path d="M12 4L6 10L12 16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-          </svg>
-          Back to Playground
+      <div class="tabs-track">
+        <button class="lab-tab" data-demo="dna">
+          <span class="tab-ico">🧬</span><span class="tab-lbl">Language DNA</span>
         </button>
-        <div id="demo-content"></div>
+        <button class="lab-tab" data-demo="flow">
+          <span class="tab-ico">🌊</span><span class="tab-lbl">Word Flow</span>
+        </button>
+        <button class="lab-tab" data-demo="weaver">
+          <span class="tab-ico">🧵</span><span class="tab-lbl">Text Weaver</span>
+        </button>
+        <button class="lab-tab" data-demo="zipf">
+          <span class="tab-ico">📊</span><span class="tab-lbl">Zipf's Law</span>
+        </button>
+        <button class="lab-tab" data-demo="museum">
+          <span class="tab-ico">🏛️</span><span class="tab-lbl">Rare Words</span>
+        </button>
+        <button class="lab-tab" data-demo="bridge">
+          <span class="tab-ico">🌉</span><span class="tab-lbl">Language Bridge</span>
+        </button>
       </div>
     </div>
-  </section>
+  </nav>
+
+  <!-- Workspace -->
+  <main class="lab-workspace">
+    <div class="container">
+      <!-- Empty state -->
+      <div id="empty-state" class="lab-empty">
+        <div class="empty-orb">
+          <svg viewBox="0 0 200 200" width="180" height="180" class="orb-svg">
+            <circle cx="100" cy="100" r="80" fill="none" stroke="var(--color-border)" stroke-width="0.5" stroke-dasharray="4 6" class="orb-ring r1"/>
+            <circle cx="100" cy="100" r="55" fill="none" stroke="var(--color-border)" stroke-width="0.5" stroke-dasharray="4 6" class="orb-ring r2"/>
+            <circle cx="100" cy="100" r="30" fill="none" stroke="var(--color-border)" stroke-width="0.5" stroke-dasharray="4 6" class="orb-ring r3"/>
+            <circle cx="100" cy="20" r="4" fill="var(--color-accent)" class="orb-dot d1"/>
+            <circle cx="155" cy="100" r="3.5" fill="var(--color-accent)" opacity="0.7" class="orb-dot d2"/>
+            <circle cx="70" cy="130" r="3" fill="var(--color-accent)" opacity="0.5" class="orb-dot d3"/>
+            <circle cx="130" cy="55" r="2.5" fill="var(--color-accent)" opacity="0.35" class="orb-dot d4"/>
+          </svg>
+        </div>
+        <h2 class="empty-title">Choose a language to begin</h2>
+        <p class="empty-sub">Explore the linguistic DNA, word flows, and hidden patterns of 340+ languages</p>
+        <button id="empty-cta" class="empty-btn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="20" height="20">
+            <circle cx="12" cy="12" r="10"/>
+            <path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+          </svg>
+          Select Language
+        </button>
+      </div>
+
+      <!-- Demo content area -->
+      <div id="demo-content" class="lab-panel hidden"></div>
+    </div>
+  </main>
 </BaseLayout>
 
 <script is:inline define:vars={{ languagesData: languages, countryData: languageCountries }}>
@@ -262,6 +176,7 @@ let pyodideReady = false;
 let currentLang = null;  // No language selected initially
 let loadedModels = {};   // Track which models are loaded: { vocab: bool, markov: bool, ngram: bool }
 let pendingAction = null; // Store pending demo action while selecting language
+let activeDemo = null;    // Currently active demo tab
 
 // ========== DOM ==========
 const modal = document.getElementById('lang-modal');
@@ -277,10 +192,8 @@ const langGrid = document.getElementById('lang-grid');
 const progressStatus = document.getElementById('progress-status');
 const progressPct = document.getElementById('progress-pct');
 const progressFill = document.getElementById('progress-fill');
-const demoGrid = document.getElementById('demo-grid');
-const demoDisplay = document.getElementById('demo-display');
+const emptyState = document.getElementById('empty-state');
 const demoContent = document.getElementById('demo-content');
-const backBtn = document.getElementById('back-btn');
 
 // ========== MODAL ==========
 const mapView = document.getElementById('map-view');
@@ -400,23 +313,43 @@ function updateLangDisplay() {
   currentLabel.textContent = currentLang.name;
 }
 
-// Run pending action after language selection
+// Run pending action after language selection (auto-runs DNA if no pending action)
 async function runPendingAction() {
-  if (!pendingAction) return;
-  const action = pendingAction;
+  const action = pendingAction || activeDemo || 'dna';
   pendingAction = null;
-
-  // Wait for pyodide to be ready
   if (!pyodideReady) {
-    // Will be triggered by the pyodide ready handler
     pendingAction = action;
     return;
   }
-
-  demoGrid.classList.add('hidden');
-  demoDisplay.classList.remove('hidden');
+  activateTab(action);
   await runDemo(action);
 }
+
+// ========== TAB NAVIGATION ==========
+function activateTab(action) {
+  activeDemo = action;
+  document.querySelectorAll('.lab-tab').forEach(t =>
+    t.classList.toggle('active', t.dataset.demo === action)
+  );
+  emptyState.classList.add('hidden');
+  demoContent.classList.remove('hidden');
+}
+
+document.querySelectorAll('.lab-tab').forEach(tab => {
+  tab.addEventListener('click', async () => {
+    const action = tab.dataset.demo;
+    if (!currentLang) {
+      pendingAction = action;
+      openModal();
+      return;
+    }
+    if (!pyodideReady) return;
+    activateTab(action);
+    await runDemo(action);
+  });
+});
+
+document.getElementById('empty-cta')?.addEventListener('click', openModal);
 
 // ========== ENV PROGRESS ==========
 function showProgress(status) {
@@ -526,6 +459,11 @@ async function initPyodide() {
     pyodideReady = true;
 
     setTimeout(hideProgress, 800);
+
+    // If a pending action was waiting for Pyodide, run it now
+    if (pendingAction && currentLang) {
+      setTimeout(() => runPendingAction(), 900);
+    }
   } catch (err) {
     progressStatus.textContent = 'Error: ' + err.message;
     console.error(err);
@@ -613,31 +551,6 @@ async function ensureModelsLoaded(action) {
 }
 
 // ========== DEMOS ==========
-document.querySelectorAll('.demo-btn').forEach(btn => {
-  btn.addEventListener('click', async () => {
-    const action = btn.dataset.action;
-
-    if (!currentLang) {
-      // Store the pending action and open language selector
-      pendingAction = action;
-      openModal();
-      return;
-    }
-    if (!pyodideReady) {
-      alert('Please wait for the environment to initialize');
-      return;
-    }
-    demoGrid.classList.add('hidden');
-    demoDisplay.classList.remove('hidden');
-    await runDemo(action);
-  });
-});
-
-backBtn.addEventListener('click', () => {
-  demoDisplay.classList.add('hidden');
-  demoGrid.classList.remove('hidden');
-});
-
 async function runDemo(action) {
   demoContent.innerHTML = '<div class="demo-loading"><div class="spinner"></div><p>Loading model data...</p></div>';
 
@@ -1167,7 +1080,7 @@ json.dumps(get_word_suggestions("${prefix.replace(/"/g, '\\"')}", limit=8))
       .attr('font-size', '10px')
       .attr('font-weight', col => col === 0 ? '600' : '400')
       .text(col => {
-        if (col === 0) return isRTL ? 'הזרע' : 'seed';
+        if (col === 0) return 'seed';
         if (isRTL) {
           // For RTL: negative columns are "after", positive are "before"
           if (col < 0) return `+${Math.abs(col)}`;
@@ -2169,11 +2082,9 @@ async function handleDeepLink() {
 
       // If a specific demo was requested, wait for Pyodide and launch it
       if (demo && ['dna', 'flow', 'weaver', 'zipf', 'museum', 'bridge'].includes(demo)) {
-        // Wait for Pyodide to be ready
         const waitForPyodide = () => {
           if (pyodideReady) {
-            demoGrid.classList.add('hidden');
-            demoDisplay.classList.remove('hidden');
+            activateTab(demo);
             runDemo(demo);
           } else {
             setTimeout(waitForPyodide, 100);
@@ -2280,430 +2191,188 @@ document.head.appendChild(script);
 .lang-name { font-weight: 600; color: var(--color-text); }
 .lang-vocab { font-size: 0.75rem; color: var(--color-text-muted); }
 
-/* ========== HERO ========== */
-.hero-playground { padding: 28px 0 20px; background: linear-gradient(135deg, var(--color-surface) 0%, var(--color-bg) 100%); border-bottom: 1px solid var(--color-border); text-align: center; }
-.hero-playground h1 { font-size: 1.75rem; margin-bottom: 6px; background: linear-gradient(135deg, var(--color-accent), var(--color-accent-dark)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
-.hero-subtitle { font-size: 1rem; color: var(--color-text-secondary); margin-bottom: 16px; }
-
-/* ========== STATUS BAR ========== */
-.status-bar {
-  display: grid;
-  grid-template-columns: auto 1fr auto;
-  gap: 1px;
-  max-width: 700px;
-  margin: 0 auto;
-  background: var(--color-border);
-  border-radius: 12px;
-  overflow: hidden;
-  box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+/* ========== LAB HEADER ========== */
+.lab-header {
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+  padding: 12px 0;
+  position: sticky;
+  top: 56px; /* below site header */
+  z-index: 20;
+}
+.lab-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
 }
 
-.status-section {
-  background: var(--color-surface);
-  padding: 12px 16px;
+/* Language Pill */
+.lang-pill {
   display: flex;
   align-items: center;
   gap: 10px;
-  min-height: 52px;
-}
-
-/* Section 1: Language Selector Button */
-.status-selector {
-  cursor: pointer;
-  border: none;
-  font: inherit;
-  transition: background 0.2s;
-}
-.status-selector:hover {
+  padding: 8px 16px;
   background: var(--color-bg);
-}
-.status-selector .status-icon {
-  width: 24px;
-  height: 24px;
-  color: var(--color-accent);
-  flex-shrink: 0;
-}
-.status-selector .status-label {
-  font-size: 0.875rem;
-  font-weight: 600;
+  border: 1.5px solid var(--color-border);
+  border-radius: 40px;
+  cursor: pointer;
+  font: inherit;
   color: var(--color-text);
+  transition: all 0.2s;
 }
-.status-selector .status-chevron {
-  width: 16px;
-  height: 16px;
-  color: var(--color-text-muted);
-  transition: transform 0.2s;
+.lang-pill:hover {
+  border-color: var(--color-accent);
+  box-shadow: 0 2px 12px rgba(0,0,0,0.08);
 }
-.status-selector:hover .status-chevron {
-  transform: translateY(2px);
-  color: var(--color-accent);
-}
-
-/* Section 2: Language Display */
-.status-display {
-  justify-content: center;
-  min-width: 180px;
-}
-.lang-state { display: flex; align-items: center; gap: 10px; }
-.lang-state.hidden { display: none; }
-
-.lang-state-empty {
-  color: var(--color-text-muted);
-  font-size: 0.875rem;
-}
-.lang-state-empty .empty-dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: var(--color-border);
-  animation: empty-pulse 2s ease-in-out infinite;
-}
-@keyframes empty-pulse {
-  0%, 100% { opacity: 0.5; transform: scale(1); }
-  50% { opacity: 1; transform: scale(1.2); }
-}
-
-.lang-state-active .lang-badge {
+.pill-icon { color: var(--color-accent); flex-shrink: 0; }
+.pill-placeholder { color: var(--color-text-muted); font-size: 0.9rem; }
+.pill-placeholder.hidden { display: none; }
+.pill-active { display: flex; align-items: center; gap: 8px; }
+.pill-active.hidden { display: none; }
+.pill-badge {
   background: linear-gradient(135deg, var(--color-accent), var(--color-accent-dark));
   color: white;
-  padding: 4px 10px;
-  border-radius: 6px;
+  padding: 2px 8px;
+  border-radius: 4px;
   font-weight: 700;
-  font-size: 0.8rem;
+  font-size: 0.75rem;
   font-family: var(--font-mono);
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
-.lang-state-active .lang-name {
-  font-weight: 600;
-  color: var(--color-text);
-  font-size: 0.95rem;
-}
+.pill-chevron { color: var(--color-text-muted); flex-shrink: 0; transition: transform 0.2s; }
+.lang-pill:hover .pill-chevron { transform: translateY(2px); color: var(--color-accent); }
 
-/* Section 3: Environment Status */
-.status-env {
-  min-width: 200px;
-}
-.env-state { display: flex; align-items: center; gap: 10px; width: 100%; }
-.env-state.hidden { display: none; }
-
-/* Loading state */
-.env-state-loading .env-spinner {
-  width: 20px;
-  height: 20px;
-  color: var(--color-accent);
-  flex-shrink: 0;
-}
-.env-state-loading .env-spinner svg {
-  width: 100%;
-  height: 100%;
-  animation: spinner-rotate 1s linear infinite;
-}
-@keyframes spinner-rotate {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
-}
-.env-state-loading .env-info {
-  flex: 1;
-  min-width: 0;
-}
-.env-state-loading .env-label {
-  display: block;
-  font-size: 0.75rem;
-  color: var(--color-text-muted);
-  margin-bottom: 6px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-.env-progress {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-.env-progress-track {
-  flex: 1;
-  height: 6px;
-  background: var(--color-border);
-  border-radius: 3px;
-  overflow: hidden;
-}
-.env-progress-fill {
+/* Env Indicator */
+.lab-env { display: flex; align-items: center; }
+.env-ind { display: flex; align-items: center; gap: 8px; font-size: 0.85rem; }
+.env-ind.hidden { display: none; }
+.env-ind-loading { color: var(--color-text-secondary); }
+.env-spin { animation: env-rotate 1s linear infinite; flex-shrink: 0; color: var(--color-accent); }
+@keyframes env-rotate { to { transform: rotate(360deg); } }
+.env-label { white-space: nowrap; max-width: 160px; overflow: hidden; text-overflow: ellipsis; }
+.env-track { width: 80px; height: 4px; background: var(--color-border); border-radius: 2px; overflow: hidden; }
+.env-fill {
   height: 100%;
   width: 0%;
   background: linear-gradient(90deg, var(--color-accent), var(--color-accent-dark));
-  border-radius: 3px;
+  border-radius: 2px;
   transition: width 0.3s ease;
-  position: relative;
 }
-.env-progress-fill::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
-  animation: shimmer 1.5s infinite;
-}
-@keyframes shimmer {
-  0% { transform: translateX(-100%); }
-  100% { transform: translateX(100%); }
-}
-.env-pct {
-  font-size: 0.75rem;
-  font-weight: 600;
-  color: var(--color-accent);
-  font-family: var(--font-mono);
-  min-width: 32px;
-  text-align: right;
-}
-
-/* Ready state */
-.env-state-ready {
+.env-pct { font-family: var(--font-mono); font-size: 0.75rem; color: var(--color-accent); font-weight: 600; min-width: 28px; text-align: right; }
+.env-ind-ready { color: #10b981; font-weight: 600; }
+.env-dot-ok {
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
   justify-content: center;
-}
-.env-state-ready .env-check {
-  width: 22px;
-  height: 22px;
-  background: linear-gradient(135deg, #10b981, #059669);
+  background: #10b981;
+  color: white;
   border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  animation: check-pop 0.3s ease-out;
-}
-.env-state-ready .env-check svg {
-  width: 14px;
-  height: 14px;
-}
-@keyframes check-pop {
-  0% { transform: scale(0); }
-  70% { transform: scale(1.2); }
-  100% { transform: scale(1); }
-}
-.env-state-ready .env-ready-label {
-  font-size: 0.875rem;
-  font-weight: 600;
-  color: #10b981;
-}
-
-/* Responsive */
-@media (max-width: 640px) {
-  .status-bar {
-    grid-template-columns: 1fr;
-    max-width: 100%;
-  }
-  .status-section {
-    justify-content: center;
-  }
-  .status-display {
-    border-top: 1px solid var(--color-border);
-    border-bottom: 1px solid var(--color-border);
-  }
-}
-
-/* ========== LOADING OVERLAY ========== */
-.loading-overlay { position: fixed; inset: 0; z-index: 200; background: rgba(0,0,0,0.9); display: flex; align-items: center; justify-content: center; }
-.loading-overlay.hidden { display: none; }
-.loading-card { background: var(--color-surface); border-radius: 16px; padding: 40px; text-align: center; max-width: 400px; width: 90%; }
-.loading-card h3 { margin: 24px 0 8px; font-size: 1.25rem; }
-.loading-card p { color: var(--color-text-secondary); margin-bottom: 24px; }
-.progress-container { height: 8px; background: var(--color-border); border-radius: 4px; overflow: hidden; }
-.progress-bar { height: 100%; background: linear-gradient(90deg, var(--color-accent), var(--color-accent-dark)); border-radius: 4px; transition: width 0.3s; width: 0%; }
-.progress-text { display: block; margin-top: 12px; font-size: 0.875rem; color: var(--color-text-secondary); }
-
-/* DNA Helix Spinner */
-.dna-helix-spinner {
-  width: 80px;
-  height: 100px;
-  margin: 0 auto;
-  perspective: 200px;
-}
-.helix-svg {
-  width: 100%;
-  height: 100%;
-  animation: dna-rotate 2.5s linear infinite;
-  transform-style: preserve-3d;
-}
-.helix-backbone {
-  fill: none;
-  stroke-width: 3;
-  stroke-linecap: round;
-}
-.helix-backbone.left { stroke: var(--color-accent); }
-.helix-backbone.right { stroke: var(--color-accent-dark, #6366f1); }
-.base-pair {
-  stroke: var(--color-text-muted, #888);
-  stroke-width: 2;
-  stroke-dasharray: 3 2;
-  opacity: 0.6;
-}
-.nucleotide {
-  fill: var(--color-accent);
-}
-.nucleotide:nth-child(even) { fill: var(--color-accent-dark, #6366f1); }
-/* Staggered pulse for nucleotides */
-.n1, .n2 { animation: nuc-pulse 2.5s ease-in-out infinite 0s; }
-.n3, .n4 { animation: nuc-pulse 2.5s ease-in-out infinite 0.2s; }
-.n5, .n6 { animation: nuc-pulse 2.5s ease-in-out infinite 0.4s; }
-.n7, .n8 { animation: nuc-pulse 2.5s ease-in-out infinite 0.6s; }
-.n9, .n10 { animation: nuc-pulse 2.5s ease-in-out infinite 0.8s; }
-.n11, .n12 { animation: nuc-pulse 2.5s ease-in-out infinite 1s; }
-@keyframes dna-rotate {
-  0% { transform: rotateY(0deg); }
-  100% { transform: rotateY(360deg); }
-}
-@keyframes nuc-pulse {
-  0%, 100% { r: 4; opacity: 1; }
-  50% { r: 5; opacity: 0.8; }
-}
-
-/* ========== DEMO GRID ========== */
-.playground-main { padding: 48px 0; }
-.demo-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px; }
-.demo-grid.hidden { display: none; }
-.demo-card { background: var(--color-surface); border: 1px solid var(--color-border); border-radius: 16px; padding: 32px; transition: all 0.3s; }
-.demo-card:hover { transform: translateY(-4px); box-shadow: 0 12px 40px rgba(0,0,0,0.15); border-color: var(--color-accent); }
-.demo-icon { width: 60px; height: 60px; margin-bottom: 20px; color: var(--color-accent); }
-.demo-icon svg { width: 100%; height: 100%; }
-.demo-card h3 { font-size: 1.25rem; margin-bottom: 8px; }
-.demo-card p { color: var(--color-text-secondary); font-size: 0.9rem; line-height: 1.6; margin-bottom: 20px; }
-.demo-btn { width: 100%; padding: 12px; background: var(--color-accent); color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; transition: opacity 0.2s; }
-.demo-btn:hover { opacity: 0.9; }
-
-/* DNA Card Icon - Rotating Double Helix */
-.dna-icon-wrapper {
-  perspective: 150px;
-}
-.dna-card-icon {
-  animation: dna-spin 4s linear infinite;
-  transform-style: preserve-3d;
-}
-@keyframes dna-spin {
-  0% { transform: rotateY(0deg); }
-  100% { transform: rotateY(360deg); }
-}
-
-/* Word Flow Illustration */
-.flow-illustration {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-}
-.flow-node {
-  font-size: 0.6rem;
-  padding: 3px 6px;
-  background: rgba(var(--color-accent-rgb, 139, 92, 246), 0.1);
-  border: 1px solid var(--color-border);
-  border-radius: 4px;
-  color: var(--color-text-secondary);
-}
-.flow-node.seed {
-  background: var(--color-accent);
-  border-color: var(--color-accent);
-  color: white;
-  font-weight: 600;
-}
-.flow-arrow {
-  color: var(--color-accent);
-  opacity: 0.6;
-}
-
-/* Text Weaver Illustration */
-.weaver-illustration {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-}
-.weave-node {
-  font-size: 0.6rem;
-  padding: 3px 6px;
-  background: rgba(var(--color-accent-rgb, 139, 92, 246), 0.15);
-  border: 1px solid var(--color-accent);
-  border-radius: 3px;
-  color: var(--color-accent);
-}
-.weave-arrow {
-  color: var(--color-accent);
   font-size: 0.7rem;
-  opacity: 0.6;
+  font-weight: 700;
 }
 
-/* Zipf's Law Illustration */
-.zipf-illustration {
+/* ========== TAB NAV ========== */
+.lab-tabs {
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+  position: sticky;
+  top: 109px; /* below lab header */
+  z-index: 19;
+}
+.tabs-track {
   display: flex;
-  align-items: flex-end;
-  gap: 3px;
-  height: 45px;
+  gap: 0;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
 }
-.zipf-bar {
-  width: 6px;
-  background: var(--color-accent);
-  border-radius: 2px 2px 0 0;
-}
-.zipf-bar.b1 { height: 100%; }
-.zipf-bar.b2 { height: 60%; opacity: 0.9; }
-.zipf-bar.b3 { height: 40%; opacity: 0.8; }
-.zipf-bar.b4 { height: 28%; opacity: 0.7; }
-.zipf-bar.b5 { height: 20%; opacity: 0.6; }
-.zipf-bar.b6 { height: 15%; opacity: 0.5; }
-.zipf-bar.b7 { height: 12%; opacity: 0.4; }
-
-/* Rare Words Museum Illustration */
-.museum-illustration {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-.museum-word {
-  font-size: 0.65rem;
-  font-style: italic;
-  color: var(--color-text-secondary);
-  letter-spacing: 0.3px;
-}
-.museum-word.w1 { color: var(--color-accent); font-weight: 600; font-size: 0.7rem; }
-.museum-word.w2 { opacity: 0.7; font-size: 0.6rem; }
-.museum-word.w3 { opacity: 0.5; font-size: 0.55rem; }
-
-/* Language Bridge Illustration */
-.bridge-illustration {
+.tabs-track::-webkit-scrollbar { display: none; }
+.lab-tab {
   display: flex;
   align-items: center;
   gap: 6px;
+  padding: 12px 20px;
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.88rem;
+  font-weight: 500;
+  color: var(--color-text-muted);
+  white-space: nowrap;
+  transition: all 0.2s;
 }
-.bridge-word {
-  font-size: 0.7rem;
-  font-weight: 600;
-  padding: 3px 8px;
-  border-radius: 4px;
-  background: rgba(var(--color-accent-rgb, 139, 92, 246), 0.15);
-  border: 1px solid var(--color-accent);
+.lab-tab:hover { color: var(--color-text); background: var(--color-bg); }
+.lab-tab.active {
   color: var(--color-accent);
+  border-bottom-color: var(--color-accent);
+  font-weight: 600;
 }
-.bridge-connector {
-  width: 16px;
-  height: 2px;
-  background: var(--color-accent);
-  position: relative;
-}
-.bridge-connector::before,
-.bridge-connector::after {
-  content: '';
-  position: absolute;
-  width: 4px;
-  height: 4px;
-  background: var(--color-accent);
-  border-radius: 50%;
-  top: 50%;
-  transform: translateY(-50%);
-}
-.bridge-connector::before { left: -2px; }
-.bridge-connector::after { right: -2px; }
+.tab-ico { font-size: 1.1rem; }
+.tab-lbl { }
 
-/* ========== DEMO DISPLAY ========== */
-.demo-display { background: var(--color-surface); border-radius: 16px; padding: 32px; border: 1px solid var(--color-border); }
-.demo-display.hidden { display: none; }
-.back-btn { display: flex; align-items: center; gap: 8px; background: none; border: none; color: var(--color-accent); font-size: 1rem; cursor: pointer; margin-bottom: 24px; padding: 0; }
-.back-btn:hover { text-decoration: underline; }
+/* ========== WORKSPACE ========== */
+.lab-workspace { padding: 32px 0 64px; min-height: 60vh; }
+.lab-panel { background: var(--color-surface); border-radius: 16px; padding: 32px; border: 1px solid var(--color-border); }
+.lab-panel.hidden { display: none; }
+
+/* Empty State */
+.lab-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 80px 20px;
+}
+.lab-empty.hidden { display: none; }
+.empty-orb { margin-bottom: 32px; }
+.orb-svg { }
+.orb-ring { transform-origin: center; }
+.orb-ring.r1 { animation: orb-spin 40s linear infinite; }
+.orb-ring.r2 { animation: orb-spin 28s linear infinite reverse; }
+.orb-ring.r3 { animation: orb-spin 20s linear infinite; }
+@keyframes orb-spin { to { transform: rotate(360deg); } }
+.orb-dot { transform-origin: 100px 100px; }
+.orb-dot.d1 { animation: orb-spin 12s linear infinite; }
+.orb-dot.d2 { animation: orb-spin 9s linear infinite reverse; }
+.orb-dot.d3 { animation: orb-spin 15s linear infinite; }
+.orb-dot.d4 { animation: orb-spin 7s linear infinite reverse; }
+.empty-title {
+  font-size: 1.75rem;
+  font-weight: 700;
+  margin-bottom: 8px;
+  color: var(--color-text);
+}
+.empty-sub {
+  font-size: 1rem;
+  color: var(--color-text-secondary);
+  max-width: 440px;
+  line-height: 1.6;
+  margin-bottom: 24px;
+}
+.empty-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 28px;
+  background: var(--color-accent);
+  color: white;
+  border: none;
+  border-radius: 40px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.empty-btn:hover { opacity: 0.9; transform: translateY(-1px); box-shadow: 0 4px 16px rgba(0,0,0,0.15); }
+
+/* ========== DEMO CONTENT ========== */
 .demo-loading { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 60px; color: var(--color-text-secondary); }
 .spinner { width: 40px; height: 40px; border: 3px solid var(--color-border); border-top-color: var(--color-accent); border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 16px; }
 @keyframes spin { to { transform: rotate(360deg); } }
@@ -2987,8 +2656,16 @@ document.head.appendChild(script);
 
 /* ========== RESPONSIVE ========== */
 @media (max-width: 768px) {
-  .hero-playground h1 { font-size: 2rem; }
-  .demo-grid { grid-template-columns: 1fr; }
+  .lab-bar { flex-direction: column; gap: 12px; }
+  .lab-tabs { top: auto; position: relative; }
+  .lab-header { position: relative; top: auto; }
+  .tabs-track { gap: 0; }
+  .lab-tab { padding: 10px 14px; font-size: 0.82rem; }
+  .tab-lbl { display: none; }
+  .tab-ico { font-size: 1.3rem; }
+  .lab-empty { padding: 48px 16px; }
+  .empty-title { font-size: 1.4rem; }
+  .lab-panel { padding: 20px 16px; border-radius: 12px; }
   .dna-grid { grid-template-columns: 1fr; }
   .stats-row { flex-direction: column; }
   .bridge-selector { flex-direction: column; align-items: stretch; }

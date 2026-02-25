@@ -2,47 +2,79 @@
 import BaseLayout from '@layouts/BaseLayout.astro';
 import LanguageCard from '@components/LanguageCard.astro';
 import CodeBlock from '@components/CodeBlock.astro';
-import WorldMap from '@components/WorldMap.astro';
 import { getAllLanguages, getGlobalStats, formatNumber } from '@lib/languages';
 
 const allLanguages = getAllLanguages();
 const stats = getGlobalStats();
-
-// Get languages with models for random selection
 const languagesWithModels = allLanguages.filter(l => l.has_models);
 
-// Use hour of day as seed for stable random selection (changes hourly)
-const hourSeed = new Date().getUTCHours();
+// Stable daily rotation of 8 featured languages
+const daySeed = Math.floor(Date.now() / 86400000);
 function seededShuffle<T>(array: T[], seed: number): T[] {
-  const result = [...array];
-  let m = result.length;
+  const r = [...array];
+  let m = r.length;
   while (m) {
     const i = Math.floor((seed * 9301 + 49297) % 233280 / 233280 * m--);
     seed = (seed * 9301 + 49297) % 233280;
-    [result[m], result[i]] = [result[i], result[m]];
+    [r[m], r[i]] = [r[i], r[m]];
   }
-  return result;
+  return r;
 }
-
-// Randomly select 12 featured languages based on hour
-const featuredLanguages = seededShuffle(languagesWithModels, hourSeed).slice(0, 12);
+const featured = seededShuffle(languagesWithModels, daySeed).slice(0, 8);
 ---
 
 <BaseLayout title="Open NLP Models for Every Wikipedia Language">
-  <!-- Hero -->
+
+  <!-- ============ HERO ============ -->
   <section class="hero">
-    <div class="container">
+    <!-- World map backdrop -->
+    <div class="hero-map" aria-hidden="true">
+      <svg viewBox="0 0 1200 600" xmlns="http://www.w3.org/2000/svg" class="hero-map-svg" preserveAspectRatio="xMidYMid slice">
+        <defs>
+          <radialGradient id="glow" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stop-color="var(--atlas-accent)" stop-opacity="0.12"/>
+            <stop offset="100%" stop-color="var(--atlas-accent)" stop-opacity="0"/>
+          </radialGradient>
+        </defs>
+        <ellipse cx="600" cy="300" rx="500" ry="260" fill="url(#glow)" class="hero-glow"/>
+        {/* Simplified world continents — decorative only */}
+        <g class="hero-continents" fill="var(--atlas-map-land)" opacity="0.35">
+          {/* North America */}
+          <path d="M180,120 L220,100 L260,90 L300,95 L330,110 L340,140 L350,170 L340,200 L310,220 L280,240 L250,260 L230,250 L200,230 L180,200 L160,170 L155,140Z" class="continent-pulse" style="--delay:0s"/>
+          {/* South America */}
+          <path d="M270,290 L290,280 L310,285 L330,310 L340,350 L335,400 L320,440 L300,460 L280,450 L265,420 L255,380 L250,340 L255,310Z" class="continent-pulse" style="--delay:0.8s"/>
+          {/* Europe */}
+          <path d="M520,100 L560,85 L600,90 L620,100 L630,120 L620,145 L600,160 L570,155 L540,145 L520,130Z" class="continent-pulse" style="--delay:0.4s"/>
+          {/* Africa */}
+          <path d="M530,190 L570,180 L610,190 L630,220 L640,270 L635,330 L620,380 L590,410 L560,400 L540,370 L525,320 L520,260 L515,220Z" class="continent-pulse" style="--delay:1.2s"/>
+          {/* Asia */}
+          <path d="M650,80 L720,70 L800,75 L870,90 L920,110 L950,140 L960,180 L940,220 L900,240 L850,250 L790,240 L730,220 L680,200 L650,170 L640,130Z" class="continent-pulse" style="--delay:0.6s"/>
+          {/* Oceania */}
+          <path d="M870,330 L920,320 L960,330 L980,350 L970,380 L940,400 L900,405 L870,390 L860,360Z" class="continent-pulse" style="--delay:1.6s"/>
+        </g>
+        {/* Dot grid overlay */}
+        <g class="hero-dots" fill="var(--atlas-ink-muted)" opacity="0.06">
+          {Array.from({length: 30}).map((_, i) =>
+            Array.from({length: 15}).map((_, j) =>
+              <circle cx={40 * i + 20} cy={40 * j + 20} r="1"/>
+            )
+          )}
+        </g>
+      </svg>
+    </div>
+    <div class="container hero-inner">
+      <p class="hero-eyebrow">{stats.totalLanguages}+ languages · {stats.languagesWithModels} with trained models</p>
       <h1 class="hero-title">
-        Open NLP Models for<br />
-        <span class="hero-highlight">Every Wikipedia Language</span>
+        An open atlas of<br />language models
       </h1>
-      <p class="hero-subtitle">
-        Pre-trained tokenizers, n-gram models, Markov chains, vocabularies, and embeddings
-        for {stats.totalLanguages}+ languages. Built for researchers, educators, and developers.
+      <p class="hero-lead">
+        Pre-trained tokenizers, n-gram models, Markov chains, vocabularies,
+        and embeddings for every Wikipedia language. Lightweight, research-ready,
+        and built to run anywhere.
       </p>
       <div class="hero-actions">
-        <a href="/quickstart/" class="btn btn-primary">Get Started</a>
-        <a href="/languages/" class="btn btn-secondary">Browse Languages</a>
+        <a href="/quickstart/" class="btn btn-primary">Get started</a>
+        <a href="/languages/" class="btn btn-secondary">Browse languages</a>
       </div>
       <div class="hero-install">
         <CodeBlock code="pip install wikilangs" lang="bash" />
@@ -50,166 +82,129 @@ const featuredLanguages = seededShuffle(languagesWithModels, hourSeed).slice(0, 
     </div>
   </section>
 
-  <!-- Stats -->
-  <section class="section stats-section">
-    <div class="container">
-      <div class="stats-grid">
-        <div class="stat">
-          <span class="stat-value">{stats.totalLanguages}+</span>
-          <span class="stat-label">Languages</span>
-        </div>
-        <div class="stat">
-          <span class="stat-value">4</span>
-          <span class="stat-label">Tokenizer Sizes</span>
-        </div>
-        <div class="stat">
-          <span class="stat-value">5</span>
-          <span class="stat-label">N-gram Depths</span>
-        </div>
-        <div class="stat">
-          <span class="stat-value">5</span>
-          <span class="stat-label">Markov Depths</span>
-        </div>
-        <div class="stat">
-          <span class="stat-value">3</span>
-          <span class="stat-label">Embedding Dims</span>
-        </div>
-        <div class="stat">
-          <span class="stat-value">{formatNumber(stats.totalVocabularyWords)}</span>
-          <span class="stat-label">Total Words</span>
-        </div>
+  <!-- ============ NUMBERS BAR ============ -->
+  <section class="numbers-bar">
+    <div class="container numbers-inner">
+      <div class="stat">
+        <span class="stat-value">{formatNumber(stats.totalVocabularyWords)}</span>
+        <span class="stat-label">Total Words</span>
+      </div>
+      <div class="stat">
+        <span class="stat-value">4</span>
+        <span class="stat-label">Tokenizer Sizes</span>
+      </div>
+      <div class="stat">
+        <span class="stat-value">5</span>
+        <span class="stat-label">N-gram Depths</span>
+      </div>
+      <div class="stat">
+        <span class="stat-value">5</span>
+        <span class="stat-label">Markov Depths</span>
+      </div>
+      <div class="stat">
+        <span class="stat-value">3</span>
+        <span class="stat-label">Embedding Dims</span>
       </div>
     </div>
   </section>
 
-  <!-- Language Coverage Map -->
-  <section class="section map-section">
-    <div class="container">
-      <h2 class="section-title">Global Language Coverage</h2>
-      <p class="section-desc">
-        Explore our models across {stats.totalLanguages}+ languages spanning every inhabited continent.
-      </p>
-      <div class="home-map-wrapper">
-        <WorldMap mode="display" />
-      </div>
-    </div>
-  </section>
-
-  <!-- What is Wikilangs -->
-  <section class="section section-alt">
-    <div class="container">
-      <h2 class="section-title">What is Wikilangs?</h2>
-      <div class="feature-grid">
-        <div class="feature-card">
-          <h3>Multilingual by Design</h3>
-          <p>
-            Pre-trained models for every Wikipedia language, from English to Moroccan Arabic
-            to Swahili. Same API, any language.
-          </p>
-        </div>
-        <div class="feature-card">
-          <h3>Lightweight & Fast</h3>
-          <p>
-            Traditional NLP models optimized for resource-constrained environments.
-            No GPU required. Run anywhere.
-          </p>
-        </div>
-        <div class="feature-card">
-          <h3>Research-Ready</h3>
-          <p>
-            Every language includes comprehensive evaluation reports with ablation studies,
-            metrics, and visualizations.
-          </p>
-        </div>
-        <div class="feature-card">
-          <h3>Easy Integration</h3>
-          <p>
-            Simple Python API, HuggingFace integration, and LLM utilities for extending
-            language models with new vocabularies.
-          </p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Models -->
+  <!-- ============ WHY THIS MATTERS ============ -->
   <section class="section">
     <div class="container">
-      <h2 class="section-title">Available Models</h2>
-      <div class="models-grid">
-        <div class="model-card">
-          <h3>BPE Tokenizers</h3>
-          <p class="model-desc">Byte-Pair Encoding tokenizers in 4 vocabulary sizes: 8k, 16k, 32k, 64k.</p>
-          <ul class="model-features">
-            <li>SentencePiece format</li>
-            <li>HuggingFace compatible</li>
-            <li>Subword tokenization</li>
-          </ul>
+      <div class="prose-section">
+        <h2>Why traditional models still matter</h2>
+        <p class="section-lede">
+          Large language models are powerful but expensive, opaque, and skewed toward
+          well-resourced languages. Wikilangs takes a different path: lightweight models
+          you can inspect, extend, and run on a laptop — for <em>every</em> language
+          with a Wikipedia.
+        </p>
+        <div class="pillars">
+          <div class="pillar">
+            <h3>No GPU required</h3>
+            <p>N-grams, Markov chains, and BPE tokenizers run instantly on CPU. Deploy anywhere — a server, a classroom, a Raspberry Pi.</p>
+          </div>
+          <div class="pillar">
+            <h3>Interpretable</h3>
+            <p>Every prediction has a traceable path. Compression ratios, perplexity, entropy — metrics you can reason about and publish.</p>
+          </div>
+          <div class="pillar">
+            <h3>Extensible</h3>
+            <p>Merge our vocabularies into LLMs to add language support. Use embeddings as features. Combine models for novel tasks.</p>
+          </div>
+          <div class="pillar">
+            <h3>Research-ready</h3>
+            <p>Every language ships with ablation studies, visualizations, and a model card. Cite with a DOI. Reproduce with a date stamp.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ MODELS OVERVIEW ============ -->
+  <section class="section section-alt">
+    <div class="container">
+      <h2>Five model families, one API</h2>
+      <p class="section-lede">
+        Every language gets the same comprehensive treatment. Install once, switch languages with a single parameter.
+      </p>
+      <div class="model-grid">
+        <div class="model-item">
+          <div class="model-head">
+            <span class="model-name">Tokenizers</span>
+            <span class="model-variants">8k · 16k · 32k · 64k</span>
+          </div>
+          <p>BPE tokenizers in SentencePiece format. HuggingFace compatible.</p>
           <CodeBlock code={`from wikilangs import tokenizer
 tok = tokenizer('latest', 'en', 32000)
-tokens = tok.tokenize("Hello, world!")`} />
+tok.tokenize("Hello, world!")`} />
         </div>
-
-        <div class="model-card">
-          <h3>N-gram Models</h3>
-          <p class="model-desc">Language models for text scoring and next-token prediction.</p>
-          <ul class="model-features">
-            <li>2, 3, 4, 5-gram sizes</li>
-            <li>Word and subword variants</li>
-            <li>Log probability scoring</li>
-          </ul>
+        <div class="model-item">
+          <div class="model-head">
+            <span class="model-name">N-gram Models</span>
+            <span class="model-variants">2 · 3 · 4 · 5-gram</span>
+          </div>
+          <p>Language models for text scoring and next-token prediction.</p>
           <CodeBlock code={`from wikilangs import ngram
 ng = ngram('latest', 'en', gram_size=3)
-score = ng.score("Natural language processing")`} />
+ng.score("Natural language processing")`} />
         </div>
-
-        <div class="model-card">
-          <h3>Markov Chains</h3>
-          <p class="model-desc">Text generation models with configurable context depth.</p>
-          <ul class="model-features">
-            <li>Context depths 1-5</li>
-            <li>Probabilistic generation</li>
-            <li>Seed text support</li>
-          </ul>
+        <div class="model-item">
+          <div class="model-head">
+            <span class="model-name">Markov Chains</span>
+            <span class="model-variants">depth 1 – 5</span>
+          </div>
+          <p>Text generation with configurable context windows.</p>
           <CodeBlock code={`from wikilangs import markov
 mc = markov('latest', 'en', depth=3)
-text = mc.generate(length=50)`} />
+mc.generate(length=50)`} />
         </div>
-
-        <div class="model-card">
-          <h3>Vocabularies</h3>
-          <p class="model-desc">Word dictionaries with frequency and IDF information.</p>
-          <ul class="model-features">
-            <li>Frequency counts</li>
-            <li>IDF scores</li>
-            <li>Prefix search</li>
-          </ul>
+        <div class="model-item">
+          <div class="model-head">
+            <span class="model-name">Vocabularies</span>
+            <span class="model-variants">frequency · IDF · rank</span>
+          </div>
+          <p>Word dictionaries with corpus statistics and prefix search.</p>
           <CodeBlock code={`from wikilangs import vocabulary
 vocab = vocabulary('latest', 'en')
-info = vocab.lookup("language")`} />
+vocab.lookup("language")`} />
         </div>
-
-        <div class="model-card">
-          <h3>Word Embeddings</h3>
-          <p class="model-desc">Position-aware embeddings via BabelVec in multiple dimensions.</p>
-          <ul class="model-features">
-            <li>32d, 64d, 128d sizes</li>
-            <li>Sentence embeddings</li>
-            <li>RoPE, decay, sinusoidal</li>
-          </ul>
+        <div class="model-item">
+          <div class="model-head">
+            <span class="model-name">Embeddings</span>
+            <span class="model-variants">32d · 64d · 128d</span>
+          </div>
+          <p>Position-aware word embeddings via BabelVec.</p>
           <CodeBlock code={`from wikilangs import embeddings
 emb = embeddings('latest', 'en', dimension=64)
-vec = emb.embed_word("language")`} />
+emb.embed_word("language")`} />
         </div>
-
-        <div class="model-card">
-          <h3>LLM Integration</h3>
-          <p class="model-desc">Extend large language models with Wikilangs vocabularies.</p>
-          <ul class="model-features">
-            <li>Vocabulary merging</li>
-            <li>Token freezing</li>
-            <li>Transformers compatible</li>
-          </ul>
+        <div class="model-item model-item-highlight">
+          <div class="model-head">
+            <span class="model-name">LLM Integration</span>
+            <span class="model-variants">vocab merging</span>
+          </div>
+          <p>Extend large language models with new language support.</p>
           <CodeBlock code={`from wikilangs.llm import add_language_tokens
 add_language_tokens(model, 'ary', 32000)`} />
         </div>
@@ -217,579 +212,385 @@ add_language_tokens(model, 'ary', 32000)`} />
     </div>
   </section>
 
-  <!-- Featured Languages -->
-  <section class="section section-alt">
+  <!-- ============ FEATURED LANGUAGES ============ -->
+  <section class="section">
     <div class="container">
-      <div class="section-header">
-        <h2 class="section-title">Featured Languages</h2>
-        <a href="/languages/" class="btn btn-secondary">View all {stats.totalLanguages}+ languages</a>
+      <div class="section-head">
+        <div>
+          <h2>Explore languages</h2>
+          <p class="section-lede">A sample from across the atlas. Each language has its own model suite, evaluation report, and interactive playground.</p>
+        </div>
+        <a href="/languages/" class="btn btn-secondary">All {stats.totalLanguages}+ languages →</a>
       </div>
-      <div class="languages-grid">
-        {featuredLanguages.map(lang => (
+      <div class="featured-grid">
+        {featured.map(lang => (
           <LanguageCard lang={lang} />
         ))}
       </div>
     </div>
   </section>
 
-  <!-- Featured Recipes -->
-  <section class="section">
-    <div class="container">
-      <div class="section-header">
-        <h2 class="section-title">What Can You Build?</h2>
-        <a href="/docs/#recipes" class="btn btn-secondary">View All Recipes</a>
-      </div>
-      <p class="section-desc">
-        Wikilangs models enable a wide range of NLP applications. Here are some inspiring examples:
-      </p>
-      <div class="recipes-showcase">
-        <a href="/docs/#language-detection" class="recipe-card">
-          <div class="recipe-icon">🌍</div>
-          <h3>Language Detection</h3>
-          <p>Identify what language text is written in by scoring against multiple language models.</p>
-          <span class="recipe-link">View Recipe →</span>
-        </a>
-        <a href="/docs/#autocomplete" class="recipe-card">
-          <div class="recipe-icon">⌨️</div>
-          <h3>Autocomplete</h3>
-          <p>Build smart text completion with prefix matching and n-gram predictions.</p>
-          <span class="recipe-link">View Recipe →</span>
-        </a>
-        <a href="/docs/#text-similarity" class="recipe-card">
-          <div class="recipe-icon">🔗</div>
-          <h3>Text Similarity</h3>
-          <p>Measure semantic similarity for FAQ matching, duplicate detection, and search.</p>
-          <span class="recipe-link">View Recipe →</span>
-        </a>
-        <a href="/docs/#llm-extend-vocabulary" class="recipe-card recipe-card-highlight">
-          <div class="recipe-icon">🤖</div>
-          <h3>Extend LLM Vocabulary</h3>
-          <p>Add language support to LLMs like LLaMA for low-resource languages.</p>
-          <span class="recipe-link">View Recipe →</span>
-        </a>
-        <a href="/docs/#code-switching" class="recipe-card">
-          <div class="recipe-icon">🔀</div>
-          <h3>Code-Switching</h3>
-          <p>Detect when text switches between languages—Spanglish, Hinglish, and more.</p>
-          <span class="recipe-link">View Recipe →</span>
-        </a>
-        <a href="/docs/#anomaly-detection" class="recipe-card">
-          <div class="recipe-icon">🔍</div>
-          <h3>Anomaly Detection</h3>
-          <p>Find gibberish, spam, and out-of-domain content using perplexity scoring.</p>
-          <span class="recipe-link">View Recipe →</span>
-        </a>
-      </div>
-    </div>
-  </section>
-
-  <!-- Use Cases -->
+  <!-- ============ USE CASES ============ -->
   <section class="section section-alt">
     <div class="container">
-      <h2 class="section-title">Who Uses Wikilangs?</h2>
-      <div class="use-cases-grid">
-        <div class="use-case">
-          <h3>Linguists & Researchers</h3>
-          <p>
-            Study language patterns, compare linguistic features across languages,
-            and access pre-computed statistics for your research.
-          </p>
-        </div>
-        <div class="use-case">
-          <h3>NLP Practitioners</h3>
-          <p>
-            Bootstrap projects with pre-trained models. Use lightweight alternatives
-            to large language models for specific tasks.
-          </p>
-        </div>
-        <div class="use-case">
-          <h3>Educators</h3>
-          <p>
-            Teach NLP concepts with real models. Demonstrate tokenization, language modeling,
-            and text generation across languages.
-          </p>
-        </div>
-        <div class="use-case">
-          <h3>Low-Resource Language Developers</h3>
-          <p>
-            Access models for underrepresented languages. Extend existing LLMs with
-            new language support.
-          </p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Credits & Sponsor -->
-  <section class="section credits-section">
-    <div class="container">
-      <div class="credits-grid">
-        <div class="credit-card">
-          <h3>Created By</h3>
-          <a href="https://omarkamali.com" target="_blank" rel="noopener" class="credit-link">
-            <strong>Omar Kamali</strong>
-          </a>
-          <p>Researcher focused on multilingual NLP and accessible AI</p>
-        </div>
-        <div class="credit-card">
-          <h3>Affiliation</h3>
-          <a href="https://omneitylabs.com" target="_blank" rel="noopener" class="credit-link">
-            <strong>
-              <img src="https://www.google.com/s2/favicons?sz=64&domain_url=omneitylabs.com" alt="" class="inline-logo" />
-              Omneity Labs
-            </strong>
-          </a>
-          <p>Private research lab specializing in low-resource languages, cultural alignment, and agentic systems</p>
-        </div>
-        <div class="credit-card sponsor-highlight">
-          <h3>Sponsored By</h3>
-          <a href="https://featherless.ai" target="_blank" rel="noopener" class="credit-link">
-            <strong>
-              <img src="https://www.google.com/s2/favicons?sz=64&domain_url=featherless.ai" alt="" class="inline-logo" />
-              Featherless.ai
-            </strong>
-          </a>
-          <p>We're grateful to <img src="https://www.google.com/s2/favicons?sz=64&domain_url=featherless.ai" alt="" class="inline-logo" /> Featherless.ai for their generous support making this project possible</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- CTA -->
-  <section class="section cta-section">
-    <div class="container text-center">
-      <h2>Ready to get started?</h2>
-      <p class="cta-text">
-        Install wikilangs and start exploring {stats.totalLanguages}+ languages in minutes.
+      <h2>What you can build</h2>
+      <p class="section-lede">
+        Practical applications — from classroom demos to production systems.
       </p>
-      <div class="cta-actions">
-        <a href="/quickstart/" class="btn btn-primary">Quick Start Guide</a>
-        <a href="/docs/" class="btn btn-secondary">Read the Docs</a>
+      <div class="use-grid">
+        <a href="/docs/#language-detection" class="use-item">
+          <h3>Language Detection</h3>
+          <p>Score text against multiple language models to identify the source language.</p>
+        </a>
+        <a href="/docs/#autocomplete" class="use-item">
+          <h3>Autocomplete</h3>
+          <p>Build text completion with prefix matching and n-gram predictions.</p>
+        </a>
+        <a href="/docs/#text-similarity" class="use-item">
+          <h3>Text Similarity</h3>
+          <p>Measure semantic similarity for search, deduplication, and FAQ matching.</p>
+        </a>
+        <a href="/docs/#llm-extend-vocabulary" class="use-item use-item-accent">
+          <h3>Extend LLM Vocabulary</h3>
+          <p>Add language support to models like LLaMA for low-resource languages.</p>
+        </a>
+        <a href="/docs/#code-switching" class="use-item">
+          <h3>Code-Switching Detection</h3>
+          <p>Detect when text switches between languages — Spanglish, Hinglish, and more.</p>
+        </a>
+        <a href="/docs/#anomaly-detection" class="use-item">
+          <h3>Anomaly Detection</h3>
+          <p>Find gibberish, spam, and out-of-domain content using perplexity scoring.</p>
+        </a>
       </div>
     </div>
   </section>
+
+  <!-- ============ CTA ============ -->
+  <section class="cta">
+    <div class="container cta-inner">
+      <h2>Start exploring</h2>
+      <p>Install the package and load your first model in under a minute.</p>
+      <div class="cta-actions">
+        <a href="/quickstart/" class="btn btn-primary">Quick start guide</a>
+        <a href="/docs/" class="btn btn-secondary">Read the docs</a>
+      </div>
+    </div>
+  </section>
+
 </BaseLayout>
 
 <style>
-  /* Hero */
+  /* ====== Hero ====== */
   .hero {
-    padding: var(--space-20) 0;
-    text-align: center;
-    background: linear-gradient(180deg, var(--color-surface) 0%, var(--color-bg) 100%);
+    position: relative;
+    padding: var(--sp-20) 0 var(--sp-16);
+    overflow: hidden;
+  }
+
+  .hero-map {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .hero-map-svg {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .hero-glow {
+    animation: glow-breathe 6s ease-in-out infinite;
+  }
+
+  @keyframes glow-breathe {
+    0%, 100% { opacity: 0.6; }
+    50% { opacity: 1; }
+  }
+
+  .continent-pulse {
+    animation: continent-fade 4s ease-in-out infinite;
+    animation-delay: var(--delay, 0s);
+  }
+
+  @keyframes continent-fade {
+    0%, 100% { opacity: 0.25; }
+    50% { opacity: 0.5; }
+  }
+
+  .hero-inner {
+    position: relative;
+    z-index: 1;
+    max-width: 680px;
+  }
+
+  .hero-eyebrow {
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    color: var(--atlas-accent);
+    letter-spacing: 0.04em;
+    margin-bottom: var(--sp-4);
+    font-variant-numeric: tabular-nums;
   }
 
   .hero-title {
-    font-size: clamp(2.5rem, 5vw, 4rem);
+    font-family: var(--font-serif);
+    font-size: clamp(2.5rem, 5vw, var(--text-5xl));
     font-weight: 700;
     line-height: 1.1;
-    color: var(--color-text);
+    letter-spacing: -0.03em;
+    color: var(--atlas-ink);
+    margin-bottom: var(--sp-6);
   }
 
-  .hero-highlight {
-    color: var(--color-accent);
-  }
-
-  .hero-subtitle {
-    font-size: var(--font-size-xl);
-    color: var(--color-text-secondary);
-    max-width: 600px;
-    margin: var(--space-6) auto 0;
+  .hero-lead {
+    font-size: var(--text-lg);
+    line-height: var(--leading-relaxed);
+    color: var(--atlas-ink-secondary);
+    max-width: 560px;
+    margin-bottom: var(--sp-8);
   }
 
   .hero-actions {
     display: flex;
-    gap: var(--space-4);
-    justify-content: center;
-    margin-top: var(--space-8);
+    gap: var(--sp-3);
+    margin-bottom: var(--sp-8);
   }
 
   .hero-install {
-    margin-top: var(--space-8);
-    max-width: 400px;
-    margin-left: auto;
-    margin-right: auto;
+    max-width: 340px;
   }
 
-  /* Stats */
-  .stats-section {
-    padding: var(--space-12) 0;
-    background: var(--color-surface);
-    border-top: 1px solid var(--color-border-light);
-    border-bottom: 1px solid var(--color-border-light);
+  /* ====== Numbers bar ====== */
+  .numbers-bar {
+    border-top: 1px solid var(--atlas-border);
+    border-bottom: 1px solid var(--atlas-border);
+    background: var(--atlas-surface);
+    padding: var(--sp-8) 0;
   }
 
-  .stats-grid {
-    display: grid;
-    grid-template-columns: repeat(6, 1fr);
-    gap: var(--space-8);
+  .numbers-inner {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--sp-6);
   }
 
   @media (max-width: 768px) {
-    .stats-grid {
-      grid-template-columns: repeat(3, 1fr);
+    .numbers-inner {
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: var(--sp-6) var(--sp-10);
     }
   }
 
-  /* Section */
-  .section-title {
-    font-size: var(--font-size-3xl);
-    margin-bottom: var(--space-8);
+  /* ====== Prose section ====== */
+  .prose-section {
+    max-width: 800px;
   }
 
-  .section-header {
+  .section-lede {
+    font-size: var(--text-lg);
+    color: var(--atlas-ink-secondary);
+    line-height: var(--leading-relaxed);
+    max-width: 640px;
+    margin-bottom: var(--sp-10);
+  }
+
+  .section-lede em {
+    font-style: italic;
+    color: var(--atlas-ink);
+  }
+
+  .pillars {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--sp-8) var(--sp-10);
+  }
+
+  .pillar h3 {
+    font-size: var(--text-base);
+    font-weight: 600;
+    color: var(--atlas-ink);
+    margin-bottom: var(--sp-2);
+  }
+
+  .pillar p {
+    font-size: var(--text-sm);
+    color: var(--atlas-ink-secondary);
+    line-height: var(--leading-relaxed);
+    margin: 0;
+  }
+
+  @media (max-width: 640px) {
+    .pillars { grid-template-columns: 1fr; }
+  }
+
+  /* ====== Model grid ====== */
+  .model-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--sp-5);
+  }
+
+  .model-item {
+    background: var(--atlas-bg);
+    border: 1px solid var(--atlas-border);
+    border-radius: var(--radius-lg);
+    padding: var(--sp-5);
+  }
+
+  .model-item-highlight {
+    border-color: var(--atlas-accent-muted);
+    background: var(--atlas-accent-subtle);
+  }
+
+  .model-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--sp-2);
+    margin-bottom: var(--sp-2);
+  }
+
+  .model-name {
+    font-weight: 600;
+    font-size: var(--text-base);
+    color: var(--atlas-ink);
+  }
+
+  .model-variants {
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    color: var(--atlas-ink-tertiary);
+  }
+
+  .model-item > p {
+    font-size: var(--text-sm);
+    color: var(--atlas-ink-secondary);
+    margin-bottom: var(--sp-3);
+  }
+
+  @media (max-width: 1024px) {
+    .model-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 640px) {
+    .model-grid { grid-template-columns: 1fr; }
+  }
+
+  /* ====== Section head with button ====== */
+  .section-head {
     display: flex;
     justify-content: space-between;
-    align-items: center;
-    margin-bottom: var(--space-8);
+    align-items: flex-start;
+    gap: var(--sp-6);
+    margin-bottom: var(--sp-8);
   }
 
-  .section-header .section-title {
+  .section-head h2 {
+    margin-bottom: var(--sp-2);
+  }
+
+  .section-head .section-lede {
     margin-bottom: 0;
   }
 
-  /* Features */
-  .feature-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: var(--space-6);
-  }
-
-  .feature-card {
-    background: var(--color-bg);
-    padding: var(--space-6);
-    border-radius: var(--radius-md);
-  }
-
-  .feature-card h3 {
-    font-size: var(--font-size-lg);
-    margin-bottom: var(--space-2);
-  }
-
-  .feature-card p {
-    color: var(--color-text-secondary);
-    margin: 0;
-  }
-
-  @media (max-width: 768px) {
-    .feature-grid {
-      grid-template-columns: 1fr;
+  @media (max-width: 640px) {
+    .section-head {
+      flex-direction: column;
     }
   }
 
-  /* Models */
-  .models-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: var(--space-6);
-  }
-
-  .model-card {
-    background: var(--color-surface);
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-md);
-    padding: var(--space-6);
-    min-width: 0;
-  }
-
-  .model-card h3 {
-    font-size: var(--font-size-lg);
-    color: var(--color-accent);
-    margin-bottom: var(--space-2);
-  }
-
-  .model-desc {
-    color: var(--color-text-secondary);
-    font-size: var(--font-size-sm);
-    margin-bottom: var(--space-3);
-  }
-
-  .model-features {
-    list-style: none;
-    margin-bottom: var(--space-4);
-  }
-
-  .model-features li {
-    font-size: var(--font-size-sm);
-    color: var(--color-text-secondary);
-    padding-left: var(--space-4);
-    position: relative;
-  }
-
-  .model-features li::before {
-    content: '•';
-    position: absolute;
-    left: 0;
-    color: var(--color-accent);
-  }
-
-  @media (max-width: 1024px) {
-    .models-grid {
-      grid-template-columns: repeat(2, 1fr);
-    }
-  }
-
-  @media (max-width: 768px) {
-    .models-grid {
-      grid-template-columns: 1fr;
-    }
-  }
-
-  /* Languages grid */
-  .languages-grid {
+  /* ====== Featured languages grid ====== */
+  .featured-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: var(--space-4);
+    gap: var(--sp-4);
   }
 
   @media (max-width: 1024px) {
-    .languages-grid {
-      grid-template-columns: repeat(3, 1fr);
-    }
+    .featured-grid { grid-template-columns: repeat(3, 1fr); }
   }
-
   @media (max-width: 768px) {
-    .languages-grid {
-      grid-template-columns: repeat(2, 1fr);
-    }
+    .featured-grid { grid-template-columns: repeat(2, 1fr); }
   }
 
-  /* Use Cases */
-  .use-cases-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: var(--space-6);
-  }
-
-  .use-case {
-    background: var(--color-surface);
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-md);
-    padding: var(--space-6);
-  }
-
-  .use-case h3 {
-    font-size: var(--font-size-lg);
-    margin-bottom: var(--space-2);
-  }
-
-  .use-case p {
-    color: var(--color-text-secondary);
-    margin: 0;
-  }
-
-  @media (max-width: 768px) {
-    .use-cases-grid {
-      grid-template-columns: 1fr;
-    }
-  }
-
-  /* Credits */
-  .credits-section {
-    background: var(--color-surface-alt);
-    border-top: 1px solid var(--color-border-light);
-    border-bottom: 1px solid var(--color-border-light);
-  }
-
-  .credits-grid {
+  /* ====== Use cases grid ====== */
+  .use-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: var(--space-6);
+    gap: var(--sp-4);
   }
 
-  .credit-card {
-    background: var(--color-surface);
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-md);
-    padding: var(--space-6);
-    text-align: center;
-  }
-
-  .credit-card h3 {
-    font-size: var(--font-size-xs);
-    color: var(--color-text-muted);
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    margin-bottom: var(--space-3);
-  }
-
-  .credit-link {
-    text-decoration: none;
-  }
-
-  .credit-link strong {
-    font-size: var(--font-size-lg);
-    color: var(--color-text);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: var(--space-2);
-    margin-bottom: var(--space-2);
-    transition: color var(--transition-fast);
-  }
-
-  .inline-logo {
-    width: 20px;
-    height: 20px;
-    border-radius: 4px;
-    vertical-align: text-top;
-    margin-right: 4px;
-  }
-
-  .credit-link:hover strong {
-    color: var(--color-accent);
-  }
-
-  .credit-card p {
-    font-size: var(--font-size-sm);
-    color: var(--color-text-secondary);
-    margin: 0;
-  }
-
-  .sponsor-highlight {
-    border-color: var(--color-accent-light);
-    background: var(--color-surface);
-  }
-
-  @media (max-width: 768px) {
-    .credits-grid {
-      grid-template-columns: 1fr;
-    }
-  }
-
-  /* Recipes Showcase */
-  .section-desc {
-    color: var(--color-text-secondary);
-    font-size: var(--font-size-lg);
-    margin-bottom: var(--space-8);
-    max-width: 600px;
-  }
-
-  .recipes-showcase {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: var(--space-5);
-  }
-
-  .recipe-card {
-    background: var(--color-surface);
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-md);
-    padding: var(--space-5);
-    text-decoration: none;
-    transition: all var(--transition-base);
+  .use-item {
     display: flex;
     flex-direction: column;
+    background: var(--atlas-bg);
+    border: 1px solid var(--atlas-border);
+    border-radius: var(--radius-lg);
+    padding: var(--sp-5);
+    text-decoration: none;
+    transition: border-color var(--duration-base) var(--ease-out),
+                box-shadow var(--duration-base) var(--ease-out);
   }
 
-  .recipe-card:hover {
-    border-color: var(--color-accent);
-    box-shadow: var(--shadow-md);
-    transform: translateY(-2px);
+  .use-item:hover {
+    border-color: var(--atlas-border-strong);
+    box-shadow: var(--atlas-shadow-md);
     text-decoration: none;
   }
 
-  .recipe-card-highlight {
-    border-color: var(--color-accent-light);
-    background: var(--color-surface-alt);
+  .use-item-accent {
+    border-color: var(--atlas-accent-muted);
   }
 
-  .recipe-icon {
-    font-size: 1.75rem;
-    margin-bottom: var(--space-3);
+  .use-item h3 {
+    font-size: var(--text-sm);
+    font-weight: 600;
+    color: var(--atlas-ink);
+    margin-bottom: var(--sp-2);
   }
 
-  .recipe-card h3 {
-    font-size: var(--font-size-base);
-    color: var(--color-text);
-    margin-bottom: var(--space-2);
-  }
-
-  .recipe-card p {
-    font-size: var(--font-size-sm);
-    color: var(--color-text-secondary);
+  .use-item p {
+    font-size: var(--text-sm);
+    color: var(--atlas-ink-secondary);
     margin: 0;
-    flex-grow: 1;
-    line-height: 1.5;
-  }
-
-  .recipe-link {
-    font-size: var(--font-size-sm);
-    color: var(--color-accent);
-    margin-top: var(--space-3);
-    font-weight: 500;
+    line-height: var(--leading-normal);
   }
 
   @media (max-width: 1024px) {
-    .recipes-showcase {
-      grid-template-columns: repeat(2, 1fr);
-    }
+    .use-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 640px) {
+    .use-grid { grid-template-columns: 1fr; }
   }
 
-  @media (max-width: 768px) {
-    .recipes-showcase {
-      grid-template-columns: 1fr;
-    }
+  /* ====== CTA ====== */
+  .cta {
+    border-top: 1px solid var(--atlas-border);
+    background: var(--atlas-surface);
+    padding: var(--sp-16) 0;
   }
 
-  /* Map Section */
-  .map-section {
-    padding-top: var(--space-8);
-    padding-bottom: var(--space-8);
-  }
-
-  .map-section .section-desc {
+  .cta-inner {
     text-align: center;
-    margin-left: auto;
-    margin-right: auto;
-    margin-bottom: var(--space-6);
+    max-width: 480px;
   }
 
-  .home-map-wrapper {
-    max-width: 900px;
-    margin: 0 auto;
-    transform: scale(0.85);
-    transform-origin: top center;
+  .cta-inner h2 {
+    margin-bottom: var(--sp-3);
   }
 
-  .home-map-wrapper :global(#world-map) {
-    height: 300px;
-  }
-
-  .home-map-wrapper :global(#map-info-bar) {
-    padding: 12px 16px;
-    min-height: 80px;
-  }
-
-  @media (max-width: 768px) {
-    .home-map-wrapper {
-      transform: scale(1);
-    }
-
-    .home-map-wrapper :global(#world-map) {
-      height: 220px;
-    }
-  }
-
-  /* CTA */
-  .cta-section {
-    background: var(--color-surface);
-    border-top: 1px solid var(--color-border-light);
-  }
-
-  .cta-section h2 {
-    font-size: var(--font-size-3xl);
-    margin-bottom: var(--space-4);
-  }
-
-  .cta-text {
-    font-size: var(--font-size-lg);
-    color: var(--color-text-secondary);
-    margin-bottom: var(--space-8);
+  .cta-inner > p {
+    font-size: var(--text-lg);
+    color: var(--atlas-ink-secondary);
+    margin-bottom: var(--sp-8);
   }
 
   .cta-actions {
     display: flex;
-    gap: var(--space-4);
+    gap: var(--sp-3);
     justify-content: center;
   }
 </style>

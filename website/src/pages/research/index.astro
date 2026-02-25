@@ -6,695 +6,614 @@ import BaseLayout from '@layouts/BaseLayout.astro';
   title="Research"
   description="Research methodology, metrics glossary, and evaluation approach for Wikilangs NLP models."
 >
-  <section class="hero-compact">
+  <!-- Hero -->
+  <section class="r-hero">
     <div class="container">
-      <h1>Research & Methodology</h1>
-      <p class="hero-subtitle">
-        Understanding the pipeline, metrics, and evaluation methods behind Wikilangs.
+      <h1>Research &amp; Methodology</h1>
+      <p class="r-lead">
+        Wikilangs produces reproducible NLP models for 340+ languages from Wikipedia data.
+        This page documents the full pipeline, evaluation metrics, and interpretation guidelines.
       </p>
     </div>
   </section>
 
-  <!-- Navigation -->
-  <nav class="section-nav">
+  <!-- Pipeline -->
+  <section class="r-section" id="pipeline">
     <div class="container">
-      <a href="#pipeline" class="nav-link">
-        <span class="nav-icon">⚙️</span>
-        <span>
-          <strong>Pipeline</strong>
-          <small>How we build models</small>
-        </span>
-      </a>
-      <a href="#evaluation" class="nav-link">
-        <span class="nav-icon">📊</span>
-        <span>
-          <strong>Evaluation</strong>
-          <small>Metrics & interpretation</small>
-        </span>
-      </a>
-    </div>
-  </nav>
+      <h2>Pipeline</h2>
+      <p class="r-prose">
+        Each language passes through five stages — from raw Wikipedia dump to published, documented model artifacts on HuggingFace.
+      </p>
 
-  <!-- ====== PART 1: PIPELINE METHODOLOGY ====== -->
-  <section class="section" id="pipeline">
-    <div class="container">
-      <div class="section-header">
-        <span class="section-badge">Part 1</span>
-        <h2>Pipeline Methodology</h2>
-        <p class="section-subtitle">How we transform Wikipedia dumps into trained models and evaluation reports</p>
-      </div>
-
-      <div class="pipeline-flow">
-        <div class="pipeline-step">
-          <div class="step-number">1</div>
-          <div class="step-content">
-            <h3>Data Collection</h3>
-            <p>
-              We use <a href="https://huggingface.co/datasets/omarkamali/wikipedia-monthly" target="_blank" rel="noopener">wikipedia-monthly</a>,
-              a regularly updated dataset containing Wikipedia articles across 340+ languages. Monthly snapshots ensure reproducibility and allow tracking language evolution over time.
-            </p>
-            <div class="step-details">
-              <span class="detail-badge">340+ Languages</span>
-              <span class="detail-badge">Monthly Updates</span>
-              <span class="detail-badge">Reproducible</span>
-            </div>
+      <!-- Horizontal flow diagram -->
+      <div class="pipeline-diagram">
+        <div class="pipe-stage">
+          <div class="pipe-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="28" height="28">
+              <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/>
+              <polyline points="7 10 12 15 17 10"/>
+              <line x1="12" y1="15" x2="12" y2="3"/>
+            </svg>
           </div>
+          <h3>Collection</h3>
+          <p>Monthly Wikipedia snapshots via <a href="https://huggingface.co/datasets/omarkamali/wikipedia-monthly" target="_blank" rel="noopener">wikipedia-monthly</a> across 340+ languages.</p>
         </div>
-
-        <div class="pipeline-step">
-          <div class="step-number">2</div>
-          <div class="step-content">
-            <h3>Text Processing</h3>
-            <p>
-              Raw Wikipedia text undergoes cleaning (removing markup, citations, tables) and normalization.
-              We preserve linguistic features like scripts, diacritics, and punctuation important for each language.
-            </p>
-            <div class="step-details">
-              <span class="detail-badge">Script Preservation</span>
-              <span class="detail-badge">Normalization</span>
-            </div>
+        <span class="pipe-arrow">→</span>
+        <div class="pipe-stage">
+          <div class="pipe-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="28" height="28">
+              <path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/>
+            </svg>
           </div>
+          <h3>Processing</h3>
+          <p>Markup removal, normalization, script &amp; diacritic preservation. Features important to each language are retained.</p>
         </div>
-
-        <div class="pipeline-step">
-          <div class="step-number">3</div>
-          <div class="step-content">
-            <h3>Model Training</h3>
-            <p>For each language, we train multiple model types with systematic hyperparameter variations:</p>
-            <ul class="model-list">
-              <li><strong>Tokenizers (BPE)</strong> — 8k, 16k, 32k, 64k vocabulary sizes</li>
-              <li><strong>N-gram models</strong> — 2-gram through 5-gram, word and subword variants</li>
-              <li><strong>Markov chains</strong> — Context depths 1-4, word and subword</li>
-              <li><strong>Word embeddings</strong> — 32, 64, 128 dimensions</li>
-            </ul>
+        <span class="pipe-arrow">→</span>
+        <div class="pipe-stage">
+          <div class="pipe-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="28" height="28">
+              <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+              <path d="M2 17l10 5 10-5"/>
+              <path d="M2 12l10 5 10-5"/>
+            </svg>
           </div>
+          <h3>Training</h3>
+          <p>BPE tokenizers (8k–64k), n-gram models (2–5), Markov chains (ctx 1–4), word embeddings (32–128d).</p>
         </div>
-
-        <div class="pipeline-step">
-          <div class="step-number">4</div>
-          <div class="step-content">
-            <h3>Evaluation & Ablation</h3>
-            <p>
-              Every model variant is evaluated on held-out test data. We compute comprehensive metrics
-              and generate ablation studies comparing different configurations to identify optimal settings for each language.
-            </p>
-            <div class="step-details">
-              <span class="detail-badge">Train/Test Split</span>
-              <span class="detail-badge">Ablation Studies</span>
-              <span class="detail-badge">Visualizations</span>
-            </div>
+        <span class="pipe-arrow">→</span>
+        <div class="pipe-stage">
+          <div class="pipe-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="28" height="28">
+              <line x1="18" y1="20" x2="18" y2="10"/>
+              <line x1="12" y1="20" x2="12" y2="4"/>
+              <line x1="6" y1="20" x2="6" y2="14"/>
+            </svg>
           </div>
+          <h3>Evaluation</h3>
+          <p>Comprehensive metrics on held-out test data with ablation studies comparing all hyperparameter variants.</p>
         </div>
-
-        <div class="pipeline-step">
-          <div class="step-number">5</div>
-          <div class="step-content">
-            <h3>Publishing to HuggingFace</h3>
-            <p>
-              All models, vocabularies, and evaluation reports are published to
-              <a href="https://huggingface.co/wikilangs" target="_blank" rel="noopener">HuggingFace</a>.
-              Each language repository includes model cards with metrics, visualizations, and usage examples.
-            </p>
-            <div class="step-details">
-              <span class="detail-badge">Open Access</span>
-              <span class="detail-badge">Model Cards</span>
-              <span class="detail-badge">Ready to Use</span>
-            </div>
+        <span class="pipe-arrow">→</span>
+        <div class="pipe-stage">
+          <div class="pipe-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="28" height="28">
+              <path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8"/>
+              <polyline points="16 6 12 2 8 6"/>
+              <line x1="12" y1="2" x2="12" y2="15"/>
+            </svg>
           </div>
+          <h3>Publishing</h3>
+          <p>Models, vocabularies, and evaluation reports published to <a href="https://huggingface.co/wikilangs" target="_blank" rel="noopener">HuggingFace</a> with model cards.</p>
         </div>
       </div>
 
-      <div class="resources-box">
-        <h3>Learn More</h3>
-        <div class="resource-links">
-          <a href="https://huggingface.co/wikilangs" target="_blank" rel="noopener" class="resource-link">
-            <span class="resource-icon">🤗</span>
-            <span>HuggingFace Models</span>
-          </a>
-          <a href="https://huggingface.co/datasets/omarkamali/wikipedia-monthly" target="_blank" rel="noopener" class="resource-link">
-            <span class="resource-icon">📚</span>
-            <span>Wikipedia Dataset</span>
-          </a>
-          <a href="https://github.com/wikilangs" target="_blank" rel="noopener" class="resource-link">
-            <span class="resource-icon">💻</span>
-            <span>Source Code</span>
-          </a>
+      <div class="pipe-principles">
+        <div class="principle">
+          <strong>Reproducibility</strong>
+          <span>Monthly snapshots, versioned datasets, public training scripts.</span>
+        </div>
+        <div class="principle">
+          <strong>Train/Test Split</strong>
+          <span>All metrics computed on held-out data, never training data.</span>
+        </div>
+        <div class="principle">
+          <strong>Ablation Studies</strong>
+          <span>Systematic hyperparameter variation per language per model family.</span>
+        </div>
+        <div class="principle">
+          <strong>Open Access</strong>
+          <span>All code, models, and results freely available for research use.</span>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- ====== PART 2: EVALUATION METHODOLOGY ====== -->
-  <section class="section section-alt" id="evaluation">
+  <!-- Metrics Reference -->
+  <section class="r-section r-alt" id="metrics">
     <div class="container">
-      <div class="section-header">
-        <span class="section-badge">Part 2</span>
-        <h2>Evaluation Methodology</h2>
-        <p class="section-subtitle">Understanding the metrics we use and how to interpret them</p>
+      <h2>Metrics Reference</h2>
+      <p class="r-prose">
+        Select a model family to see the metrics used for evaluation and how to interpret them.
+      </p>
+
+      <div class="metrics-tabs">
+        <nav class="mtab-bar">
+          <button class="mtab active" data-tab="tokenizer">Tokenizer</button>
+          <button class="mtab" data-tab="ngram">N-gram</button>
+          <button class="mtab" data-tab="markov">Markov</button>
+          <button class="mtab" data-tab="vocab">Vocabulary &amp; Zipf</button>
+          <button class="mtab" data-tab="embed">Embeddings</button>
+        </nav>
+
+        <!-- Tokenizer -->
+        <div class="mtab-panel active" data-panel="tokenizer">
+          <div class="metric">
+            <h4>Compression Ratio</h4>
+            <dl>
+              <dt>Definition</dt>
+              <dd>The ratio of characters to tokens (chars/token). Measures how efficiently the tokenizer represents text.</dd>
+              <dt>Intuition</dt>
+              <dd>Higher compression means fewer tokens needed to represent the same text, reducing sequence lengths for downstream models. A 3× compression means ~3 characters per token on average.</dd>
+              <dt>What to seek</dt>
+              <dd>Higher is generally better for efficiency, but extremely high compression may indicate overly aggressive merging that loses morphological information.</dd>
+            </dl>
+          </div>
+          <div class="metric">
+            <h4>Average Token Length (Fertility)</h4>
+            <dl>
+              <dt>Definition</dt>
+              <dd>Mean number of characters per token produced by the tokenizer.</dd>
+              <dt>Intuition</dt>
+              <dd>Longer tokens capture more context but may struggle with rare words; shorter tokens are more flexible but increase sequence length.</dd>
+              <dt>What to seek</dt>
+              <dd>Balance between 2–5 characters for most languages. Arabic and morphologically-rich languages may benefit from slightly longer tokens.</dd>
+            </dl>
+          </div>
+          <div class="metric">
+            <h4>Unknown Token Rate (OOV Rate)</h4>
+            <dl>
+              <dt>Definition</dt>
+              <dd>Percentage of tokens that map to the unknown/UNK token.</dd>
+              <dt>Intuition</dt>
+              <dd>Lower OOV means better vocabulary coverage. High OOV indicates the tokenizer encounters many unseen character sequences.</dd>
+              <dt>What to seek</dt>
+              <dd>Below 1% is excellent; below 5% is acceptable. BPE tokenizers typically achieve very low OOV due to subword fallback.</dd>
+            </dl>
+          </div>
+        </div>
+
+        <!-- N-gram -->
+        <div class="mtab-panel" data-panel="ngram">
+          <div class="metric">
+            <h4>Perplexity</h4>
+            <dl>
+              <dt>Definition</dt>
+              <dd>Measures how "surprised" the model is by test data. Mathematically: 2<sup>(cross-entropy)</sup>. Lower values indicate better prediction.</dd>
+              <dt>Intuition</dt>
+              <dd>If perplexity is 100, the model is as uncertain as if choosing uniformly among 100 options at each step. A perplexity of 10 means effectively choosing among 10 equally likely options.</dd>
+              <dt>What to seek</dt>
+              <dd>Lower is better. Perplexity decreases with larger n-grams. Values vary widely by language and corpus size.</dd>
+            </dl>
+          </div>
+          <div class="metric">
+            <h4>Entropy</h4>
+            <dl>
+              <dt>Definition</dt>
+              <dd>Average information content (in bits) needed to encode the next token given the context. Related to perplexity: perplexity = 2<sup>entropy</sup>.</dd>
+              <dt>Intuition</dt>
+              <dd>High entropy means high uncertainty/randomness; low entropy means predictable patterns. Natural language typically has entropy between 1–4 bits per character.</dd>
+              <dt>What to seek</dt>
+              <dd>Lower entropy indicates more predictable text patterns. Entropy should decrease as n-gram size increases.</dd>
+            </dl>
+          </div>
+          <div class="metric">
+            <h4>Coverage (Top-K)</h4>
+            <dl>
+              <dt>Definition</dt>
+              <dd>Percentage of corpus occurrences explained by the top K most frequent n-grams.</dd>
+              <dt>Intuition</dt>
+              <dd>High coverage with few patterns indicates repetitive/formulaic text; low coverage suggests diverse vocabulary usage.</dd>
+              <dt>What to seek</dt>
+              <dd>For language modeling, moderate coverage (40–60% with top-1000) is typical for natural text.</dd>
+            </dl>
+          </div>
+        </div>
+
+        <!-- Markov -->
+        <div class="mtab-panel" data-panel="markov">
+          <div class="metric">
+            <h4>Average Entropy</h4>
+            <dl>
+              <dt>Definition</dt>
+              <dd>Mean entropy across all contexts, measuring average uncertainty in next-word prediction.</dd>
+              <dt>Intuition</dt>
+              <dd>Lower entropy means the model is more confident about what comes next. Context-1 has high entropy; Context-4 has low entropy.</dd>
+              <dt>What to seek</dt>
+              <dd>Decreasing entropy with larger context sizes. Very low entropy (&lt;0.1) indicates highly deterministic transitions.</dd>
+            </dl>
+          </div>
+          <div class="metric">
+            <h4>Branching Factor</h4>
+            <dl>
+              <dt>Definition</dt>
+              <dd>Average number of unique next tokens observed for each context.</dd>
+              <dt>Intuition</dt>
+              <dd>High branching = many possible continuations (flexible but uncertain); low branching = few options (predictable but potentially repetitive).</dd>
+              <dt>What to seek</dt>
+              <dd>Branching factor should decrease with context size. Values near 1.0 indicate nearly deterministic chains.</dd>
+            </dl>
+          </div>
+          <div class="metric">
+            <h4>Predictability</h4>
+            <dl>
+              <dt>Definition</dt>
+              <dd>Derived metric: (1 − normalized_entropy) × 100%. Indicates how deterministic the model's predictions are.</dd>
+              <dt>Intuition</dt>
+              <dd>100% means the next word is always certain; 0% means completely random.</dd>
+              <dt>What to seek</dt>
+              <dd>Higher predictability for text generation quality, but too high (&gt;98%) may produce repetitive output.</dd>
+            </dl>
+          </div>
+        </div>
+
+        <!-- Vocabulary & Zipf -->
+        <div class="mtab-panel" data-panel="vocab">
+          <div class="metric">
+            <h4>Zipf's Coefficient</h4>
+            <dl>
+              <dt>Definition</dt>
+              <dd>The slope of the log-log plot of word frequency vs. rank. Zipf's law predicts this should be approximately −1.</dd>
+              <dt>Intuition</dt>
+              <dd>A coefficient near −1 indicates natural language patterns where a few words are very common and most words are rare.</dd>
+              <dt>What to seek</dt>
+              <dd>Values between −0.8 and −1.2 indicate healthy natural language distribution.</dd>
+            </dl>
+          </div>
+          <div class="metric">
+            <h4>R² (Coefficient of Determination)</h4>
+            <dl>
+              <dt>Definition</dt>
+              <dd>Measures how well the linear fit explains the frequency-rank relationship. Ranges from 0 to 1.</dd>
+              <dt>Intuition</dt>
+              <dd>R² near 1.0 means the data closely follows Zipf's law.</dd>
+              <dt>What to seek</dt>
+              <dd>R² &gt; 0.95 is excellent; &gt; 0.99 indicates near-perfect Zipf adherence.</dd>
+            </dl>
+          </div>
+        </div>
+
+        <!-- Embeddings -->
+        <div class="mtab-panel" data-panel="embed">
+          <div class="metric">
+            <h4>Isotropy</h4>
+            <dl>
+              <dt>Definition</dt>
+              <dd>Measures how uniformly distributed vectors are in the embedding space. Computed as the ratio of minimum to maximum singular values.</dd>
+              <dt>Intuition</dt>
+              <dd>High isotropy (near 1.0) means vectors spread evenly in all directions; low isotropy means vectors cluster in certain directions.</dd>
+              <dt>What to seek</dt>
+              <dd>Higher isotropy generally indicates better-quality embeddings. Values &gt; 0.1 are reasonable; &gt; 0.3 is good.</dd>
+            </dl>
+          </div>
+          <div class="metric">
+            <h4>Cosine Similarity</h4>
+            <dl>
+              <dt>Definition</dt>
+              <dd>Measures angular similarity between vectors, ranging from −1 (opposite) to 1 (identical direction).</dd>
+              <dt>Intuition</dt>
+              <dd>Words with similar meanings should have high cosine similarity.</dd>
+              <dt>What to seek</dt>
+              <dd>Semantically related words should score &gt; 0.5; synonyms often score &gt; 0.7.</dd>
+            </dl>
+          </div>
+        </div>
       </div>
     </div>
   </section>
 
-  <!-- Metrics Glossary -->
-  <section class="section section-alt" id="metrics">
-    <div class="container">
-      <h3 class="metrics-main-header">Metrics Glossary</h3>
-
-      <div class="metrics-section">
-        <h4 class="metrics-category">Tokenizer Metrics</h4>
-
-        <div class="metric-card">
-          <h4>Compression Ratio</h4>
-          <p class="metric-def">The ratio of characters to tokens (chars/token). Measures how efficiently the tokenizer represents text.</p>
-          <p class="metric-intuition"><strong>Intuition:</strong> Higher compression means fewer tokens needed to represent the same text, reducing sequence lengths for downstream models. A 3x compression means ~3 characters per token on average.</p>
-          <p class="metric-seek"><strong>What to seek:</strong> Higher is generally better for efficiency, but extremely high compression may indicate overly aggressive merging that loses morphological information.</p>
-        </div>
-
-        <div class="metric-card">
-          <h4>Average Token Length (Fertility)</h4>
-          <p class="metric-def">Mean number of characters per token produced by the tokenizer.</p>
-          <p class="metric-intuition"><strong>Intuition:</strong> Longer tokens capture more context but may struggle with rare words; shorter tokens are more flexible but increase sequence length.</p>
-          <p class="metric-seek"><strong>What to seek:</strong> Balance between 2-5 characters for most languages. Arabic and morphologically-rich languages may benefit from slightly longer tokens.</p>
-        </div>
-
-        <div class="metric-card">
-          <h4>Unknown Token Rate (OOV Rate)</h4>
-          <p class="metric-def">Percentage of tokens that map to the unknown/UNK token.</p>
-          <p class="metric-intuition"><strong>Intuition:</strong> Lower OOV means better vocabulary coverage. High OOV indicates the tokenizer encounters many unseen character sequences.</p>
-          <p class="metric-seek"><strong>What to seek:</strong> Below 1% is excellent; below 5% is acceptable. BPE tokenizers typically achieve very low OOV due to subword fallback.</p>
-        </div>
-      </div>
-
-      <div class="metrics-section">
-        <h4 class="metrics-category">N-gram Model Metrics</h4>
-
-        <div class="metric-card">
-          <h4>Perplexity</h4>
-          <p class="metric-def">Measures how "surprised" the model is by test data. Mathematically: 2^(cross-entropy). Lower values indicate better prediction.</p>
-          <p class="metric-intuition"><strong>Intuition:</strong> If perplexity is 100, the model is as uncertain as if choosing uniformly among 100 options at each step. A perplexity of 10 means effectively choosing among 10 equally likely options.</p>
-          <p class="metric-seek"><strong>What to seek:</strong> Lower is better. Perplexity decreases with larger n-grams. Values vary widely by language and corpus size.</p>
-        </div>
-
-        <div class="metric-card">
-          <h4>Entropy</h4>
-          <p class="metric-def">Average information content (in bits) needed to encode the next token given the context. Related to perplexity: perplexity = 2^entropy.</p>
-          <p class="metric-intuition"><strong>Intuition:</strong> High entropy means high uncertainty/randomness; low entropy means predictable patterns. Natural language typically has entropy between 1-4 bits per character.</p>
-          <p class="metric-seek"><strong>What to seek:</strong> Lower entropy indicates more predictable text patterns. Entropy should decrease as n-gram size increases.</p>
-        </div>
-
-        <div class="metric-card">
-          <h4>Coverage (Top-K)</h4>
-          <p class="metric-def">Percentage of corpus occurrences explained by the top K most frequent n-grams.</p>
-          <p class="metric-intuition"><strong>Intuition:</strong> High coverage with few patterns indicates repetitive/formulaic text; low coverage suggests diverse vocabulary usage.</p>
-          <p class="metric-seek"><strong>What to seek:</strong> For language modeling, moderate coverage (40-60% with top-1000) is typical for natural text.</p>
-        </div>
-      </div>
-
-      <div class="metrics-section">
-        <h4 class="metrics-category">Markov Chain Metrics</h4>
-
-        <div class="metric-card">
-          <h4>Average Entropy</h4>
-          <p class="metric-def">Mean entropy across all contexts, measuring average uncertainty in next-word prediction.</p>
-          <p class="metric-intuition"><strong>Intuition:</strong> Lower entropy means the model is more confident about what comes next. Context-1 has high entropy; Context-4 has low entropy.</p>
-          <p class="metric-seek"><strong>What to seek:</strong> Decreasing entropy with larger context sizes. Very low entropy (&lt;0.1) indicates highly deterministic transitions.</p>
-        </div>
-
-        <div class="metric-card">
-          <h4>Branching Factor</h4>
-          <p class="metric-def">Average number of unique next tokens observed for each context.</p>
-          <p class="metric-intuition"><strong>Intuition:</strong> High branching = many possible continuations (flexible but uncertain); low branching = few options (predictable but potentially repetitive).</p>
-          <p class="metric-seek"><strong>What to seek:</strong> Branching factor should decrease with context size. Values near 1.0 indicate nearly deterministic chains.</p>
-        </div>
-
-        <div class="metric-card">
-          <h4>Predictability</h4>
-          <p class="metric-def">Derived metric: (1 - normalized_entropy) x 100%. Indicates how deterministic the model's predictions are.</p>
-          <p class="metric-intuition"><strong>Intuition:</strong> 100% means the next word is always certain; 0% means completely random.</p>
-          <p class="metric-seek"><strong>What to seek:</strong> Higher predictability for text generation quality, but too high (&gt;98%) may produce repetitive output.</p>
-        </div>
-      </div>
-
-      <div class="metrics-section">
-        <h4 class="metrics-category">Vocabulary & Zipf's Law Metrics</h4>
-
-        <div class="metric-card">
-          <h4>Zipf's Coefficient</h4>
-          <p class="metric-def">The slope of the log-log plot of word frequency vs. rank. Zipf's law predicts this should be approximately -1.</p>
-          <p class="metric-intuition"><strong>Intuition:</strong> A coefficient near -1 indicates natural language patterns where a few words are very common and most words are rare.</p>
-          <p class="metric-seek"><strong>What to seek:</strong> Values between -0.8 and -1.2 indicate healthy natural language distribution.</p>
-        </div>
-
-        <div class="metric-card">
-          <h4>R² (Coefficient of Determination)</h4>
-          <p class="metric-def">Measures how well the linear fit explains the frequency-rank relationship. Ranges from 0 to 1.</p>
-          <p class="metric-intuition"><strong>Intuition:</strong> R² near 1.0 means the data closely follows Zipf's law.</p>
-          <p class="metric-seek"><strong>What to seek:</strong> R² &gt; 0.95 is excellent; &gt; 0.99 indicates near-perfect Zipf adherence.</p>
-        </div>
-      </div>
-
-      <div class="metrics-section">
-        <h4 class="metrics-category">Word Embedding Metrics</h4>
-
-        <div class="metric-card">
-          <h4>Isotropy</h4>
-          <p class="metric-def">Measures how uniformly distributed vectors are in the embedding space. Computed as the ratio of minimum to maximum singular values.</p>
-          <p class="metric-intuition"><strong>Intuition:</strong> High isotropy (near 1.0) means vectors spread evenly in all directions; low isotropy means vectors cluster in certain directions.</p>
-          <p class="metric-seek"><strong>What to seek:</strong> Higher isotropy generally indicates better-quality embeddings. Values &gt; 0.1 are reasonable; &gt; 0.3 is good.</p>
-        </div>
-
-        <div class="metric-card">
-          <h4>Cosine Similarity</h4>
-          <p class="metric-def">Measures angular similarity between vectors, ranging from -1 (opposite) to 1 (identical direction).</p>
-          <p class="metric-intuition"><strong>Intuition:</strong> Words with similar meanings should have high cosine similarity.</p>
-          <p class="metric-seek"><strong>What to seek:</strong> Semantically related words should score &gt; 0.5; synonyms often score &gt; 0.7.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Evaluation Methodology -->
-  <section class="section" id="methodology">
-    <div class="container">
-      <h2>Evaluation Methodology</h2>
-
-      <div class="method-grid">
-        <div class="method-card">
-          <h3>Data Source</h3>
-          <p>
-            All models are trained on <a href="https://huggingface.co/datasets/omarkamali/wikipedia-monthly" target="_blank" rel="noopener">wikipedia-monthly</a>,
-            a regularly updated dataset containing Wikipedia articles across 300+ languages.
-            We use monthly snapshots to ensure reproducibility.
-          </p>
-        </div>
-
-        <div class="method-card">
-          <h3>Train/Test Split</h3>
-          <p>
-            Each language's data is split into training and evaluation sets.
-            Models are trained on the training set, and all metrics are computed on held-out test data.
-          </p>
-        </div>
-
-        <div class="method-card">
-          <h3>Ablation Studies</h3>
-          <p>
-            We systematically vary model hyperparameters (vocabulary size, n-gram size, context depth, embedding dimension)
-            to provide comprehensive comparisons and recommendations for each language.
-          </p>
-        </div>
-
-        <div class="method-card">
-          <h3>Reproducibility</h3>
-          <p>
-            All training scripts, evaluation code, and raw results are available in our repositories.
-            Each model card includes the exact date and configuration used for training.
-          </p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Interpretation Guide -->
-  <section class="section section-alt" id="interpretation">
+  <!-- Interpretation -->
+  <section class="r-section" id="interpretation">
     <div class="container">
       <h2>Interpretation Guidelines</h2>
-
-      <div class="guidelines prose">
-        <ol>
-          <li><strong>Compare within model families:</strong> Metrics are most meaningful when comparing models of the same type (e.g., 8k vs 64k tokenizer).</li>
-          <li><strong>Consider trade-offs:</strong> Better performance on one metric often comes at the cost of another (e.g., compression vs. OOV rate).</li>
-          <li><strong>Context matters:</strong> Optimal values depend on downstream tasks. Text generation may prioritize different metrics than classification.</li>
-          <li><strong>Corpus influence:</strong> All metrics are influenced by corpus characteristics. Wikipedia text differs from social media or literature.</li>
-          <li><strong>Language-specific patterns:</strong> Morphologically rich languages (like Arabic) may show different optimal ranges than analytic languages.</li>
-        </ol>
+      <div class="guidelines-grid">
+        <div class="guideline">
+          <h4>Compare within model families</h4>
+          <p>Metrics are most meaningful when comparing models of the same type — e.g., an 8k vs. 64k tokenizer, or a 2-gram vs. 5-gram model.</p>
+        </div>
+        <div class="guideline">
+          <h4>Consider trade-offs</h4>
+          <p>Better performance on one metric often comes at the cost of another. Higher compression may increase OOV rate; larger context reduces entropy but requires more data.</p>
+        </div>
+        <div class="guideline">
+          <h4>Context matters</h4>
+          <p>Optimal values depend on downstream tasks. Text generation may prioritize different metrics than classification or search.</p>
+        </div>
+        <div class="guideline">
+          <h4>Corpus influence</h4>
+          <p>All metrics are influenced by corpus characteristics. Wikipedia text differs from social media, literature, or conversational data.</p>
+        </div>
+        <div class="guideline">
+          <h4>Language-specific patterns</h4>
+          <p>Morphologically rich languages (like Arabic or Turkish) may show different optimal ranges than analytic languages (like English or Chinese).</p>
+        </div>
       </div>
+    </div>
+  </section>
 
-      <div class="learn-more-box">
-        <h3>Further Reading</h3>
-        <p>Want to dive deeper into NLP evaluation? Here are some resources:</p>
-        <div class="learn-links">
-          <a href="https://en.wikipedia.org/wiki/Perplexity" target="_blank" rel="noopener" class="learn-link">
-            <span>Perplexity</span>
-            <small>Wikipedia</small>
-          </a>
-          <a href="https://en.wikipedia.org/wiki/Byte_pair_encoding" target="_blank" rel="noopener" class="learn-link">
-            <span>BPE Tokenization</span>
-            <small>Wikipedia</small>
-          </a>
-          <a href="https://en.wikipedia.org/wiki/Zipf%27s_law" target="_blank" rel="noopener" class="learn-link">
-            <span>Zipf's Law</span>
-            <small>Wikipedia</small>
-          </a>
-          <a href="https://en.wikipedia.org/wiki/Word_embedding" target="_blank" rel="noopener" class="learn-link">
-            <span>Word Embeddings</span>
-            <small>Wikipedia</small>
-          </a>
-          <a href="https://huggingface.co/learn/nlp-course" target="_blank" rel="noopener" class="learn-link">
-            <span>NLP Course</span>
-            <small>HuggingFace</small>
-          </a>
+  <!-- Resources -->
+  <section class="r-section r-alt" id="resources">
+    <div class="container">
+      <h2>Resources &amp; Further Reading</h2>
+      <div class="resources-row">
+        <div class="res-group">
+          <h4>Project</h4>
+          <a href="https://huggingface.co/wikilangs" target="_blank" rel="noopener">🤗 HuggingFace Models</a>
+          <a href="https://huggingface.co/datasets/omarkamali/wikipedia-monthly" target="_blank" rel="noopener">📚 Wikipedia Dataset</a>
+          <a href="https://github.com/wikilangs" target="_blank" rel="noopener">💻 Source Code</a>
+        </div>
+        <div class="res-group">
+          <h4>Background</h4>
+          <a href="https://en.wikipedia.org/wiki/Perplexity" target="_blank" rel="noopener">Perplexity <small>Wikipedia</small></a>
+          <a href="https://en.wikipedia.org/wiki/Byte_pair_encoding" target="_blank" rel="noopener">BPE Tokenization <small>Wikipedia</small></a>
+          <a href="https://en.wikipedia.org/wiki/Zipf%27s_law" target="_blank" rel="noopener">Zipf's Law <small>Wikipedia</small></a>
+          <a href="https://en.wikipedia.org/wiki/Word_embedding" target="_blank" rel="noopener">Word Embeddings <small>Wikipedia</small></a>
+          <a href="https://huggingface.co/learn/nlp-course" target="_blank" rel="noopener">NLP Course <small>HuggingFace</small></a>
         </div>
       </div>
     </div>
   </section>
 </BaseLayout>
 
+<script is:inline>
+// Metrics tab switching
+document.querySelectorAll('.mtab').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const tab = btn.dataset.tab;
+    document.querySelectorAll('.mtab').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.mtab-panel').forEach(p => p.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelector(`.mtab-panel[data-panel="${tab}"]`)?.classList.add('active');
+  });
+});
+</script>
+
 <style>
-  .hero-compact {
-    padding: var(--space-12) 0;
+  /* ========== HERO ========== */
+  .r-hero {
+    padding: 56px 0 40px;
     background: var(--color-surface);
     border-bottom: 1px solid var(--color-border);
   }
-
-  .hero-compact h1 {
-    font-size: var(--font-size-4xl);
-    margin-bottom: var(--space-4);
+  .r-hero h1 {
+    font-size: 2.25rem;
+    font-weight: 800;
+    margin-bottom: 12px;
+    letter-spacing: -0.02em;
   }
-
-  .hero-subtitle {
-    font-size: var(--font-size-xl);
+  .r-lead {
+    font-size: 1.1rem;
     color: var(--color-text-secondary);
+    line-height: 1.7;
+    max-width: 640px;
   }
 
-  /* Section Navigation */
-  .section-nav {
+  /* ========== SECTIONS ========== */
+  .r-section {
+    padding: 56px 0;
+  }
+  .r-section.r-alt {
     background: var(--color-surface);
-    border-bottom: 1px solid var(--color-border);
-    padding: var(--space-4) 0;
-    position: sticky;
-    top: 0;
-    z-index: 10;
   }
-  .section-nav .container {
-    display: flex;
-    gap: var(--space-4);
-    justify-content: center;
-  }
-  .nav-link {
-    display: flex;
-    align-items: center;
-    gap: var(--space-3);
-    padding: var(--space-3) var(--space-5);
-    background: var(--color-bg);
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-md);
-    text-decoration: none;
-    transition: all 0.2s;
-  }
-  .nav-link:hover {
-    border-color: var(--color-accent);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-    text-decoration: none;
-  }
-  .nav-icon {
-    font-size: 1.25rem;
-  }
-  .nav-link strong {
-    display: block;
-    color: var(--color-text);
-  }
-  .nav-link small {
-    font-size: var(--font-size-sm);
-    color: var(--color-text-muted);
-  }
-
-  /* Section Header */
-  .section-header {
-    text-align: center;
-    margin-bottom: var(--space-10);
-  }
-  .section-badge {
-    display: inline-block;
-    background: var(--color-accent);
-    color: white;
-    font-size: var(--font-size-sm);
-    font-weight: 600;
-    padding: var(--space-1) var(--space-3);
-    border-radius: var(--radius-full);
-    margin-bottom: var(--space-3);
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-  }
-  .section-subtitle {
-    font-size: var(--font-size-lg);
-    color: var(--color-text-secondary);
-    max-width: 600px;
-    margin: 0 auto;
-  }
-
-  /* Pipeline Flow */
-  .pipeline-flow {
-    max-width: 800px;
-    margin: 0 auto;
-    position: relative;
-  }
-  .pipeline-flow::before {
-    content: '';
-    position: absolute;
-    left: 20px;
-    top: 40px;
-    bottom: 40px;
-    width: 2px;
-    background: linear-gradient(180deg, var(--color-accent) 0%, var(--color-accent-dark, #6366f1) 100%);
-    opacity: 0.3;
-  }
-  .pipeline-step {
-    display: flex;
-    gap: var(--space-5);
-    margin-bottom: var(--space-6);
-    position: relative;
-  }
-  .step-number {
-    width: 42px;
-    height: 42px;
-    background: linear-gradient(135deg, var(--color-accent), var(--color-accent-dark, #6366f1));
-    color: white;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  .r-section h2 {
+    font-size: 1.75rem;
     font-weight: 700;
-    font-size: var(--font-size-lg);
-    flex-shrink: 0;
-    position: relative;
-    z-index: 1;
+    margin-bottom: 12px;
+    letter-spacing: -0.01em;
   }
-  .step-content {
-    flex: 1;
-    background: var(--color-surface);
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-md);
-    padding: var(--space-5);
-  }
-  .step-content h3 {
-    font-size: var(--font-size-lg);
-    margin-bottom: var(--space-2);
-    color: var(--color-text);
-  }
-  .step-content p {
+  .r-prose {
     color: var(--color-text-secondary);
-    margin-bottom: var(--space-3);
-  }
-  .step-content a {
-    color: var(--color-accent);
-  }
-  .step-details {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--space-2);
-  }
-  .detail-badge {
-    font-size: var(--font-size-xs);
-    background: var(--color-bg);
-    color: var(--color-text-muted);
-    padding: var(--space-1) var(--space-2);
-    border-radius: var(--radius-sm);
-  }
-  .model-list {
-    margin: var(--space-3) 0 0;
-    padding-left: var(--space-5);
-    color: var(--color-text-secondary);
-  }
-  .model-list li {
-    margin-bottom: var(--space-2);
+    line-height: 1.7;
+    max-width: 640px;
+    margin-bottom: 32px;
   }
 
-  /* Resources Box */
-  .resources-box {
-    max-width: 800px;
-    margin: var(--space-10) auto 0;
-    background: var(--color-surface);
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-lg);
-    padding: var(--space-6);
-    text-align: center;
-  }
-  .resources-box h3 {
-    font-size: var(--font-size-lg);
-    margin-bottom: var(--space-4);
-  }
-  .resource-links {
+  /* ========== PIPELINE DIAGRAM ========== */
+  .pipeline-diagram {
     display: flex;
-    gap: var(--space-4);
-    justify-content: center;
-    flex-wrap: wrap;
+    align-items: flex-start;
+    gap: 0;
+    margin-bottom: 40px;
+    overflow-x: auto;
+    padding-bottom: 8px;
   }
-  .resource-link {
+  .pipe-stage {
+    flex: 1;
+    min-width: 150px;
+    text-align: center;
+    padding: 0 12px;
+  }
+  .pipe-icon {
+    width: 56px;
+    height: 56px;
+    margin: 0 auto 12px;
     display: flex;
     align-items: center;
-    gap: var(--space-2);
-    padding: var(--space-3) var(--space-4);
+    justify-content: center;
     background: var(--color-bg);
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-md);
-    text-decoration: none;
-    color: var(--color-text);
+    border: 1.5px solid var(--color-border);
+    border-radius: 14px;
+    color: var(--color-accent);
     transition: all 0.2s;
   }
-  .resource-link:hover {
+  .pipe-stage:hover .pipe-icon {
     border-color: var(--color-accent);
-    color: var(--color-accent);
-    text-decoration: none;
-    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(0,0,0,0.08);
   }
-  .resource-icon {
-    font-size: 1.25rem;
+  .pipe-stage h3 {
+    font-size: 0.95rem;
+    font-weight: 600;
+    margin-bottom: 6px;
   }
-
-  h2 {
-    font-size: var(--font-size-3xl);
-    margin-bottom: var(--space-8);
-  }
-
-  .metrics-main-header {
-    font-size: var(--font-size-2xl);
-    margin-bottom: var(--space-8);
-    color: var(--color-text);
-  }
-
-  .metrics-section {
-    margin-bottom: var(--space-10);
-  }
-
-  .metrics-category {
-    font-size: var(--font-size-xl);
-    color: var(--color-accent);
-    margin-bottom: var(--space-4);
-    padding-bottom: var(--space-2);
-    border-bottom: 2px solid var(--color-accent);
-  }
-
-  .metric-card {
-    background: var(--color-bg);
-    border-radius: var(--radius-md);
-    padding: var(--space-5);
-    margin-bottom: var(--space-4);
-  }
-
-  .metric-card h4 {
-    font-size: var(--font-size-lg);
-    margin-bottom: var(--space-3);
-  }
-
-  .metric-def {
-    color: var(--color-text);
-    margin-bottom: var(--space-3);
-  }
-
-  .metric-intuition,
-  .metric-seek {
-    font-size: var(--font-size-sm);
+  .pipe-stage p {
+    font-size: 0.82rem;
     color: var(--color-text-secondary);
-    margin-bottom: var(--space-2);
+    line-height: 1.5;
+    margin: 0;
+  }
+  .pipe-stage a {
+    color: var(--color-accent);
+  }
+  .pipe-arrow {
+    display: flex;
+    align-items: center;
+    padding-top: 16px;
+    color: var(--color-border);
+    font-size: 1.25rem;
+    flex-shrink: 0;
   }
 
-  .method-grid {
+  /* Principles */
+  .pipe-principles {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: var(--space-6);
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
   }
-
-  .method-card {
+  .principle {
+    padding: 16px;
     background: var(--color-surface);
     border: 1px solid var(--color-border);
-    border-radius: var(--radius-md);
-    padding: var(--space-6);
+    border-radius: 10px;
+    font-size: 0.88rem;
+    line-height: 1.5;
   }
-
-  .method-card h3 {
-    font-size: var(--font-size-lg);
-    margin-bottom: var(--space-3);
+  .principle strong {
+    display: block;
+    margin-bottom: 4px;
+    color: var(--color-text);
+    font-weight: 600;
   }
-
-  .method-card p {
+  .principle span {
     color: var(--color-text-secondary);
+  }
+
+  /* ========== METRICS TABS ========== */
+  .mtab-bar {
+    display: flex;
+    gap: 0;
+    border-bottom: 1px solid var(--color-border);
+    margin-bottom: 24px;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .mtab-bar::-webkit-scrollbar { display: none; }
+  .mtab {
+    padding: 10px 20px;
+    background: none;
+    border: none;
+    border-bottom: 2px solid transparent;
+    cursor: pointer;
+    font: inherit;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--color-text-muted);
+    white-space: nowrap;
+    transition: all 0.2s;
+  }
+  .mtab:hover { color: var(--color-text); }
+  .mtab.active {
+    color: var(--color-accent);
+    border-bottom-color: var(--color-accent);
+    font-weight: 600;
+  }
+  .mtab-panel { display: none; }
+  .mtab-panel.active { display: block; }
+
+  /* Metric cards */
+  .metric {
+    padding: 24px;
+    background: var(--color-bg);
+    border-radius: 10px;
+    margin-bottom: 16px;
+  }
+  .metric h4 {
+    font-size: 1.05rem;
+    font-weight: 600;
+    margin-bottom: 12px;
+    color: var(--color-text);
+  }
+  .metric dl {
+    display: grid;
+    grid-template-columns: 100px 1fr;
+    gap: 6px 16px;
+    margin: 0;
+  }
+  .metric dt {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--color-accent);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    padding-top: 2px;
+  }
+  .metric dd {
+    margin: 0;
+    font-size: 0.9rem;
+    color: var(--color-text-secondary);
+    line-height: 1.6;
+  }
+
+  /* ========== GUIDELINES ========== */
+  .guidelines-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 20px;
+  }
+  .guideline {
+    padding: 20px;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: 10px;
+  }
+  .guideline h4 {
+    font-size: 0.95rem;
+    font-weight: 600;
+    margin-bottom: 6px;
+  }
+  .guideline p {
+    font-size: 0.88rem;
+    color: var(--color-text-secondary);
+    line-height: 1.6;
     margin: 0;
   }
 
-  .guidelines ol {
-    padding-left: var(--space-6);
+  /* ========== RESOURCES ========== */
+  .resources-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
   }
-
-  .guidelines li {
-    margin-bottom: var(--space-4);
-    color: var(--color-text-secondary);
-    line-height: var(--line-height-relaxed);
+  .res-group h4 {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 12px;
   }
-
-  /* Learn More Box */
-  .learn-more-box {
-    margin-top: var(--space-10);
+  .res-group a {
+    display: block;
+    padding: 10px 14px;
+    margin-bottom: 6px;
     background: var(--color-bg);
     border: 1px solid var(--color-border);
-    border-radius: var(--radius-lg);
-    padding: var(--space-6);
-  }
-  .learn-more-box h3 {
-    font-size: var(--font-size-lg);
-    margin-bottom: var(--space-2);
-  }
-  .learn-more-box > p {
-    color: var(--color-text-secondary);
-    margin-bottom: var(--space-4);
-  }
-  .learn-links {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--space-3);
-  }
-  .learn-link {
-    display: flex;
-    flex-direction: column;
-    padding: var(--space-3) var(--space-4);
-    background: var(--color-surface);
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-md);
-    text-decoration: none;
-    transition: all 0.2s;
-    min-width: 120px;
-  }
-  .learn-link:hover {
-    border-color: var(--color-accent);
-    transform: translateY(-2px);
-    text-decoration: none;
-  }
-  .learn-link span {
+    border-radius: 8px;
     color: var(--color-text);
-    font-weight: 500;
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: all 0.2s;
   }
-  .learn-link small {
+  .res-group a:hover {
+    border-color: var(--color-accent);
+    color: var(--color-accent);
+    text-decoration: none;
+    transform: translateY(-1px);
+  }
+  .res-group a small {
     color: var(--color-text-muted);
-    font-size: var(--font-size-xs);
+    font-size: 0.78rem;
+    margin-left: 6px;
   }
 
+  /* ========== RESPONSIVE ========== */
   @media (max-width: 768px) {
-    .method-grid {
-      grid-template-columns: 1fr;
-    }
-    .section-nav .container {
-      flex-direction: column;
-    }
+    .r-hero h1 { font-size: 1.75rem; }
+    .pipeline-diagram { flex-direction: column; align-items: stretch; }
+    .pipe-stage { text-align: left; display: flex; gap: 12px; align-items: flex-start; padding: 12px 0; min-width: auto; }
+    .pipe-icon { margin: 0; flex-shrink: 0; }
+    .pipe-arrow { display: none; }
+    .pipe-principles { grid-template-columns: 1fr 1fr; }
+    .metric dl { grid-template-columns: 1fr; }
+    .metric dt { margin-top: 8px; }
+    .resources-row { grid-template-columns: 1fr; gap: 24px; }
+    .guidelines-grid { grid-template-columns: 1fr; }
   }
 </style>
