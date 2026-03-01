@@ -8,10 +8,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Improve n-gram performance using dict-cached implementation
 
 ## [0.1.2] - 2026-01-18
 
-## Fixed
+### Fixed
 - Fix RTL display for RTL languages
 - Downgrade numpy to avoid yanked release (2.4.0)
 - Include annotations to avoid runtime evaluation of type annotations
