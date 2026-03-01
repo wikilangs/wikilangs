@@ -58,6 +58,43 @@ class NGramModel:
         self.model = pd.read_parquet(model_file)
         with open(metadata_file, 'r') as f:
             self.metadata = json.load(f)
+            
+        self._build_fast_lookup()
+        
+    def _build_fast_lookup(self):
+        """Build dictionary caches for fast O(1) lookups."""
+        self._ngram_freq = {}
+        _context_to_next = {}
+        
+        # Parse the JSON string representation of n-grams if necessary
+        try:
+            ngrams_parsed = [json.loads(s) if isinstance(s, str) else list(s) for s in self.model['ngram']]
+        except (json.JSONDecodeError, TypeError):
+            ngrams_parsed = [s if isinstance(s, (list, tuple)) else [] for s in self.model['ngram']]
+            
+        for ngram_lst, freq in zip(ngrams_parsed, self.model['frequency']):
+            if len(ngram_lst) != self.gram_size:
+                continue
+                
+            ngram_tup = tuple(ngram_lst)
+            self._ngram_freq[ngram_tup] = freq
+            
+            context_tup = ngram_tup[:-1]
+            next_token = ngram_tup[-1]
+            
+            if context_tup not in _context_to_next:
+                _context_to_next[context_tup] = []
+            _context_to_next[context_tup].append((next_token, freq))
+            
+        # Pre-sort the predictions for each context and calculate probabilities
+        self._context_to_predictions = {}
+        for context, predictions in _context_to_next.items():
+            predictions.sort(key=lambda x: x[1], reverse=True)
+            total_freq = sum(freq for _, freq in predictions)
+            
+            prob_predictions = [(token, freq / total_freq if total_freq > 0 else 0.0) 
+                              for token, freq in predictions]
+            self._context_to_predictions[context] = prob_predictions
 
     def _download_model_from_hf(self) -> Tuple[str, str]:
         """Download model/metadata from HuggingFace, raising FileNotFoundError on 404."""
@@ -107,19 +144,14 @@ class NGramModel:
         
         # Create n-grams from the text
         for i in range(len(tokens) - self.gram_size + 1):
-            ngram = tokens[i:i + self.gram_size]
+            ngram_tup = tuple(tokens[i:i + self.gram_size])
+            freq = self._ngram_freq.get(ngram_tup, 0)
             
-            # Look up the n-gram in the model
-            ngram_row = self.model[self.model['ngram'].apply(lambda x: x == ngram)]
-            
-            if not ngram_row.empty:
-                frequency = ngram_row.iloc[0]['frequency']
-                # Calculate log probability using frequency
-                prob = frequency / total_ngrams
+            if freq > 0:
+                prob = freq / total_ngrams
                 log_prob += math.log(prob)
             else:
-                # Use smoothing for unseen n-grams
-                log_prob += math.log(1e-10)  # Small probability for unseen n-grams
+                log_prob += math.log(1e-10)  # Smoothing for unseen n-grams
         
         return log_prob
     
@@ -142,31 +174,10 @@ class NGramModel:
             return []
         
         # Get the relevant context (last n-1 tokens)
-        relevant_context = context_tokens[-(self.gram_size - 1):]
+        relevant_context = tuple(context_tokens[-(self.gram_size - 1):])
         
-        # Find all n-grams that start with this context
-        matching_ngrams = []
-        for _, row in self.model.iterrows():
-            ngram = row['ngram']
-            if len(ngram) == self.gram_size and ngram[:-1] == relevant_context:
-                next_token = ngram[-1]
-                frequency = row['frequency']
-                matching_ngrams.append((next_token, frequency))
-        
-        if not matching_ngrams:
-            return []  # No predictions available
-        
-        # Sort by frequency and convert to probabilities
-        matching_ngrams.sort(key=lambda x: x[1], reverse=True)
-        total_freq = sum(freq for _, freq in matching_ngrams)
-        
-        # Convert to probabilities and return top_k
-        predictions = []
-        for token, freq in matching_ngrams[:top_k]:
-            prob = freq / total_freq if total_freq > 0 else 0.0
-            predictions.append((token, prob))
-        
-        return predictions
+        predictions = self._context_to_predictions.get(relevant_context, [])
+        return predictions[:top_k]
     
     @property
     def vocab_size(self) -> int:
