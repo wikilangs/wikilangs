@@ -35,9 +35,23 @@ function isActive(href: string): boolean {
           </a>
         </li>
       ))}
+      <li>
+        <a href="https://games.wikilangs.org" class="nav-link nav-link-games" target="_blank" rel="noopener">
+          🎮 Games <span class="badge-new">New</span>
+        </a>
+      </li>
     </ul>
 
     <div class="nav-right">
+      <a
+        href="https://games.wikilangs.org"
+        class="nav-icon-link nav-games-mobile"
+        target="_blank"
+        rel="noopener"
+        aria-label="Wikilangs Games"
+      >
+        <span class="nav-games-emoji">🎮</span>
+      </a>
       <ThemeToggle />
       <a
         href="https://github.com/wikilangs/wikilangs"
@@ -69,6 +83,11 @@ function isActive(href: string): boolean {
           </a>
         </li>
       ))}
+      <li>
+        <a href="https://games.wikilangs.org" class="mobile-link mobile-link-games" target="_blank" rel="noopener">
+          🎮 Games <span class="badge-new">New</span>
+        </a>
+      </li>
       <li>
         <a href="https://github.com/wikilangs/wikilangs" class="mobile-link" target="_blank" rel="noopener">GitHub ↗</a>
       </li>
@@ -157,6 +176,35 @@ function isActive(href: string): boolean {
     background: var(--atlas-accent-subtle);
   }
 
+  .nav-link-games {
+    color: var(--atlas-ink);
+  }
+
+  .badge-new {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 700;
+    line-height: 1;
+    padding: 2px 5px;
+    border-radius: 9999px;
+    background: var(--atlas-accent);
+    color: #fff;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    vertical-align: middle;
+    margin-left: 2px;
+    animation: badge-pulse 2s ease-in-out infinite;
+  }
+
+  @keyframes badge-pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.7; }
+  }
+
+  .mobile-link-games {
+    color: var(--atlas-ink);
+  }
+
   /* Right section */
   .nav-right {
     margin-left: auto;
@@ -227,10 +275,36 @@ function isActive(href: string): boolean {
     color: var(--atlas-accent);
   }
 
+  .nav-games-mobile {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--atlas-border);
+    background: var(--atlas-surface);
+    text-decoration: none;
+    transition: background var(--duration-fast), border-color var(--duration-fast);
+  }
+
+  .nav-games-mobile:hover {
+    background: var(--atlas-surface-inset);
+    border-color: var(--atlas-accent);
+  }
+
+  .nav-games-emoji {
+    font-size: 18px;
+    line-height: 1;
+  }
+
   @media (max-width: 768px) {
     .nav-links { display: none; }
     .nav-right .btn { display: none; }
     .nav-right .nav-icon-link { display: none; }
+    .nav-right .nav-games-mobile { 
+      display: flex; 
+    }
     .mobile-menu-btn { display: flex; }
   }
 </style>
