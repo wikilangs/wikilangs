@@ -4,6 +4,8 @@ This module provides functionality to load and use n-gram language models
 trained on Wikipedia data for different languages and dates.
 """
 
+from ._tokens import parse_tokens
+
 import os
 import json
 import math
@@ -66,26 +68,20 @@ class NGramModel:
         self._ngram_freq = {}
         _context_to_next = {}
         
-        # Parse the JSON string representation of n-grams if necessary
-        try:
-            ngrams_parsed = [json.loads(s) if isinstance(s, str) else list(s) for s in self.model['ngram']]
-        except (json.JSONDecodeError, TypeError):
-            ngrams_parsed = [s if isinstance(s, (list, tuple)) else [] for s in self.model['ngram']]
-            
-        for ngram_lst, freq in zip(ngrams_parsed, self.model['frequency']):
+        # Parse each row independently. A malformed row must not discard valid rows.
+        for raw, freq in zip(self.model['ngram'], self.model['frequency']):
+            try:
+                ngram_lst = parse_tokens(raw)
+            except ValueError:
+                continue
             if len(ngram_lst) != self.gram_size:
                 continue
-                
             ngram_tup = tuple(ngram_lst)
-            self._ngram_freq[ngram_tup] = freq
-            
-            context_tup = ngram_tup[:-1]
-            next_token = ngram_tup[-1]
-            
-            if context_tup not in _context_to_next:
-                _context_to_next[context_tup] = []
-            _context_to_next[context_tup].append((next_token, freq))
-            
+            self._ngram_freq[ngram_tup] = self._ngram_freq.get(ngram_tup, 0) + freq
+
+        for ngram_tup, freq in self._ngram_freq.items():
+            _context_to_next.setdefault(ngram_tup[:-1], []).append((ngram_tup[-1], freq))
+
         # Pre-sort the predictions for each context and calculate probabilities
         self._context_to_predictions = {}
         for context, predictions in _context_to_next.items():

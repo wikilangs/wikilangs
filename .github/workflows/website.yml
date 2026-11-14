@@ -6,75 +6,77 @@ on:
     paths:
       - 'website/**'
       - 'src/wikilangs/**'
+      - 'tests/test_audit_regressions.py'
+      - 'tests/test_tokenizer_conversion_offline.py'
+      - 'tests/test_playground_assets.py'
       - '.github/workflows/website.yml'
   workflow_dispatch:
   schedule:
-    # Rebuild weekly to pick up new languages/updates
+    # Revalidate the checked-in corpus snapshot each week.
     - cron: '0 0 * * 0'
 
-# Allow only one concurrent deployment
+permissions:
+  contents: read
+
 concurrency:
-  group: "pages"
+  group: pages
   cancel-in-progress: true
 
 jobs:
   build:
+    timeout-minutes: 15
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Install pnpm
-        uses: pnpm/action-setup@v4
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
         with:
-          version: 10
+          version: 10.15.0
           run_install: false
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: 'pnpm'
+          cache: pnpm
           cache-dependency-path: website/pnpm-lock.yaml
-
-      - name: Setup Python
-        uses: actions/setup-python@v5
+      - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-          cache: 'pip'
-
-      - name: Install Python dependencies
-        run: |
-          pip install -e .
-          pip install pycountry aiohttp pyyaml
-
-      - name: Cache HuggingFace data
-        uses: actions/cache@v4
-        with:
-          path: |
-            ~/.cache/huggingface
-            website/.build-cache
-          key: hf-data-${{ hashFiles('website/scripts/fetch_languages.py') }}
-          restore-keys: |
-            hf-data-
-
+      - name: Install focused test dependencies without the training stack
+        run: >-
+          python -m pip install pytest pandas==2.3.3 numpy==2.2.3 pyarrow==22.0.0
+          requests huggingface_hub==0.36.0 sentencepiece==0.2.1
+          tokenizers==0.22.1 transformers==4.57.3 protobuf==6.33.6
+          playwright==1.65.0
+      - name: Run offline engine and compact-asset checks
+        run: >-
+          python -m pytest -q tests/test_audit_regressions.py
+          tests/test_tokenizer_conversion_offline.py tests/test_playground_assets.py
       - name: Install website dependencies
         working-directory: website
         run: pnpm install --frozen-lockfile
-
-      - name: Fetch language data
+      - name: Validate browser models and all compact assets
         working-directory: website
-        run: python scripts/fetch_languages.py
-        env:
-          HF_TOKEN: ${{ secrets.HF_TOKEN }}
-
-      - name: Build website
+        run: pnpm run test:playground
+      - name: Check browser TypeScript
+        working-directory: website
+        run: >-
+          pnpm exec tsc --noEmit --strict --target ES2023 --module ESNext
+          --moduleResolution Bundler --lib ES2023,DOM
+          src/scripts/playground.ts src/lib/playground/*.ts
+      - name: Build reviewed source and corpus snapshot
         working-directory: website
         run: pnpm run build
-        env:
-          NODE_OPTIONS: --max-old-space-size=4096
-
-      - name: Upload artifact
+      - name: Install browser for end-to-end checks
+        run: python -m playwright install --with-deps chromium
+      - name: Verify pins in the production build with analytics blocked
+        working-directory: website
+        shell: bash
+        run: |
+          set -euo pipefail
+          pnpm exec astro preview --host 127.0.0.1 --port 4326 > /tmp/wikilangs-preview.log 2>&1 &
+          preview_pid=$!
+          trap 'kill "$preview_pid"' EXIT
+          python scripts/test_pins_browser.py --base-url http://127.0.0.1:4326 --report /tmp/pin-browser.json --expect-analytics
+      - name: Upload website artifact
         uses: actions/upload-pages-artifact@v3
         with:
           path: website/dist

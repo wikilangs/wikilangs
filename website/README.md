@@ -78,3 +78,13 @@ See `.github/workflows/website.yml` for details.
 - **Author**: [Omar Kamali](https://omarkamali.com)
 - **Affiliation**: [Omneity Labs](https://omneitylabs.com)
 - **Sponsor**: [Featherless.ai](https://featherless.ai)
+
+## Native playground data
+
+The playground uses compact, versioned JSON and a JavaScript transition engine. It does not load Python in the browser. See [the asset build and coverage contract](scripts/PLAYGROUND_ASSETS.md).
+
+Run `npm run build:assets` to refresh compact public assets. Run `npm run build:local` for an analytics-disabled local build. Run `npm run test:playground` for the browser-model and asset checks. Saved data covers 322 vocabulary views and 320 transition views. The manifest lists unavailable sources.
+
+### Pinned paths
+
+In Word Flow or Text Weaver, pin words at different positions. Unpinned positions stay open. The graph finds connecting paths within the saved corpus slice. Pins persist when switching between the two views. See [the path-search contract](scripts/PINNED_PATHS.md).

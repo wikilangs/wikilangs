@@ -4,9 +4,13 @@
   "version": "1.0.0",
   "scripts": {
     "dev": "astro dev",
-    "build": "python scripts/fetch_languages.py && astro build",
+    "build": "astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "build:assets": "python scripts/build_playground_assets.py --languages all",
+    "build:local": "PUBLIC_DISABLE_ANALYTICS=true astro build",
+    "test:playground": "node scripts/test_playground.mjs",
+    "refresh:catalogue": "python scripts/fetch_languages.py"
   },
   "dependencies": {
     "@astrojs/mdx": "^4.0.0",

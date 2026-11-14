@@ -1,0 +1,1932 @@
+{
+  "seconds": 267.64363220799714,
+  "workers": 3,
+  "languages": {
+    "ady": {
+      "seconds": 1.042,
+      "states": 1000,
+      "sampleRows": 52369,
+      "bytes": 135505
+    },
+    "ace": {
+      "seconds": 1.079,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 177779
+    },
+    "ab": {
+      "seconds": 1.079,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 140058
+    },
+    "am": {
+      "seconds": 1.012,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 174797
+    },
+    "alt": {
+      "seconds": 1.077,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 181260
+    },
+    "an": {
+      "seconds": 1.01,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 191219
+    },
+    "ami": {
+      "seconds": 1.1,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 205852
+    },
+    "ann": {
+      "seconds": 1.312,
+      "states": 1000,
+      "sampleRows": 70980,
+      "bytes": 159950
+    },
+    "ang": {
+      "seconds": 1.363,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 172738
+    },
+    "anp": {
+      "seconds": 1.33,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 237543
+    },
+    "arc": {
+      "seconds": 1.753,
+      "states": 1000,
+      "sampleRows": 52937,
+      "bytes": 129260
+    },
+    "af": {
+      "seconds": 6.653,
+      "states": 1000,
+      "sampleRows": 1000000,
+      "bytes": 237850
+    },
+    "ary": {
+      "seconds": 1.447,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 196367
+    },
+    "as": {
+      "seconds": 1.747,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 230669
+    },
+    "ar": {
+      "seconds": 7.509,
+      "states": 1000,
+      "sampleRows": 1000000,
+      "bytes": 244086
+    },
+    "atj": {
+      "seconds": 2.095,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 154634
+    },
+    "arz": {
+      "seconds": 8.319,
+      "states": 1000,
+      "sampleRows": 1000000,
+      "bytes": 200783
+    },
+    "av": {
+      "seconds": 2.027,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 150316
+    },
+    "avk": {
+      "seconds": 1.216,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 157353
+    },
+    "awa": {
+      "seconds": 1.421,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 192969
+    },
+    "ast": {
+      "seconds": 7.166,
+      "states": 1000,
+      "sampleRows": 1000000,
+      "bytes": 244533
+    },
+    "ay": {
+      "seconds": 1.271,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 155994
+    },
+    "azb": {
+      "seconds": 1.478,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 195199
+    },
+    "ban": {
+      "seconds": 1.744,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 186687
+    },
+    "bar": {
+      "seconds": 1.613,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 176567
+    },
+    "bbc": {
+      "seconds": 1.65,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 169254
+    },
+    "az": {
+      "seconds": 7.266,
+      "states": 1000,
+      "sampleRows": 1000000,
+      "bytes": 224136
+    },
+    "bdr": {
+      "seconds": 1.117,
+      "states": 1000,
+      "sampleRows": 23311,
+      "bytes": 113191
+    },
+    "ba": {
+      "seconds": 7.68,
+      "states": 1000,
+      "sampleRows": 1000000,
+      "bytes": 273318
+    },
+    "be": {
+      "seconds": 1.197,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 229740
+    },
+    "bew": {
+      "seconds": 1.154,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 173848
+    },
+    "bh": {
+      "seconds": 1.378,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 226255
+    },
+    "bi": {
+      "seconds": 1.398,
+      "states": 1000,
+      "sampleRows": 35348,
+      "bytes": 129032
+    },
+    "bjn": {
+      "seconds": 1.71,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 205139
+    },
+    "bcl": {
+      "seconds": 7.931,
+      "states": 1000,
+      "sampleRows": 1000000,
+      "bytes": 243041
+    },
+    "blk": {
+      "seconds": 1.919,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 209686
+    },
+    "bm": {
+      "seconds": 1.764,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 145235
+    },
+    "bg": {
+      "seconds": 7.417,
+      "states": 1000,
+      "sampleRows": 1000000,
+      "bytes": 269033
+    },
+    "bpy": {
+      "seconds": 1.669,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 141148
+    },
+    "bn": {
+      "seconds": 9.039,
+      "states": 1000,
+      "sampleRows": 1000000,
+      "bytes": 279248
+    },
+    "bo": {
+      "seconds": 8.809,
+      "states": 1000,
+      "sampleRows": 1000000,
+      "bytes": 245732
+    },
+    "btm": {
+      "seconds": 1.532,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 172439
+    },
+    "br": {
+      "seconds": 8.744,
+      "states": 1000,
+      "sampleRows": 1000000,
+      "bytes": 244337
+    },
+    "bug": {
+      "seconds": 1.706,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 136520
+    },
+    "bxr": {
+      "seconds": 1.578,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 180403
+    },
+    "cdo": {
+      "seconds": 1.692,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 191722
+    },
+    "ce": {
+      "seconds": 1.495,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 198446
+    },
+    "bs": {
+      "seconds": 7.116,
+      "states": 1000,
+      "sampleRows": 1000000,
+      "bytes": 247322
+    },
+    "ch": {
+      "seconds": 0.55,
+      "states": 1000,
+      "sampleRows": 18659,
+      "bytes": 112559
+    },
+    "ceb": {
+      "seconds": 1.067,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 198180
+    },
+    "chy": {
+      "seconds": 0.566,
+      "states": 1000,
+      "sampleRows": 7329,
+      "bytes": 81992
+    },
+    "chr": {
+      "seconds": 1.121,
+      "states": 1000,
+      "sampleRows": 34580,
+      "bytes": 124253
+    },
+    "ca": {
+      "seconds": 6.422,
+      "states": 927,
+      "sampleRows": 1000000,
+      "bytes": 213415
+    },
+    "ckb": {
+      "seconds": 1.238,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 228686
+    },
+    "co": {
+      "seconds": 1.099,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 172242
+    },
+    "cr": {
+      "seconds": 0.087,
+      "states": 1000,
+      "sampleRows": 2636,
+      "bytes": 57102
+    },
+    "crh": {
+      "seconds": 1.26,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 153548
+    },
+    "csb": {
+      "seconds": 1.392,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 125496
+    },
+    "cu": {
+      "seconds": 1.366,
+      "states": 1000,
+      "sampleRows": 59219,
+      "bytes": 145251
+    },
+    "cv": {
+      "seconds": 1.221,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 162585
+    },
+    "cs": {
+      "seconds": 8.017,
+      "states": 1000,
+      "sampleRows": 1000000,
+      "bytes": 194731
+    },
+    "dag": {
+      "seconds": 1.699,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 210561
+    },
+    "cy": {
+      "seconds": 8.016,
+      "states": 1000,
+      "sampleRows": 1000000,
+      "bytes": 227489
+    },
+    "da": {
+      "seconds": 8.231,
+      "states": 1000,
+      "sampleRows": 1000000,
+      "bytes": 237465
+    },
+    "dga": {
+      "seconds": 1.022,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 208388
+    },
+    "din": {
+      "seconds": 1.723,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 139840
+    },
+    "diq": {
+      "seconds": 1.393,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 159538
+    },
+    "dsb": {
+      "seconds": 1.398,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 170329
+    },
+    "dtp": {
+      "seconds": 1.28,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 209236
+    },
+    "dty": {
+      "seconds": 1.474,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 208035
+    },
+    "dv": {
+      "seconds": 1.569,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 202294
+    },
+    "de": {
+      "seconds": 6.251,
+      "states": 134,
+      "sampleRows": 1000000,
+      "bytes": 85046
+    },
+    "dz": {
+      "seconds": 1.262,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 225016
+    },
+    "ee": {
+      "seconds": 0.93,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 182853
+    },
+    "eml": {
+      "seconds": 1.382,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 157869
+    },
+    "el": {
+      "seconds": 8.388,
+      "states": 1000,
+      "sampleRows": 1000000,
+      "bytes": 287377
+    },
+    "en": {
+      "seconds": 8.735,
+      "states": 190,
+      "sampleRows": 1000000,
+      "bytes": 97477
+    },
+    "eo": {
+      "seconds": 9.417,
+      "states": 1000,
+      "sampleRows": 1000000,
+      "bytes": 174060
+    },
+    "es": {
+      "seconds": 9.463,
+      "states": 539,
+      "sampleRows": 1000000,
+      "bytes": 153618
+    },
+    "et": {
+      "seconds": 9.107,
+      "states": 1000,
+      "sampleRows": 1000000,
+      "bytes": 213837
+    },
+    "ext": {
+      "seconds": 1.345,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 195703
+    },
+    "eu": {
+      "seconds": 8.168,
+      "states": 1000,
+      "sampleRows": 1000000,
+      "bytes": 125836
+    },
+    "fat": {
+      "seconds": 1.298,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 217837
+    },
+    "ff": {
+      "seconds": 1.086,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 193389
+    },
+    "fj": {
+      "seconds": 1.794,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 177959
+    },
+    "fo": {
+      "seconds": 1.751,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 157467
+    },
+    "fon": {
+      "seconds": 1.818,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 200814
+    },
+    "fa": {
+      "seconds": 7.776,
+      "states": 1000,
+      "sampleRows": 1000000,
+      "bytes": 235309
+    },
+    "fi": {
+      "seconds": 7.343,
+      "states": 1000,
+      "sampleRows": 1000000,
+      "bytes": 156158
+    },
+    "frp": {
+      "seconds": 1.603,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 201087
+    },
+    "frr": {
+      "seconds": 1.266,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 174277
+    },
+    "fur": {
+      "seconds": 1.161,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 206178
+    },
+    "fr": {
+      "seconds": 7.952,
+      "states": 489,
+      "sampleRows": 1000000,
+      "bytes": 151526
+    },
+    "gag": {
+      "seconds": 2.242,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 140774
+    },
+    "gan": {
+      "seconds": 1.653,
+      "states": 1000,
+      "sampleRows": 64411,
+      "bytes": 112661
+    },
+    "ga": {
+      "seconds": 9.241,
+      "states": 1000,
+      "sampleRows": 1000000,
+      "bytes": 248113
+    },
+    "fy": {
+      "seconds": 9.359,
+      "states": 1000,
+      "sampleRows": 1000000,
+      "bytes": 233297
+    },
+    "gcr": {
+      "seconds": 1.035,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 211088
+    },
+    "gd": {
+      "seconds": 0.872,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 191090
+    },
+    "glk": {
+      "seconds": 1.327,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 186911
+    },
+    "gn": {
+      "seconds": 1.343,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 201483
+    },
+    "gom": {
+      "seconds": 1.431,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 169758
+    },
+    "gor": {
+      "seconds": 1.399,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 176736
+    },
+    "gpe": {
+      "seconds": 1.438,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 220388
+    },
+    "got": {
+      "seconds": 1.752,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 144529
+    },
+    "gl": {
+      "seconds": 6.181,
+      "states": 1000,
+      "sampleRows": 1000000,
+      "bytes": 254847
+    },
+    "gu": {
+      "seconds": 1.139,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 197938
+    },
+    "guc": {
+      "seconds": 1.268,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 164897
+    },
+    "gur": {
+      "seconds": 0.925,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 205547
+    },
+    "gv": {
+      "seconds": 0.838,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 189948
+    },
+    "guw": {
+      "seconds": 1.021,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 214171
+    },
+    "haw": {
+      "seconds": 1.009,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 201732
+    },
+    "hak": {
+      "seconds": 1.032,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 175755
+    },
+    "ha": {
+      "seconds": 8.437,
+      "states": 1000,
+      "sampleRows": 1000000,
+      "bytes": 239520
+    },
+    "hi": {
+      "seconds": 8.742,
+      "states": 1000,
+      "sampleRows": 1000000,
+      "bytes": 279406
+    },
+    "hif": {
+      "seconds": 1.563,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 193786
+    },
+    "he": {
+      "seconds": 8.994,
+      "states": 1000,
+      "sampleRows": 1000000,
+      "bytes": 277945
+    },
+    "hsb": {
+      "seconds": 0.991,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 193842
+    },
+    "ht": {
+      "seconds": 0.922,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 182969
+    },
+    "hr": {
+      "seconds": 8.792,
+      "states": 1000,
+      "sampleRows": 1000000,
+      "bytes": 232610
+    },
+    "hu": {
+      "seconds": 8.743,
+      "states": 1000,
+      "sampleRows": 1000000,
+      "bytes": 266854
+    },
+    "hy": {
+      "seconds": 9.064,
+      "states": 1000,
+      "sampleRows": 1000000,
+      "bytes": 252518
+    },
+    "hyw": {
+      "seconds": 1.427,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 198999
+    },
+    "ia": {
+      "seconds": 1.175,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 208181
+    },
+    "iba": {
+      "seconds": 0.868,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 217641
+    },
+    "ie": {
+      "seconds": 0.944,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 214200
+    },
+    "ig": {
+      "seconds": 1.228,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 174765
+    },
+    "ik": {
+      "seconds": 0.616,
+      "states": 1000,
+      "sampleRows": 16263,
+      "bytes": 110001
+    },
+    "igl": {
+      "seconds": 1.142,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 193463
+    },
+    "ilo": {
+      "seconds": 1.183,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 215207
+    },
+    "inh": {
+      "seconds": 1.311,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 164634
+    },
+    "io": {
+      "seconds": 1.231,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 204825
+    },
+    "is": {
+      "seconds": 1.154,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 183747
+    },
+    "id": {
+      "seconds": 5.587,
+      "states": 1000,
+      "sampleRows": 1000000,
+      "bytes": 252887
+    },
+    "iu": {
+      "seconds": 0.696,
+      "states": 1000,
+      "sampleRows": 27894,
+      "bytes": 127889
+    },
+    "jam": {
+      "seconds": 1.202,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 163472
+    },
+    "jbo": {
+      "seconds": 1.384,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 162252
+    },
+    "jv": {
+      "seconds": 1.287,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 205958
+    },
+    "ka": {
+      "seconds": 1.217,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 276015
+    },
+    "kaa": {
+      "seconds": 1.422,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 172518
+    },
+    "kab": {
+      "seconds": 1.15,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 192976
+    },
+    "kbp": {
+      "seconds": 1.349,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 212762
+    },
+    "it": {
+      "seconds": 6.037,
+      "states": 1000,
+      "sampleRows": 1000000,
+      "bytes": 254978
+    },
+    "kbd": {
+      "seconds": 1.666,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 171495
+    },
+    "kg": {
+      "seconds": 1.137,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 170607
+    },
+    "kcg": {
+      "seconds": 1.148,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 195541
+    },
+    "kge": {
+      "seconds": 1.147,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 143118
+    },
+    "kl": {
+      "seconds": 0.452,
+      "states": 1000,
+      "sampleRows": 24820,
+      "bytes": 114541
+    },
+    "ki": {
+      "seconds": 0.823,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 146153
+    },
+    "kk": {
+      "seconds": 0.833,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 222120
+    },
+    "km": {
+      "seconds": 1.06,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 209795
+    },
+    "kn": {
+      "seconds": 0.868,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 236531
+    },
+    "knc": {
+      "seconds": 0.849,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 197113
+    },
+    "koi": {
+      "seconds": 1.044,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 153976
+    },
+    "krc": {
+      "seconds": 1.084,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 193743
+    },
+    "ks": {
+      "seconds": 1.086,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 185901
+    },
+    "ksh": {
+      "seconds": 1.13,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 184691
+    },
+    "kus": {
+      "seconds": 0.97,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 213534
+    },
+    "kw": {
+      "seconds": 1.113,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 186284
+    },
+    "kv": {
+      "seconds": 1.24,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 170474
+    },
+    "ky": {
+      "seconds": 1.084,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 227065
+    },
+    "la": {
+      "seconds": 1.215,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 220083
+    },
+    "lad": {
+      "seconds": 1.264,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 205190
+    },
+    "lb": {
+      "seconds": 1.192,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 130514
+    },
+    "lbe": {
+      "seconds": 0.979,
+      "states": 1000,
+      "sampleRows": 39683,
+      "bytes": 122235
+    },
+    "lez": {
+      "seconds": 1.402,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 212976
+    },
+    "ku": {
+      "seconds": 6.452,
+      "states": 1000,
+      "sampleRows": 1000000,
+      "bytes": 243842
+    },
+    "lfn": {
+      "seconds": 1.288,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 192741
+    },
+    "lg": {
+      "seconds": 0.997,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 185095
+    },
+    "lij": {
+      "seconds": 1.262,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 207966
+    },
+    "lld": {
+      "seconds": 1.19,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 140860
+    },
+    "ln": {
+      "seconds": 1.071,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 195941
+    },
+    "lmo": {
+      "seconds": 1.266,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 155356
+    },
+    "lo": {
+      "seconds": 1.391,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 167028
+    },
+    "ltg": {
+      "seconds": 2.294,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 124128
+    },
+    "li": {
+      "seconds": 8.723,
+      "states": 1000,
+      "sampleRows": 1000000,
+      "bytes": 242427
+    },
+    "mad": {
+      "seconds": 1.823,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 173895
+    },
+    "lt": {
+      "seconds": 8.359,
+      "states": 1000,
+      "sampleRows": 1000000,
+      "bytes": 248710
+    },
+    "mai": {
+      "seconds": 1.448,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 219021
+    },
+    "mdf": {
+      "seconds": 1.679,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 135786
+    },
+    "mg": {
+      "seconds": 1.363,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 178646
+    },
+    "lv": {
+      "seconds": 7.696,
+      "states": 1000,
+      "sampleRows": 1000000,
+      "bytes": 255081
+    },
+    "mhr": {
+      "seconds": 1.457,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 160199
+    },
+    "mi": {
+      "seconds": 1.151,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 178373
+    },
+    "mk": {
+      "seconds": 0.855,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 157129
+    },
+    "min": {
+      "seconds": 1.048,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 192157
+    },
+    "ml": {
+      "seconds": 0.829,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 229675
+    },
+    "mnw": {
+      "unchanged": true
+    },
+    "mn": {
+      "seconds": 1.033,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 253092
+    },
+    "mni": {
+      "seconds": 1.057,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 200345
+    },
+    "mos": {
+      "seconds": 0.941,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 204095
+    },
+    "mr": {
+      "seconds": 0.955,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 266395
+    },
+    "mrj": {
+      "seconds": 1.154,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 148003
+    },
+    "mt": {
+      "seconds": 1.303,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 154102
+    },
+    "my": {
+      "unchanged": true
+    },
+    "mwl": {
+      "seconds": 1.03,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 203085
+    },
+    "mzn": {
+      "seconds": 1.227,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 194920
+    },
+    "myv": {
+      "seconds": 1.307,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 181803
+    },
+    "nap": {
+      "seconds": 1.427,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 182874
+    },
+    "nah": {
+      "seconds": 1.52,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 132537
+    },
+    "ng": {
+      "seconds": 0.394,
+      "states": 1000,
+      "sampleRows": 6076,
+      "bytes": 60314
+    },
+    "nia": {
+      "seconds": 0.868,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 200156
+    },
+    "ms": {
+      "seconds": 6.057,
+      "states": 1000,
+      "sampleRows": 1000000,
+      "bytes": 234020
+    },
+    "nov": {
+      "seconds": 1.697,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 139895
+    },
+    "nqo": {
+      "seconds": 1.748,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 216933
+    },
+    "nr": {
+      "seconds": 2.412,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 128308
+    },
+    "nn": {
+      "seconds": 8.062,
+      "states": 1000,
+      "sampleRows": 1000000,
+      "bytes": 236049
+    },
+    "nrm": {
+      "seconds": 1.594,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 195231
+    },
+    "no": {
+      "seconds": 7.829,
+      "states": 1000,
+      "sampleRows": 1000000,
+      "bytes": 244044
+    },
+    "nso": {
+      "seconds": 1.205,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 177219
+    },
+    "nup": {
+      "seconds": 1.091,
+      "states": 1000,
+      "sampleRows": 70791,
+      "bytes": 149837
+    },
+    "nv": {
+      "seconds": 1.056,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 195824
+    },
+    "olo": {
+      "seconds": 1.139,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 172185
+    },
+    "ny": {
+      "seconds": 1.27,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 173764
+    },
+    "or": {
+      "seconds": 1.268,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 205231
+    },
+    "om": {
+      "seconds": 1.296,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 193693
+    },
+    "os": {
+      "seconds": 1.464,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 221684
+    },
+    "pag": {
+      "seconds": 2.281,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 133579
+    },
+    "oc": {
+      "seconds": 7.44,
+      "states": 1000,
+      "sampleRows": 1000000,
+      "bytes": 251111
+    },
+    "pam": {
+      "seconds": 1.514,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 179714
+    },
+    "pap": {
+      "seconds": 1.058,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 196754
+    },
+    "pcd": {
+      "seconds": 1.204,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 192684
+    },
+    "pcm": {
+      "seconds": 1.164,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 211824
+    },
+    "pa": {
+      "seconds": 7.285,
+      "states": 1000,
+      "sampleRows": 1000000,
+      "bytes": 270503
+    },
+    "pdc": {
+      "seconds": 1.548,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 145334
+    },
+    "pi": {
+      "seconds": 0.847,
+      "states": 1000,
+      "sampleRows": 25998,
+      "bytes": 133875
+    },
+    "pfl": {
+      "seconds": 1.036,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 156956
+    },
+    "pnt": {
+      "seconds": 0.757,
+      "states": 1000,
+      "sampleRows": 38800,
+      "bytes": 134416
+    },
+    "pms": {
+      "seconds": 0.975,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 209559
+    },
+    "pnb": {
+      "seconds": 0.83,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 184073
+    },
+    "qu": {
+      "seconds": 1.15,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 172582
+    },
+    "pwn": {
+      "seconds": 1.278,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 160303
+    },
+    "rm": {
+      "seconds": 1.133,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 184995
+    },
+    "rki": {
+      "seconds": 1.792,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 187466
+    },
+    "rmy": {
+      "seconds": 2.267,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 133882
+    },
+    "rn": {
+      "seconds": 1.837,
+      "states": 1000,
+      "sampleRows": 74115,
+      "bytes": 131642
+    },
+    "rsk": {
+      "seconds": 1.534,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 223183
+    },
+    "ps": {
+      "seconds": 6.807,
+      "states": 1000,
+      "sampleRows": 1000000,
+      "bytes": 255956
+    },
+    "rue": {
+      "seconds": 1.482,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 203082
+    },
+    "rw": {
+      "seconds": 1.225,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 169262
+    },
+    "sa": {
+      "seconds": 1.35,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 214023
+    },
+    "sah": {
+      "seconds": 1.236,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 216285
+    },
+    "sat": {
+      "seconds": 1.263,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 203286
+    },
+    "sc": {
+      "seconds": 1.153,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 194114
+    },
+    "ro": {
+      "seconds": 6.589,
+      "states": 1000,
+      "sampleRows": 1000000,
+      "bytes": 243429
+    },
+    "scn": {
+      "seconds": 1.006,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 185998
+    },
+    "sco": {
+      "seconds": 1.006,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 164702
+    },
+    "sg": {
+      "seconds": 0.493,
+      "states": 1000,
+      "sampleRows": 19910,
+      "bytes": 114956
+    },
+    "sd": {
+      "seconds": 0.915,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 217315
+    },
+    "se": {
+      "seconds": 0.815,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 146342
+    },
+    "shi": {
+      "seconds": 1.179,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 160351
+    },
+    "shn": {
+      "seconds": 1.633,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 201334
+    },
+    "si": {
+      "seconds": 1.364,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 252509
+    },
+    "skr": {
+      "seconds": 1.832,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 216450
+    },
+    "sh": {
+      "seconds": 7.82,
+      "states": 1000,
+      "sampleRows": 1000000,
+      "bytes": 210276
+    },
+    "sm": {
+      "seconds": 1.87,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 189601
+    },
+    "sk": {
+      "seconds": 8.346,
+      "states": 1000,
+      "sampleRows": 1000000,
+      "bytes": 216702
+    },
+    "smn": {
+      "seconds": 1.559,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 181495
+    },
+    "sn": {
+      "seconds": 1.394,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 164458
+    },
+    "sl": {
+      "seconds": 7.686,
+      "states": 1000,
+      "sampleRows": 1000000,
+      "bytes": 218397
+    },
+    "so": {
+      "seconds": 1.168,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 205971
+    },
+    "srn": {
+      "seconds": 0.895,
+      "states": 1000,
+      "sampleRows": 33943,
+      "bytes": 119607
+    },
+    "ss": {
+      "seconds": 2.37,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 129870
+    },
+    "st": {
+      "seconds": 1.92,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 197601
+    },
+    "stq": {
+      "seconds": 1.743,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 187609
+    },
+    "sq": {
+      "seconds": 7.718,
+      "states": 1000,
+      "sampleRows": 1000000,
+      "bytes": 237387
+    },
+    "sr": {
+      "seconds": 7.709,
+      "states": 1000,
+      "sampleRows": 1000000,
+      "bytes": 257754
+    },
+    "su": {
+      "seconds": 1.07,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 159951
+    },
+    "sw": {
+      "seconds": 1.03,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 181583
+    },
+    "syl": {
+      "seconds": 1.898,
+      "states": 1000,
+      "sampleRows": 74293,
+      "bytes": 140450
+    },
+    "szl": {
+      "seconds": 1.528,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 169979
+    },
+    "szy": {
+      "seconds": 1.35,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 184758
+    },
+    "ta": {
+      "seconds": 1.105,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 239115
+    },
+    "tay": {
+      "seconds": 1.246,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 170205
+    },
+    "tcy": {
+      "seconds": 1.472,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 196342
+    },
+    "sv": {
+      "seconds": 6.215,
+      "states": 1000,
+      "sampleRows": 1000000,
+      "bytes": 249226
+    },
+    "tdd": {
+      "seconds": 1.348,
+      "states": 1000,
+      "sampleRows": 79492,
+      "bytes": 156624
+    },
+    "te": {
+      "seconds": 1.13,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 290441
+    },
+    "tet": {
+      "seconds": 1.202,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 166772
+    },
+    "tg": {
+      "seconds": 0.932,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 225510
+    },
+    "ti": {
+      "seconds": 1.808,
+      "states": 1000,
+      "sampleRows": 72149,
+      "bytes": 141718
+    },
+    "tig": {
+      "seconds": 1.589,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 187250
+    },
+    "tk": {
+      "seconds": 1.362,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 171043
+    },
+    "tly": {
+      "seconds": 2.029,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 144854
+    },
+    "th": {
+      "seconds": 7.113,
+      "states": 1000,
+      "sampleRows": 1000000,
+      "bytes": 209191
+    },
+    "tn": {
+      "seconds": 1.52,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 223183
+    },
+    "to": {
+      "seconds": 1.536,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 160727
+    },
+    "tok": {
+      "seconds": 1.413,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 216291
+    },
+    "tl": {
+      "seconds": 6.925,
+      "states": 1000,
+      "sampleRows": 1000000,
+      "bytes": 246545
+    },
+    "tpi": {
+      "seconds": 1.138,
+      "states": 1000,
+      "sampleRows": 51889,
+      "bytes": 143355
+    },
+    "trv": {
+      "seconds": 1.306,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 197288
+    },
+    "ts": {
+      "seconds": 1.45,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 182112
+    },
+    "tt": {
+      "seconds": 1.143,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 253690
+    },
+    "tum": {
+      "seconds": 1.278,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 195666
+    },
+    "tw": {
+      "seconds": 1.159,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 219643
+    },
+    "ty": {
+      "seconds": 1.014,
+      "states": 1000,
+      "sampleRows": 33850,
+      "bytes": 134786
+    },
+    "tyv": {
+      "seconds": 1.414,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 193016
+    },
+    "udm": {
+      "seconds": 1.563,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 149841
+    },
+    "tr": {
+      "seconds": 6.438,
+      "states": 1000,
+      "sampleRows": 1000000,
+      "bytes": 232775
+    },
+    "ug": {
+      "seconds": 1.216,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 158050
+    },
+    "uz": {
+      "seconds": 1.702,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 165610
+    },
+    "ve": {
+      "seconds": 1.622,
+      "states": 1000,
+      "sampleRows": 49680,
+      "bytes": 134521
+    },
+    "vec": {
+      "seconds": 1.608,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 181220
+    },
+    "vep": {
+      "seconds": 1.559,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 183964
+    },
+    "ur": {
+      "seconds": 7.915,
+      "states": 1000,
+      "sampleRows": 1000000,
+      "bytes": 233407
+    },
+    "uk": {
+      "seconds": 8.108,
+      "states": 1000,
+      "sampleRows": 1000000,
+      "bytes": 259356
+    },
+    "vls": {
+      "seconds": 1.307,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 209272
+    },
+    "vo": {
+      "seconds": 1.229,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 150606
+    },
+    "wa": {
+      "seconds": 1.154,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 194883
+    },
+    "war": {
+      "seconds": 1.168,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 183722
+    },
+    "wo": {
+      "seconds": 1.204,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 204807
+    },
+    "wuu": {
+      "seconds": 1.652,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 127272
+    },
+    "xal": {
+      "seconds": 1.177,
+      "states": 1000,
+      "sampleRows": 45728,
+      "bytes": 121047
+    },
+    "xh": {
+      "seconds": 1.815,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 136540
+    },
+    "vi": {
+      "seconds": 6.958,
+      "states": 1000,
+      "sampleRows": 1000000,
+      "bytes": 229353
+    },
+    "xmf": {
+      "seconds": 1.314,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 216571
+    },
+    "yi": {
+      "seconds": 0.925,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 231359
+    },
+    "yo": {
+      "seconds": 1.014,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 226576
+    },
+    "za": {
+      "seconds": 1.048,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 125395
+    },
+    "zgh": {
+      "seconds": 0.938,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 227160
+    },
+    "zea": {
+      "seconds": 1.068,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 159897
+    },
+    "zu": {
+      "seconds": 1.007,
+      "states": 1000,
+      "sampleRows": 80000,
+      "bytes": 149563
+    }
+  }
+}

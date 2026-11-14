@@ -16,7 +16,6 @@ from huggingface_hub import hf_hub_download
 # Optional HuggingFace imports for format conversion
 try:
     from transformers import PreTrainedTokenizerFast
-    from tokenizers import Tokenizer, models, pre_tokenizers, decoders, processors
     TRANSFORMERS_AVAILABLE = True
 except ImportError:
     TRANSFORMERS_AVAILABLE = False
@@ -41,6 +40,7 @@ class BPETokenizer:
         
         Raises:
             FileNotFoundError: If the model files cannot be found
+            ValueError: If HuggingFace conversion cannot preserve the model configuration
             ValueError: If vocab_size is not supported or format is invalid
             ImportError: If huggingface format is requested but transformers is not available
         """
@@ -78,16 +78,19 @@ class BPETokenizer:
                 filename=f"models/tokenizer/{model_filename}",
                 repo_type="model"
             )
-            # Initialize SentencePiece processor
-            self.sp_tokenizer = spm.SentencePieceProcessor()
-            self.sp_tokenizer.load(model_file)
-            self._convert_to_format()
         except Exception as e:
             raise FileNotFoundError(
                 f"Could not load tokenizer for {self.lang} on {self.date} "
                 f"with vocab size {self.vocab_size}: {str(e)}"
             )
     
+        # Parsing and conversion errors are not missing-file errors.
+        # Initialize SentencePiece processor
+        self._model_file = model_file
+        self.sp_tokenizer = spm.SentencePieceProcessor()
+        self.sp_tokenizer.load(model_file)
+        self._convert_to_format()
+
     def _convert_to_format(self):
         """Convert the loaded SentencePiece tokenizer to the requested format."""
         if self.format == "sentencepiece":
@@ -99,21 +102,18 @@ class BPETokenizer:
     
     def _convert_to_huggingface(self) -> PreTrainedTokenizerFast:
         """Convert SentencePiece tokenizer to HuggingFace format."""
-        # Create vocabulary from SentencePiece
-        vocab = {}
-        for i in range(self.sp_tokenizer.get_piece_size()):
-            piece = self.sp_tokenizer.id_to_piece(i)
-            vocab[piece] = i
-        
-        # Create a BPE model for the tokenizer
-        tokenizer_obj = Tokenizer(models.BPE(vocab=vocab, merges=[]))
-        
-        # Set up pre-tokenizer (SentencePiece uses a specific pre-tokenizer)
-        tokenizer_obj.pre_tokenizer = pre_tokenizers.Metaspace(replacement="▁", add_prefix_space=True)
-        
-        # Set up decoder
-        tokenizer_obj.decoder = decoders.Metaspace(replacement="▁", add_prefix_space=True)
-        
+        # Preserve the trained merges and normalizer. An empty merge table
+        # does not represent the SentencePiece BPE model.
+        from types import SimpleNamespace
+        from transformers.convert_slow_tokenizer import SpmConverter
+
+        converter = SpmConverter(SimpleNamespace(
+            vocab_file=self._model_file, add_prefix_space=True, legacy=True
+        ))
+        if converter.proto.trainer_spec.byte_fallback:
+            raise ValueError("HuggingFace conversion of byte-fallback models is not supported")
+        tokenizer_obj = converter.converted()
+
         # Create special tokens mapping
         special_tokens = {
             "unk_token": self.sp_tokenizer.id_to_piece(self.sp_tokenizer.unk_id()),
@@ -156,7 +156,8 @@ class BPETokenizer:
         Returns:
             str: Decoded text
         """
-        return self.tokenizer.decode(token_ids)
+        # Keep the public decode method consistent for unknown token IDs.
+        return self.sp_tokenizer.decode(token_ids)
     
     def tokenize(self, text: str) -> List[str]:
         """Tokenize text into tokens.

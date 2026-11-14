@@ -68,7 +68,9 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
   </script>
 
   <!-- Analytics -->
-  <script defer src="https://cloud.umami.is/script.js" data-website-id="9e10d63b-c98c-4b0b-8ccf-677a0cf08071"></script>
+  {import.meta.env.PROD && import.meta.env.PUBLIC_DISABLE_ANALYTICS !== 'true' && (
+    <script defer src="https://cloud.umami.is/script.js" data-website-id="9e10d63b-c98c-4b0b-8ccf-677a0cf08071" data-domains="wikilangs.org,www.wikilangs.org"></script>
+  )}
 </head>
 <body>
   <Header />

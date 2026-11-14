@@ -4,6 +4,8 @@ This module provides functionality to load and use Markov chain models
 trained on Wikipedia data for different languages and dates.
 """
 
+from ._tokens import parse_tokens
+
 import os
 import json
 import random
@@ -58,6 +60,7 @@ class MarkovChain:
         self.transitions = pd.read_parquet(model_file)
         with open(metadata_file, 'r') as f:
             self.metadata = json.load(f)
+        self._build_fast_lookup()
 
     def _download_model_from_hf(self) -> Tuple[str, str]:
         """Download model/metadata from HuggingFace, raising FileNotFoundError on 404."""
@@ -102,10 +105,7 @@ class MarkovChain:
             # Start with a random context from the model
             random_row = self.transitions.sample(n=1).iloc[0]
             raw_context = random_row['context']
-            if isinstance(raw_context, str):
-                current_context = json.loads(raw_context)
-            else:
-                current_context = list(raw_context)
+            current_context = list(parse_tokens(raw_context))
         else:
             if len(seed) < self.depth:
                 # Pad seed if too short
@@ -126,10 +126,7 @@ class MarkovChain:
                 if len(self.transitions) > 0:
                     random_row = self.transitions.sample(n=1).iloc[0]
                     raw_context = random_row['context']
-                    if isinstance(raw_context, str):
-                        current_context = json.loads(raw_context)
-                    else:
-                        current_context = list(raw_context)
+                    current_context = list(parse_tokens(raw_context))
                     transitions = self.get_transitions(tuple(current_context))
                     retry_count += 1
                 else:
@@ -181,36 +178,21 @@ class MarkovChain:
         Returns:
             Dict[str, float]: Dictionary of next tokens and their probabilities
         """
-        # Convert state to list for comparison
-        state_list = list(state)
-        
-        # Find all transitions that match this context
-        def context_matches(context_data):
-            if isinstance(context_data, str):
-                try:
-                    parsed_context = json.loads(context_data)
-                    return parsed_context == state_list
-                except:
-                    return False
-            else:
-                return list(context_data) == state_list
-        
-        matching_transitions = self.transitions[
-            self.transitions['context'].apply(context_matches)
-        ]
-        
-        if matching_transitions.empty:
-            return {}
-        
-        # Create dictionary of next tokens and their probabilities
-        transitions_dict = {}
-        for _, row in matching_transitions.iterrows():
-            next_token = row['next_token']
-            probability = row['probability']
-            transitions_dict[next_token] = probability
-        
-        return transitions_dict
-    
+        if not hasattr(self, '_transition_index'):
+            self._build_fast_lookup()
+        # Return a copy so a caller cannot change the model cache.
+        return self._transition_index.get(tuple(state), {}).copy()
+
+    def _build_fast_lookup(self):
+        """Index transitions once instead of scanning all rows for each token."""
+        self._transition_index = {}
+        for row in self.transitions.itertuples(index=False):
+            try:
+                context = parse_tokens(row.context)
+            except ValueError:
+                continue
+            self._transition_index.setdefault(tuple(context), {})[row.next_token] = row.probability
+
     @property
     def vocab_size(self) -> int:
         """Get the vocabulary size."""

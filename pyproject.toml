@@ -33,6 +33,7 @@ dependencies = [
     "tokenizers==0.22.1",
     "transformers==4.57.3",
     "sentencepiece==0.2.1",
+    "protobuf==6.33.6",
     "torch==2.9.1",
     "numpy==2.2.3",
     "babelvec==0.1.5",
