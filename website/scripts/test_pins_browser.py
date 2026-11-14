@@ -1,9 +1,9 @@
 """Local/CI/production pin checks. Block analytics before executing any page JS."""
 import argparse,asyncio,json,os,re,time
 from pathlib import Path
-from playwright.async_api import async_playwright
 
 async def run(args):
+    from playwright.async_api import async_playwright
     result={'base_url':args.base_url};errors=[];tracking=[]
     async with async_playwright() as p:
         launch={'headless':True}
